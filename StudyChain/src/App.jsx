@@ -1,13 +1,13 @@
+import { useState } from 'react'
 import 'bootstrap/dist/css/bootstrap.css'
-import Graph from './components/Graph'
 
 function App() {
+  const [count, setCount] = useState(0)
 
   return (
     <>
       <h1>Hello World</h1>
       <div>Graph should be here</div>
-      <Graph />
     </>
   )
 }
