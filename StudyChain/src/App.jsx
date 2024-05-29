@@ -11,13 +11,13 @@ function App() {
       <div>Graph should be here</div>
       <Graph 
         nodes={[
-          {name: 'a'}, 
+          {name: 'abcdef'}, 
           {name: 'b'},
           {name: 'c'},
           {name: 'd'}
         ]}
         links={[
-          {source: 'a', target: 'b'},
+          {source: 'abcdef', target: 'b'},
           {source: 'b', target: 'c'}
         ]}/>
     </>
