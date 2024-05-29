@@ -5,15 +5,18 @@ stages:
 
 cache:
   paths:
-    - node_modules/
+    - StudyChain/node_modules/
 
 before_script:
   - echo "Checking out the repository"
   - git checkout $CI_COMMIT_REF_NAME
+  - cd StudyChain  # Navigate to the directory containing package.json
 
 build_job:
   stage: build
   script:
+    - echo "Navigating to the StudyChain directory"
+    - cd StudyChain  # Change to the directory with package.json
     - echo "Installing dependencies"
     - npm install
     - echo "Building the project"
