@@ -15,7 +15,6 @@ before_script:
 build_job:
   stage: build
   script:
-    - echo "Navigating to the StudyChain directory"
     - echo "Installing dependencies"
     - npm install
     - echo "Building the project"
