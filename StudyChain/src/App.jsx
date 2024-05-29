@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Graph from "./components/Graph"
 import 'bootstrap/dist/css/bootstrap.css'
 
 function App() {
@@ -8,6 +9,17 @@ function App() {
     <>
       <h1>Hello World</h1>
       <div>Graph should be here</div>
+      <Graph 
+        nodes={[
+          {name: 'a'}, 
+          {name: 'b'},
+          {name: 'c'},
+          {name: 'd'}
+        ]}
+        links={[
+          {source: 'a', target: 'b'},
+          {source: 'b', target: 'c'}
+        ]}/>
     </>
   )
 }
