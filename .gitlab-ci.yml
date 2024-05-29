@@ -1,23 +1,18 @@
-name: CI
+image: node:16
 
-on: [push, pull_request]
+stages:
+  - build
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+cache:
+  paths:
+    - node_modules/
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+before_script:
+  - npm install
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '16'
+build_job:
+  stage: build
+  script:
+    - npm run build
 
-      - name: Install dependencies
-        run: npm install
-
-      - name: Run build
-        run: npm run build
 
