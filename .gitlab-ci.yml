@@ -3,26 +3,18 @@ image: node:16
 stages:
   - build
 
-# Ensure the repository is checked out
-before_script:
-  - echo "Checking out the repository"
-  - git checkout $CI_COMMIT_REF_NAME
-
 cache:
   paths:
     - node_modules/
 
-# Install dependencies before the main script
-install_dependencies:
+before_script:
+  - echo "Checking out the repository"
+  - git checkout $CI_COMMIT_REF_NAME
+
+build_job:
   stage: build
   script:
     - echo "Installing dependencies"
     - npm install
-
-# Build the project
-build_job:
-  stage: build
-  script:
     - echo "Building the project"
     - npm run build
-
