@@ -3,9 +3,6 @@ image: node:18
 stages:
   - build
 
-cache:
-  paths:
-    - StudyChain/node_modules/
 
 before_script:
   - echo "Checking out the repository"
