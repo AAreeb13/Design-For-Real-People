@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Graph from "./components/Graph"
+import TempButton from './components/TempButton'
 import 'bootstrap/dist/css/bootstrap.css'
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
           {source: 'abcdef', target: 'b'},
           {source: 'b', target: 'c'}
         ]}/>
+      <TempButton />
     </>
   )
 }
