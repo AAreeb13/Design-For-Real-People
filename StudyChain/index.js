@@ -4,30 +4,19 @@ const express = require("express");
 const app = express();
 const PORT = 8080;
 
-// Middleware for parsing JSON
-app.use(express.json())
+app.get("/", (req, res) => {
+  res.status(200).sendFile("index.html");
+})
 
-app.get("/tshirt", (req, res) => {
-  res.status(200).send({
-    tshirt: "T",
-    size: "large"
-  })
-});
+app.get("/probability", (req, res) => {
+  res.status(200).sendFile("probability.html");
+})
 
-app.post("/tshirt/:id", (req, res) => {
-  const { id } = req.params;
-  const { logo } = req.body;
-
-  if (!logo) {
-    res.status(418).send({ message: "We need a logo!" })
-  }
-
-  res.send({
-    tshirt: `T with your ${logo} and ID of ${id}`
-  })
-});
+app.get("/calculus", (req, res) => {
+  res.status(200).sendFile("calculus.html");
+})
 
 app.listen(
   PORT,
-  () => console.log(`It's alive on http://localhost:${PORT}`)
+  () => { console.log(`It's alive on http://localhost:${PORT}`) }
 )
