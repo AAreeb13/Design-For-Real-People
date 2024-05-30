@@ -1,0 +1,18 @@
+image: node:18
+
+stages:
+  - build
+
+
+before_script:
+  - echo "Checking out the repository"
+  - git checkout $CI_COMMIT_REF_NAME
+  - cd StudyChain  # Navigate to the directory containing package.json
+
+build_job:
+  stage: build
+  script:
+    - echo "Installing dependencies"
+    - npm install
+    - echo "Building the project"
+    - npm run build
