@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react'
+import 'bootstrap/dist/css/bootstrap.css'
+import React, { useEffect } from 'react';
 import Graph from "./components/Graph";
 import TempButton from './components/TempButton';
 import 'bootstrap/dist/css/bootstrap.css';
@@ -6,6 +8,7 @@ import { getGraphData } from '../database/graphData';
 import Navbar from './components/Navbar';
 
 function App() {
+  const [count, setCount] = useState(0)
   const [graphData, setGraphData] = useState({ nodes: [], links: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -72,4 +75,4 @@ function isEqualData(oldData, data) {
   return nodesEqual && relationshipsEqual;
 }
 
-export default App;
+export default App
