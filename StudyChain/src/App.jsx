@@ -8,7 +8,6 @@ import { getGraphData } from '../database/graphData';
 import Navbar from './components/Navbar';
 
 function App() {
-  const [count, setCount] = useState(0)
   const [graphData, setGraphData] = useState({ nodes: [], links: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -55,9 +54,10 @@ function App() {
         nodes={graphData.nodes.map((n) => {return {name: n}})}
         links={graphData.relationships} 
       />
-      <TempButton />
     </>
   );
+
+  // Use <TempButton /> to debug output from neo4j
 }
 
 function isEqualData(oldData, data) {
