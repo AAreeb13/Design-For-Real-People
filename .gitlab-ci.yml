@@ -1,18 +1,18 @@
-image: node:18
-
-stages:
-  - build
-
+image: node:20
 
 before_script:
-  - echo "Checking out the repository"
-  - git checkout $CI_COMMIT_REF_NAME
-  - cd StudyChain  # Navigate to the directory containing package.json
+  - cd StudyChain
 
-build_job:
+build-job:
   stage: build
   script:
-    - echo "Installing dependencies"
     - npm install
-    - echo "Building the project"
-    - npm run build
+    - find -name "*.js" | xargs node -c
+
+deploy-heroku:
+  stage: deploy
+  script:
+    - apt-get update -qy
+    - apt-get install -y ruby-dev
+    - gem install dpl
+    - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_PRODUCTION_KEY
