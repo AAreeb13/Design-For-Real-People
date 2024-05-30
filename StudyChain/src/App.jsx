@@ -3,6 +3,7 @@ import Graph from "./components/Graph";
 import TempButton from './components/TempButton';
 import 'bootstrap/dist/css/bootstrap.css';
 import { getGraphData } from '../database/graphData';
+import Navbar from './components/Navbar'
 
 function App() {
   const [graphData, setGraphData] = useState({ nodes: [], links: [] });
@@ -35,6 +36,7 @@ function App() {
 
   return (
     <>
+      <Navbar />
       <h1>Hello World</h1>
       <div>Graph should be here</div>
       <Graph 

@@ -25,8 +25,8 @@ const Graph = ({nodes, links}) => {
     const svgGroup = svg.append('g');
 
     const simulation = d3.forceSimulation(nodes)
-      .force('link', d3.forceLink(links).id(d => d.name).distance(500)) // adjust distance for longer links
-      .force('charge', d3.forceManyBody().strength(-3000))
+      .force('link', d3.forceLink(links).id(d => d.name).distance(450)) // adjust distance for longer links
+      .force('charge', d3.forceManyBody().strength(-10000))
       .force('center', d3.forceCenter(width / 2, height /5));
 
     const link = svgGroup.append('g')
@@ -44,8 +44,8 @@ const Graph = ({nodes, links}) => {
       .attr('class', 'node');
 
     node.append('ellipse')
-      .attr('rx', 150) // Increase to make nodes longer
-      .attr('ry', 35)  // Increase to make nodes taller
+      .attr('rx', 300) // Increase to make nodes longer
+      .attr('ry', 80)  // Increase to make nodes taller
       .attr('fill', '#69b3a2')
       .attr('stroke', '#fff')
       .attr('stroke-width', 1.5);
@@ -54,7 +54,7 @@ const Graph = ({nodes, links}) => {
       .attr('x', 0)
       .attr('y', 3)
       .attr('text-anchor', 'middle')
-      .attr('font-size', '20px') // change to make text bigger
+      .attr('font-size', '50px') // change to make text bigger
       .attr('fill', '#000')
       .text(d => d.name);
 
@@ -72,7 +72,7 @@ const Graph = ({nodes, links}) => {
   }, [nodes, links]);
 
   return (
-    <svg ref={svgRef} width={1500} height={600} style={{ border: '1px solid black' }}></svg>
+    <svg ref={svgRef} width={1200} height={600} style={{ border: '1px solid black' }}></svg>
   );
 };
 
