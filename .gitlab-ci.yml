@@ -1,8 +1,5 @@
 image: node:20
 
-before_script:
-  - cd StudyChain
-
 build-job:
   stage: build
   script:
