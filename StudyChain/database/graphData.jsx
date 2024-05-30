@@ -41,23 +41,30 @@ const closeDriver = async () => {
 };
 
 const getGraphData = async () => {
-  let nodes = []
+  let nodes = {}
   let relationships = []
   try {
       let results = await runQuery("MATCH (n)-[r]->(m) RETURN n, r, m");
-      nodes = results.nodes;
-      relationships = results.relationships;
-      nodes = nodes.sort((a, b) => {
-        // Assuming the id property is numeric, you can compare it directly
-        return a.identity.low - b.identity.low;
+      results.nodes.forEach(function (n) {
+        nodes[n.identity.low] = n.properties.name
       });
-      nodes = nodes.map(function (n) {
-        return n.properties.name
-      })
+      relationships = results.relationships;
+      // nodes = nodes.sort((a, b) => {
+      //   // Assuming the id property is numeric, you can compare it directly
+      //   return a.identity.low - b.identity.low;
+      // });
+      // nodes = nodes.map(function (n) {
+      //   return n.properties.name
+      // })
       
       relationships = relationships.map(function (r) {
         return {source: nodes[r.start.low], target: nodes[r.end.low]}
       })
+
+
+      nodes = Object.entries(nodes)
+        .sort(([a], [b]) => a - b)
+        .map(([, value]) => value);
       
   } catch (error) {
       console.error('Error fetching graph data:', error);
