@@ -19,6 +19,7 @@ function MyNavbar() {
 
     const toggleDropdown = () => {
         setIsDropdownOpen(!isDropdownOpen);
+        
     };
 
     return (
