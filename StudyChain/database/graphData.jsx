@@ -54,13 +54,10 @@ const getGraphData = async () => {
       relationships = relationships.map(function (r) {
         return {source: nodes[r.start.low], target: nodes[r.end.low]}
       })
-      console.log("relationshipsssss", relationships)
       
   } catch (error) {
       console.error('Error fetching graph data:', error);
   }
-  // console.log("Nodes: ", nodes)
-  // console.log("Relationships", relationships)
   return {nodes, relationships}
 };
 
