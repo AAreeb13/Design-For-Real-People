@@ -65,4 +65,15 @@ const getGraphData = async () => {
   return {nodes, relationships}
 };
 
-export { getGraphData };
+const nodeExists = async (label, properties) => {
+  const session = driver.session();
+  try {
+    const query = `MATCH (n:${label} {name: $name}) RETURN n LIMIT 1`;
+    const result = await session.run(query, { name: properties.name });
+    return result.records.length > 0;
+  } finally {
+    await session.close();
+  }
+};
+
+export { getGraphData, runQuery, nodeExists };

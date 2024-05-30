@@ -14,6 +14,19 @@ function MyNavbar() {
     const ourTopicAdder = {
         padding: '5px 5px 5px 5px'
     }
+
+    const navStyle = {
+        backgroundColor: '#2c3e50',
+        color: 'white',
+        padding: '1rem 2rem',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        boxShadow:'0 4px 6px rgba(0, 0, 0, 0.1)',
+        position: 'fixed',
+        width: '100%',
+        top: '0'
+    }
     
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -22,7 +35,7 @@ function MyNavbar() {
     };
 
     return (
-        <nav className="navbar navbar-expand-lg bg-body-tertiary"> 
+        <nav className="navbar navbar-expand-lg bg-body-tertiary" style={navStyle}> 
             <div className="container-fluid">
                 <a className="navbar-brand" href="index.html" style={ourLogo}>StudyChain</a>
 

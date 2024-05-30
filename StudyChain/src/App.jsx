@@ -6,6 +6,7 @@ import TempButton from './components/TempButton';
 import 'bootstrap/dist/css/bootstrap.css';
 import { getGraphData } from '../database/graphData';
 import Navbar from './components/Navbar';
+import TempInput from './components/TempInput';
 
 function App() {
   const [graphData, setGraphData] = useState({ nodes: [], links: [] });
@@ -50,6 +51,7 @@ function App() {
       <Navbar />
       <h1>StudyChain</h1>
       <div>Studying Made Simple</div>
+      <TempInput />
       <Graph 
         nodes={graphData.nodes.map((n) => {return {name: n}})}
         links={graphData.relationships} 
