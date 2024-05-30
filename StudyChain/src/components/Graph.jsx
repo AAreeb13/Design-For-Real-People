@@ -1,8 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 
-const Graph = ({ nodes, links }) => {
+const Graph = ({nodes, links}) => {
+
   const svgRef = useRef();
+  console.log("nodes", nodes);
+  console.log("links", links);
 
   useEffect(() => {
     const svg = d3.select(svgRef.current);
@@ -22,9 +25,9 @@ const Graph = ({ nodes, links }) => {
     const svgGroup = svg.append('g');
 
     const simulation = d3.forceSimulation(nodes)
-      .force('link', d3.forceLink(links).id(d => d.name).distance(200)) // adjust distance for longer links
-      .force('charge', d3.forceManyBody().strength(-100))
-      .force('center', d3.forceCenter(width / 2, height / 2));
+      .force('link', d3.forceLink(links).id(d => d.name).distance(500)) // adjust distance for longer links
+      .force('charge', d3.forceManyBody().strength(-3000))
+      .force('center', d3.forceCenter(width / 2, height /5));
 
     const link = svgGroup.append('g')
       .attr('stroke', '#999')

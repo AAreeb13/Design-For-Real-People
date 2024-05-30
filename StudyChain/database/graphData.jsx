@@ -10,25 +10,58 @@ const driver = neo4j.driver(
 );
 
 const runQuery = async (query, params = {}) => {
-    const session = driver.session();
-    try {
+  const session = driver.session();
+  try {
       const result = await session.run(query, params);
-      return result.records.map(record => record.toObject());
-    } finally {
+
+      const nodes = new Map();
+      const relationships = new Map();
+
+      result.records.forEach(record => {
+          const n = record.get('n');
+          const m = record.get('m');
+          const r = record.get('r');
+
+          nodes.set(n.identity.toString(), n);
+          nodes.set(m.identity.toString(), m);
+          relationships.set(r.identity.toString(), r);
+      });
+
+      return {
+          nodes: Array.from(nodes.values()),
+          relationships: Array.from(relationships.values())
+      };
+  } finally {
       await session.close();
-    }
+  }
 };
 
 const closeDriver = async () => {
     await driver.close();
 };
 
-function getGraphData() {
-
-    const results = runQuery("MATCH (n)-[r]->(m) RETURN n, r, m")
-
-
-    console.log(results)
-}
+const getGraphData = async () => {
+  let nodes = []
+  let relationships = []
+  try {
+      let results = await runQuery("MATCH (n)-[r]->(m) RETURN n, r, m");
+      nodes = results.nodes;
+      relationships = results.relationships;
+      nodes = nodes.map(function (n) {
+        return n.properties.name
+      })
+      
+      relationships = relationships.map(function (r) {
+        return {source: nodes[r.start.low], target: nodes[r.end.low]}
+      })
+      console.log("relationshipsssss", relationships)
+      
+  } catch (error) {
+      console.error('Error fetching graph data:', error);
+  }
+  // console.log("Nodes: ", nodes)
+  // console.log("Relationships", relationships)
+  return {nodes, relationships}
+};
 
 export { getGraphData };
