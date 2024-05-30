@@ -1,46 +1,65 @@
-import 'bootstrap/dist/css/bootstrap.css';
+import React, { useState } from 'react';
 
-const Navbar = () => {
+function MyNavbar() {
+
+    const ourLogo = { 
+        padding: '5px 5% 5px 5px' ,
+        width: '200px'
+
+    };
+    const ourDropDown = {
+        padding: '5px 5px 5px 5%',
+        width: '300px'
+    };
+    const ourTopicAdder = {
+        padding: '5px 5px 5px 5px'
+    }
+    
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+    const toggleDropdown = () => {
+        setIsDropdownOpen(!isDropdownOpen);
+    };
+
     return (
-    // https://getbootstrap.com/docs/5.3/components/navbar/
+        <nav className="navbar navbar-expand-lg bg-body-tertiary"> 
+            <div className="container-fluid">
+                <a className="navbar-brand" href="index.html" style={ourLogo}>StudyChain</a>
 
-    <nav className="navbar navbar-expand-lg bg-body-tertiary"> 
-        <div className="container-fluid">
-            <a className="navbar-brand" href="index.html">StudyChain</a>
+                <button className="navbar-toggler" type="button" onClick={toggleDropdown} aria-label="Toggle navigation">
+                    <span className="navbar-toggler-icon"></span>
+                </button>
 
-            <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span className="navbar-toggler-icon"></span>
-            </button>
+                <div className={`collapse navbar-collapse ${isDropdownOpen ? 'show' : ''}`}>
 
-            <div className="collapse navbar-collapse" id="navbarSupportedContent">
-
-                <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+                    <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+                        
+                        <li className="nav-item dropdown" style={ourDropDown}>
+                            <a className="nav-link dropdown-toggle" href="#" role="button" onClick={toggleDropdown} aria-expanded={isDropdownOpen ? 'true' : 'false'}>
+                                Explore Our topics
+                            </a>
+                            <ul className={`dropdown-menu ${isDropdownOpen ? 'show' : ''}`}>
+                                <li><a className="dropdown-item" href="#">Calculus</a></li>
+                                <li><a className="dropdown-item" href="#">Networking</a></li>
+                                <li><a className="dropdown-item" href="#">Programming</a></li>
+                            </ul>
+                        </li>
+                        
+                        <li className="nav-item" style={ourTopicAdder}>
+                            <a className="nav-link disabled" aria-disabled="true">Add a Topic</a>
+                        </li>
                     
-                    <li className="nav-item dropdown">
-                        <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Explore Our topics
-                        </a>
-                        <ul className="dropdown-menu">
-                            <li><a className="dropdown-item" href="#">Calculus</a></li>
-                            <li><a className="dropdown-item" href="#">Networking</a></li>
-                            <li><a className="dropdown-item" href="#">Programming</a></li>
-                        </ul>
-                    </li>
-                    
-                    <li className="nav-item">
-                        <a className="nav-link disabled" aria-disabled="true">Add a Topic</a>
-                    </li>
-                
-                </ul>
+                    </ul>
 
-                <form className="d-flex" role="search">
-                    <input className="form-control me-2" type="search" placeholder="Enter a Topic" aria-label="Search" />
-                    <button className="btn btn-outline-success" type="submit">Search</button>
-                </form>
+                    <form className="d-flex" role="search">
+                        <input className="form-control me-2" type="search" placeholder="Enter a Topic" aria-label="Search" />
+                        <button className="btn btn-outline-success" type="submit">Search</button>
+                    </form>
 
+                </div>
             </div>
-        </div>
-    </nav>)
+        </nav>
+    );
 }
 
-export default Navbar;
+export default MyNavbar;

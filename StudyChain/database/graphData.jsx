@@ -47,6 +47,10 @@ const getGraphData = async () => {
       let results = await runQuery("MATCH (n)-[r]->(m) RETURN n, r, m");
       nodes = results.nodes;
       relationships = results.relationships;
+      nodes = nodes.sort((a, b) => {
+        // Assuming the id property is numeric, you can compare it directly
+        return a.identity.low - b.identity.low;
+      });
       nodes = nodes.map(function (n) {
         return n.properties.name
       })
