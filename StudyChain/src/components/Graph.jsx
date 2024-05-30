@@ -4,8 +4,6 @@ import * as d3 from 'd3';
 const Graph = ({nodes, links}) => {
 
   const svgRef = useRef();
-  console.log("nodes", nodes);
-  console.log("links", links);
 
   useEffect(() => {
     const svg = d3.select(svgRef.current);

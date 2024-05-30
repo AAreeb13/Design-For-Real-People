@@ -14,7 +14,6 @@ function App() {
   const fetchData = async () => {
     try {
       const data = await getGraphData();
-      console.log(data);
       if (oldData === null || !isEqualData(oldData, data)) {
         oldData = data;
         setGraphData(data);
@@ -32,7 +31,7 @@ function App() {
     const intervalId = setInterval(fetchData, 5000); // Fetch data every 5 seconds
 
     return () => {
-      clearInterval(intervalId); // Clean up the interval on component unmount
+      clearInterval(intervalId);
     };
   }, []);
 
