@@ -28,7 +28,7 @@ const AddTopics = () => {
       const newTopicExists = await nodeExists('Subject', { name: firstTopic });
       if (!newTopicExists) {
         query = `
-          CREATE (a:Subject {name: $firstTopic})
+          CREATE (a:Subject {name: $firstTopic, type:'subject'})
         `;
         params = { firstTopic };
         await runQuery(query, params);
@@ -38,7 +38,7 @@ const AddTopics = () => {
       const nextTopicExists = await nodeExists('Subject', { name: secondTopic });
       if (!nextTopicExists) {
         query = `
-          CREATE (b:Subject {name: $secondTopic})
+          CREATE (b:Subject {name: $secondTopic, type:'subject'})
         `;
         params = { secondTopic};
         await runQuery(query, params);

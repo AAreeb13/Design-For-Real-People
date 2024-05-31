@@ -46,12 +46,12 @@ const getGraphData = async () => {
   try {
       let results = await runQuery("MATCH (n)-[r]->(m) RETURN n, r, m");
       results.nodes.forEach(function (n) {
-        nodes[n.identity.low] = n.properties.name
+        nodes[n.identity.low] = {name: n.properties.name, type: n.properties.type}
       });
       relationships = results.relationships;
       
       relationships = relationships.map(function (r) {
-        return {source: nodes[r.start.low], target: nodes[r.end.low]}
+        return {source: nodes[r.start.low].name, target: nodes[r.end.low].name}
       })
 
 

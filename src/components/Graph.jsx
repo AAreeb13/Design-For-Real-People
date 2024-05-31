@@ -24,9 +24,9 @@ const Graph = ({ nodes, links }) => {
     const svgGroup = svg.append('g');
 
     const simulation = d3.forceSimulation(nodes)
-      .force('link', d3.forceLink(links).id(d => d.name).distance(300)) // distance = link length
+      .force('link', d3.forceLink(links).id(d => d.name.name).distance(300)) // distance = link length
       .force('charge', d3.forceManyBody().strength(-10000))
-      .force('center', d3.forceCenter(width / 20, height / 20));
+      .force('center', d3.forceCenter(width / 2, height / 2));
 
     const link = svgGroup.append('g')
       .attr('stroke', '#999')
@@ -42,12 +42,24 @@ const Graph = ({ nodes, links }) => {
       .enter().append('g')
       .attr('class', 'node');
 
+    // Append shapes based on the type of the node
     node.append('ellipse')
-      .attr('rx', 150) // circle width
-      .attr('ry', 50)  // Circle height
+      .filter(d => d.name.type === 'subject')
+      .attr('rx', 150) // ellipse width
+      .attr('ry', 50)  // ellipse height
       .attr('fill', '#69b3a2')
       .attr('stroke', '#fff')
       .attr('stroke-width', 1.5);
+
+    node.append('rect')
+      .filter(d => d.name.type === 'topic')
+      .attr('width', 150)  // square width
+      .attr('height', 100) // square height
+      .attr('fill', 'red')
+      .attr('stroke', '#fff')
+      .attr('stroke-width', 1.5)
+      .attr('x', -50) // to center the square
+      .attr('y', -50); // to center the square
 
     node.append('text')
       .attr('x', 0)
@@ -55,7 +67,7 @@ const Graph = ({ nodes, links }) => {
       .attr('text-anchor', 'middle')
       .attr('font-size', '20px') // Text size is px
       .attr('fill', '#000')
-      .text(d => d.name);
+      .text(d => d.name.name);
 
     simulation.on('tick', () => {
       link

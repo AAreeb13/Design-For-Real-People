@@ -68,9 +68,13 @@ function isEqualData(oldData, data) {
     return false;
   }
   
-  const nodesEqual = oldData.nodes.every((node, index) => node.name === data.nodes[index].name);
+  const nodesEqual = oldData.nodes.every((node, index) => node.name.name === data.nodes[index].name.name);
+  
+
   const relationshipsEqual = oldData.relationships.every((rel, index) => {
-    return rel.source.name === data.relationships[index].source && rel.target.name === data.relationships[index].target
+    console.log("rel: ", rel.source)
+    console.log("index: ", data.relationships[index])
+    return rel.source.name.name === data.relationships[index].source && rel.target.name.name === data.relationships[index].target
   }
 );
 
