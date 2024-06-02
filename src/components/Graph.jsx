@@ -23,6 +23,20 @@ const Graph = ({ nodes, links }) => {
 
     const svgGroup = svg.append('g');
 
+    svg.append('defs').append('marker')
+      .attr('id', 'arrowhead')
+      .attr('viewBox', '-0 -5 10 10')
+      .attr('refX', 30) // Increase this value to move the arrowhead closer to the end of the line
+      .attr('refY', 0)
+      .attr('orient', 'auto')
+      .attr('markerWidth', 6)
+      .attr('markerHeight', 6)
+      .attr('xoverflow', 'visible')
+      .append('svg:path')
+      .attr('d', 'M 0,-5 L 10 ,0 L 0,5')
+      .attr('fill', '#999')
+      .style('stroke', 'none');
+
     const simulation = d3.forceSimulation(nodes)
       .force('link', d3.forceLink(links).id(d => d.name.name).distance(300)) // distance = link length
       .force('charge', d3.forceManyBody().strength(-10000))
@@ -34,7 +48,8 @@ const Graph = ({ nodes, links }) => {
       .selectAll('line')
       .data(links)
       .enter().append('line')
-      .attr('stroke-width', 15); // number = thickness of lines
+      .attr('stroke-width', 15) // number = thickness of lines
+      .attr('marker-end', 'url(#arrowhead)'); // Reference the arrowhead marker
 
     const node = svgGroup.append('g')
       .selectAll('g')
@@ -44,7 +59,7 @@ const Graph = ({ nodes, links }) => {
 
     // Append shapes based on the type of the node
     node.append('ellipse')
-      .filter(d => d.name.type === 'subject')
+      .filter(d => d.name.type === 'topic')
       .attr('rx', 150) // ellipse width
       .attr('ry', 50)  // ellipse height
       .attr('fill', '#69b3a2')
@@ -52,18 +67,19 @@ const Graph = ({ nodes, links }) => {
       .attr('stroke-width', 1.5);
 
     node.append('rect')
-      .filter(d => d.name.type === 'topic')
-      .attr('width', 150)  // square width
-      .attr('height', 100) // square height
-      .attr('fill', 'red')
+      .filter(d => d.name.type === 'subject')
+      .attr('width', 300)  // rectangle width
+      .attr('height', 100) // rectangle height
+      .attr('fill', '#f86d6d')
       .attr('stroke', '#fff')
       .attr('stroke-width', 1.5)
-      .attr('x', -50) // to center the square
-      .attr('y', -50); // to center the square
+      .attr('x', -150) // to center the rectangle
+      .attr('y', -50); // to center the rectangle
 
     node.append('text')
       .attr('x', 0)
-      .attr('y', 3)
+      .attr('y', 0)
+      .attr('dy', '.35em') // Adjust the vertical alignment
       .attr('text-anchor', 'middle')
       .attr('font-size', '20px') // Text size is px
       .attr('fill', '#000')
