@@ -1,12 +1,19 @@
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 
-const Graph = ({ nodes, links }) => {
+const Graph = ({ nodes, links, subject }) => {
   const svgRef = useRef();
-  console.log("nodes", nodes);
-  console.log("links", links);
   const width = 1200;
   const height = 800;
+
+  const validNodes = nodes.filter((n) => n.name === subject || n.subject === subject)
+  const nodesToUse = validNodes.map((n) => {return {name: n.name, type: n.type}})
+
+  const nodeNameList = nodesToUse.map(n => n.name)
+  const linksToUse = links
+    .filter((link) => {return nodeNameList.includes(link.source) && nodeNameList.includes(link.target)})
+  console.log("nodes: ", nodesToUse)
+  console.log("links: ", linksToUse)
 
   useEffect(() => {
     const svg = d3.select(svgRef.current);
@@ -22,7 +29,6 @@ const Graph = ({ nodes, links }) => {
     svg.selectAll("*").remove();
 
     const svgGroup = svg.append('g');
-
     svg.append('defs').append('marker')
       .attr('id', 'arrowhead')
       .attr('viewBox', '-0 -5 10 10')
@@ -37,8 +43,8 @@ const Graph = ({ nodes, links }) => {
       .attr('fill', '#999')
       .style('stroke', 'none');
 
-    const simulation = d3.forceSimulation(nodes)
-      .force('link', d3.forceLink(links).id(d => d.name.name).distance(300)) // distance = link length
+    const simulation = d3.forceSimulation(nodesToUse)
+      .force('link', d3.forceLink(linksToUse).id(d => d.name).distance(300)) // distance = link length
       .force('charge', d3.forceManyBody().strength(-10000))
       .force('center', d3.forceCenter(width / 2, height / 2));
 
@@ -46,20 +52,19 @@ const Graph = ({ nodes, links }) => {
       .attr('stroke', '#999')
       .attr('stroke-opacity', 0.6)
       .selectAll('line')
-      .data(links)
+      .data(linksToUse)
       .enter().append('line')
       .attr('stroke-width', 15) // number = thickness of lines
-      .attr('marker-end', 'url(#arrowhead)'); // Reference the arrowhead marker
-
+      .attr('marker-end', 'url(#arrowhead)');
+      
     const node = svgGroup.append('g')
       .selectAll('g')
-      .data(nodes)
+      .data(nodesToUse)
       .enter().append('g')
       .attr('class', 'node');
 
-    // Append shapes based on the type of the node
     node.append('ellipse')
-      .filter(d => d.name.type === 'topic')
+      .filter(d => d.type === 'topic')
       .attr('rx', 150) // ellipse width
       .attr('ry', 50)  // ellipse height
       .attr('fill', '#69b3a2')
@@ -67,7 +72,7 @@ const Graph = ({ nodes, links }) => {
       .attr('stroke-width', 1.5);
 
     node.append('rect')
-      .filter(d => d.name.type === 'subject')
+      .filter(d => d.type === 'subject')
       .attr('width', 300)  // rectangle width
       .attr('height', 100) // rectangle height
       .attr('fill', '#f86d6d')
@@ -81,9 +86,9 @@ const Graph = ({ nodes, links }) => {
       .attr('y', 0)
       .attr('dy', '.35em') // Adjust the vertical alignment
       .attr('text-anchor', 'middle')
-      .attr('font-size', '20px') // Text size is px
+      .attr('font-size', '20px') // Text size in px
       .attr('fill', '#000')
-      .text(d => d.name.name);
+      .text(d => d.name);
 
     simulation.on('tick', () => {
       link
@@ -99,7 +104,7 @@ const Graph = ({ nodes, links }) => {
     const initialTransform = d3.zoomIdentity.translate(width / 2, height / 2).scale(0.5);
     svg.call(zoom.transform, initialTransform);
 
-  }, [nodes, links]);
+  }, [nodesToUse, linksToUse]);
 
   return (
     <svg ref={svgRef} width={width} height={height} style={{ border: '1px solid black' }}></svg>

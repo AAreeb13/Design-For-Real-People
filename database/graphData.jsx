@@ -46,7 +46,7 @@ const getGraphData = async () => {
   try {
       let results = await runQuery("MATCH (n)-[r]->(m) RETURN n, r, m");
       results.nodes.forEach(function (n) {
-        nodes[n.identity.low] = {name: n.properties.name, type: n.properties.type}
+        nodes[n.identity.low] = n.properties
       });
       relationships = results.relationships;
       
@@ -58,7 +58,6 @@ const getGraphData = async () => {
       nodes = Object.entries(nodes)
         .sort(([a], [b]) => a - b)
         .map(([, value]) => value);
-      
   } catch (error) {
       console.error('Error fetching graph data:', error);
   }

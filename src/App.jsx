@@ -2,7 +2,6 @@ import { useState } from 'react'
 import 'bootstrap/dist/css/bootstrap.css'
 import React, { useEffect } from 'react';
 import Graph from "./components/Graph";
-import TempButton from './components/TempButton';
 import 'bootstrap/dist/css/bootstrap.css';
 import { getGraphData } from '../database/graphData';
 import Navbar from './components/Navbar';
@@ -53,8 +52,9 @@ function App() {
       <div>Studying Made Simple</div>
       <TempInput />
       <Graph 
-        nodes={graphData.nodes.map((n) => {return {name: n}})}
-        links={graphData.relationships} 
+        nodes={graphData.nodes}
+        links={graphData.relationships}
+        subject={"calculus"} 
       />
     </>
   );
@@ -63,20 +63,25 @@ function App() {
 }
 
 function isEqualData(oldData, data) {
+  oldData.relationships = oldData.relationships.map((n) => {
+    if (n.source.name != null) {
+      return {source: n.source.name, target: n.target.name}
+    } else {
+      return {source: n.source, target: n.target}
+    }
+  })
 
   if (oldData.nodes.length !== data.nodes.length || oldData.relationships.length !== data.relationships.length) {
     return false;
   }
   
-  const nodesEqual = oldData.nodes.every((node, index) => node.name.name === data.nodes[index].name.name);
+  const nodesEqual = oldData.nodes.every((node, index) => node.name === data.nodes[index].name);
   
 
   const relationshipsEqual = oldData.relationships.every((rel, index) => {
-    console.log("rel: ", rel.source)
-    console.log("index: ", data.relationships[index])
-    return rel.source.name.name === data.relationships[index].source && rel.target.name.name === data.relationships[index].target
-  }
-);
+    return rel.source === data.relationships[index].source && rel.target === data.relationships[index].target
+  });
+
 
   return nodesEqual && relationshipsEqual;
 }
