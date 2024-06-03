@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 
 const Graph = ({ nodes, links, subject }) => {
   const svgRef = useRef();
-  const width = 1200;
+  const width = 1000;
   const height = 800;
 
   const validNodes = nodes.filter((n) => n.name === subject || n.subject === subject)
@@ -46,7 +46,7 @@ const Graph = ({ nodes, links, subject }) => {
     const simulation = d3.forceSimulation(nodesToUse)
       .force('link', d3.forceLink(linksToUse).id(d => d.name).distance(300)) // distance = link length
       .force('charge', d3.forceManyBody().strength(-10000))
-      .force('center', d3.forceCenter(width / 2, height / 2));
+      .force('center', d3.forceCenter(width / 30, height / 30));
 
     const link = svgGroup.append('g')
       .attr('stroke', '#999')
@@ -101,13 +101,23 @@ const Graph = ({ nodes, links, subject }) => {
         .attr('transform', d => `translate(${d.x},${d.y})`);
     });
 
-    const initialTransform = d3.zoomIdentity.translate(width / 2, height / 2).scale(0.5);
+    const initialTransform = d3.zoomIdentity.translate(width / 3, height / 3).scale(0.4);
     svg.call(zoom.transform, initialTransform);
 
   }, [nodesToUse, linksToUse]);
 
   return (
-    <svg ref={svgRef} width={width} height={height} style={{ border: '1px solid black' }}></svg>
+    <svg
+      ref={svgRef}
+      width={800}
+      height={600}
+      style={{
+        marginLeft: '30%',
+        border: '1px solid black',
+        boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
+        borderRadius: '10px'
+      }}
+    ></svg>
   );
 };
 

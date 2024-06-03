@@ -48,14 +48,20 @@ function App() {
   return (
     <>
       <Navbar />
-      <h1>StudyChain</h1>
-      <div>Studying Made Simple</div>
-      <TempInput />
-      <Graph 
-        nodes={graphData.nodes}
-        links={graphData.relationships}
-        subject={"calculus"} 
-      />
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px' }}>
+        <div style={{ flex: 1, margin: '10px' }}>
+          <h1>StudyChain</h1>
+          <h3>Studying Made Simple</h3>
+        </div>
+        
+        <div style={{ flex: 2, margin: '10px' }}>
+          <Graph 
+            nodes={graphData.nodes}
+            links={graphData.relationships}
+            subject={"calculus"} 
+          />
+        </div>
+      </div>
     </>
   );
 
