@@ -3,16 +3,13 @@ import React, { useState } from 'react';
 function MyNavbar() {
 
     const ourLogo = { 
-        padding: '5px 5% 5px 5px' ,
-        width: '200px'
+        padding: '5px 5px 5px 5px' ,
+        width: '150px'
+    };
 
-    };
-    const ourDropDown = {
-        padding: '5px 5px 5px 5%',
-        width: '300px'
-    };
     const ourTopicAdder = {
-        padding: '5px 5px 5px 5px'
+        padding: '5px 5px 5px 5px',
+        marginRight: "10%"
     }
 
     const navStyle = {
@@ -27,11 +24,24 @@ function MyNavbar() {
         width: '100%',
         top: '0'
     }
+
+    const loginStyle = {
+        marginLeft: "20%",
+        marginRight: "2%",
+    }
+
+    const dropDownMenuStyle = {
+        width: "200px"
+    }
     
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-    const toggleDropdown = () => {
-        setIsDropdownOpen(!isDropdownOpen);
+    const handleMouseEnter = () => {
+        setIsDropdownOpen(true);
+    };
+
+    const handleMouseLeave = () => {
+        setIsDropdownOpen(false);
     };
 
     return (
@@ -43,12 +53,12 @@ function MyNavbar() {
                     <span className="navbar-toggler-icon"></span>
                 </button>
 
-                <div className={`collapse navbar-collapse ${isDropdownOpen ? 'show' : ''}`}>
+                <div className={`collapse navbar-collapse ${isDropdownOpen ? 'show' : ''}`} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} style={dropDownMenuStyle}>
 
-                    <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+                    <ul className="navbar-nav me-auto mb-2 mb-lg-0" style={dropDownMenuStyle}>
                         
-                        <li className="nav-item dropdown" style={ourDropDown}>
-                            <a className="nav-link dropdown-toggle" href="#" role="button" onMouseEnter={toggleDropdown} onMouseLeave={toggleDropdown} aria-expanded={isDropdownOpen ? 'true' : 'false'}>
+                        <li className="nav-item dropdown" style={dropDownMenuStyle}>
+                            <a className="nav-link dropdown-toggle" href="#" role="button" aria-expanded={isDropdownOpen ? 'true' : 'false'}>
                                 Explore Our topics
                             </a>
                             <ul className={`dropdown-menu ${isDropdownOpen ? 'show' : ''}`}>
@@ -57,19 +67,23 @@ function MyNavbar() {
                                 <li><a className="dropdown-item" href="#">Programming</a></li>
                             </ul>
                         </li>
-                        
-                        <li className="nav-item" style={ourTopicAdder}>
-                            <a className="nav-link disabled" aria-disabled="true">Add a Topic</a>
-                        </li>
-                    
                     </ul>
-
-                    <form className="d-flex" role="search">
-                        <input className="form-control me-2" type="search" placeholder="Enter a Topic" aria-label="Search" />
-                        <button className="btn btn-outline-success" type="submit">Search</button>
-                    </form>
-
                 </div>
+
+                <li className="nav-item" style={ourTopicAdder}>
+                    <a className="btn btn-outline-success" aria-disabled="true">Add a Topic</a>
+                </li>
+                    
+
+
+                <form className="d-flex" role="search">
+                    <input className="form-control me-2" type="search" placeholder="Enter a Topic" aria-label="Search" />
+                    <button className="btn btn-outline-success" type="submit">Search</button>
+                </form>
+
+                <button className="btn btn-outline-success" style={loginStyle}>Login</button>
+                <button className="btn btn-outline-success">Sign Up</button>
+
             </div>
         </nav>
     );
