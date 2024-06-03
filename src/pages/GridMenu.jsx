@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { getSubjects } from '../../database/graphData';
 
 const RoadmapButtons = () => {
+    const [subjects, setSubjects] = useState(null);
     const mathTopics = ['Calculus', 'Probability and Statistics', 'Analysis', 'Linear Algebra'];
     const languages = ['Python', 'Java', 'C', 'C++', 'Haskell'];
         
@@ -28,6 +30,24 @@ const RoadmapButtons = () => {
         width: "100%",
         marginBottom: "30px",
     };
+
+    useEffect(() => {
+        const fetchSubjects = async () => {
+            try {
+                const subjectsData = await getSubjects();
+                setSubjects(subjectsData);
+                console.log("Subject", subjectsData);
+            } catch (error) {
+                console.error('Error fetching subjects:', error);
+            }
+        };
+
+        fetchSubjects();
+    }, []);
+
+    if (!subjects) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <div className="col" style={gridContainer}>
