@@ -6,7 +6,6 @@ import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import { getGraphData } from '../database/graphData';
 import Navbar from './components/Navbar';
 import GridMenu from './pages/GridMenu';
-import Home from './pages/Home';
 
 function App() {
   const [graphData, setGraphData] = useState({ nodes: [], links: [] });
