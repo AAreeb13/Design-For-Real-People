@@ -8,6 +8,10 @@ import Navbar from './components/Navbar';
 import TempInput from './components/TempInput';
 
 function App() {
+  const ourExploreButton = {
+    width:"275px"
+  }
+
   const [graphData, setGraphData] = useState({ nodes: [], links: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -52,6 +56,7 @@ function App() {
         <div style={{ flex: 1, margin: '10px' }}>
           <h1>StudyChain</h1>
           <h3>Studying Made Simple</h3>
+          <button type="button" className="btn btn-dark" style={ourExploreButton}>Explore Our Topics</button>
         </div>
         
         <div style={{ flex: 2, margin: '10px' }}>
