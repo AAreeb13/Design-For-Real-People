@@ -145,7 +145,7 @@ CREATE (n:Subject{
 });
 
 CREATE (n:Subject{
-	name: 'Integration by Parts',
+	name: 'integration by Parts',
 	subject: 'calculus',
 	type: 'topic',
 	description: 'Technique for integration',
@@ -160,7 +160,7 @@ CREATE (n:Subject{
 });
 
 CREATE (n:Subject{
-	name: 'Integration by Substitution',
+	name: 'integration by Substitution',
 	subject: 'calculus',
 	type: 'topic',
 	description: 'Technique for integration',
@@ -176,7 +176,7 @@ CREATE (n:Subject{
 
 
 CREATE (n:Subject{
-	name: 'Functions',
+	name: 'functions',
 	subject: 'calculus',
 	type: 'topic',
 	description: 'A special type of set',
@@ -191,7 +191,7 @@ CREATE (n:Subject{
 });
 
 CREATE (n:Subject{
-	name: 'Integration Preliminaries',
+	name: 'integration preliminaries',
 	subject: 'calculus',
 	type: 'topic',
 	description: 'Techniques to learn before integration',
@@ -206,7 +206,7 @@ CREATE (n:Subject{
 });
 
 CREATE (n:Subject{
-	name: 'Integration by inspection',
+	name: 'integration by inspection',
 	subject: 'calculus',
 	type: 'topic',
 	description: 'Reverse chain rule',
@@ -221,7 +221,7 @@ CREATE (n:Subject{
 });
 
 CREATE (n:Subject{
-	name: 'Lengths volumes and surfaces',
+	name: 'lengths volumes and surfaces',
 	subject: 'calculus',
 	type: 'topic',
 	description: 'Basic geometry',
@@ -236,7 +236,7 @@ CREATE (n:Subject{
 });
 
 CREATE (n:Subject{
-	name: 'Integration by polar coordinates',
+	name: 'integration by polar coordinates',
 	subject: 'calculus',
 	type: 'topic',
 	description: 'Using integration with polar coordinates',
@@ -251,7 +251,7 @@ CREATE (n:Subject{
 });
 
 CREATE (n:Subject{
-	name: 'Sequences and series',
+	name: 'sequences and series',
 	subject: 'calculus',
 	type: 'topic',
 	description: 'Sequences and series calculus basics',
@@ -266,7 +266,7 @@ CREATE (n:Subject{
 });
 
 CREATE (n:Subject{
-	name: 'Fourier series',
+	name: 'fourier series',
 	subject: 'calculus',
 	type: 'topic',
 	description: 'Advanced calculus series',
@@ -281,7 +281,7 @@ CREATE (n:Subject{
 });
 
 CREATE (n:Subject{
-	name: 'Laplace transformation',
+	name: 'laplace transformation',
 	subject: 'calculus',
 	type: 'topic',
 	description: 'Integration and complex numbers combined',
@@ -296,7 +296,7 @@ CREATE (n:Subject{
 });
 
 CREATE (n:Subject{
-	name: 'Fourier transform',
+	name: 'fourier transform',
 	subject: 'calculus',
 	type: 'topic',
 	description: 'Uses integration to output a new function',
@@ -311,7 +311,7 @@ CREATE (n:Subject{
 });
 
 CREATE (n:Subject{
-	name: 'Ordinary differential equations',
+	name: 'ordinary differential equations',
 	subject: 'calculus',
 	type: 'topic',
 	description: 'ordinary differential equations',
@@ -326,7 +326,7 @@ CREATE (n:Subject{
 });
 
 CREATE (n:Subject{
-	name: 'Differential equations',
+	name: 'differential equations',
 	subject: 'calculus',
 	type: 'topic',
 	description: 'Differential equations',
@@ -341,7 +341,7 @@ CREATE (n:Subject{
 });
 
 CREATE (n:Subject{
-	name: 'First order differential equations',
+	name: 'first order differential equations',
 	subject: 'calculus',
 	type: 'topic',
 	description: 'Only uses single derivatives',
@@ -356,7 +356,7 @@ CREATE (n:Subject{
 });
 
 CREATE (n:Subject{
-	name: 'Second order differential equations',
+	name: 'second order differential equations',
 	subject: 'calculus',
 	type: 'topic',
 	description: 'Uses derivatives up to the second level',
@@ -371,7 +371,7 @@ CREATE (n:Subject{
 });
 
 CREATE (n:Subject{
-	name: 'Qualitative analysis',
+	name: 'qualitative analysis',
 	subject: 'calculus',
 	type: 'topic',
 	description: 'Uses heuristics to analyse data',
@@ -386,7 +386,7 @@ CREATE (n:Subject{
 });
 
 CREATE (n:Subject{
-	name: 'Bifurcations',
+	name: 'bifurcations',
 	subject: 'calculus',
 	type: 'topic',
 	description: 'Splitting into branches',
@@ -401,7 +401,7 @@ CREATE (n:Subject{
 });
 
 CREATE (n:Subject{
-	name: 'Multivariate calculus',
+	name: 'multivariate calculus',
 	subject: 'calculus',
 	type: 'topic',
 	description: 'Differentiation and integration with multiple variables',
@@ -612,25 +612,6 @@ CREATE (title) - [:IS_USED_IN] -> (subject);
 MATCH (title:Subject{name: 'differentiation'}), (subject:Subject{name:'moment generating function'})
 CREATE (title) - [:IS_USED_IN] -> (subject);
 MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'moment generating function'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
-
-
-
-// ---------------------------------------------  PROGRAMMING THEME  --------------------------------------------- //
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+CREATE (title) - [:IS_USED_IN] -> (subject)
 
 
