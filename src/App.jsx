@@ -77,7 +77,7 @@ function GraphRouteWrapper({ graphData }) {
       nodes={graphData.nodes}
       links={graphData.relationships}
       subject={subject}
-      width={2000}
+      width={1500}
       height={600}
     />
   );

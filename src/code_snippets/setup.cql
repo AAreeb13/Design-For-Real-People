@@ -449,7 +449,8 @@ CREATE (title) - [:IS_USED_IN] -> (subject);
 CREATE (n:Subject{
 	name:'probability and statistics',
 	type: 'subject',
-	theme: 'Mathematics'
+	theme: 'Mathematics',
+	mainSubject: True
 });
 
 
