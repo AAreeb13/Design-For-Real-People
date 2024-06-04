@@ -1,3 +1,6 @@
+// ---------------------------------------------  MATHEMATICS THEME  --------------------------------------------- //
+
+
 // ------------------  Calculus here   ------------------ //
 CREATE (n:Subject{
 	name:'calculus',
@@ -16,7 +19,9 @@ CREATE (n:Subject{
 	approvals: 200,
 	rejections: 30,
 	comments: [],
-	suggestions: []
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
 });
 
 CREATE (n:Subject{
@@ -29,7 +34,9 @@ CREATE (n:Subject{
 	approvals: 102,
 	rejections: 23,
 	comments: [],
-	suggestions: []
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
 });
 
 CREATE (n:Subject{
@@ -42,7 +49,9 @@ CREATE (n:Subject{
 	approvals: 102,
 	rejections: 50,
 	comments: [],
-	suggestions: []
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
 });
 
 CREATE (n:Subject{
@@ -55,7 +64,9 @@ CREATE (n:Subject{
 	approvals: 100,
 	rejections: 50,
 	comments: [],
-	suggestions: []
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
 });
 
 CREATE (n:Subject{
@@ -68,7 +79,9 @@ CREATE (n:Subject{
 	approvals: 89,
 	rejections: 14,
 	comments: [],
-	suggestions: []
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
 });
 
 CREATE (n:Subject{
@@ -81,7 +94,9 @@ CREATE (n:Subject{
 	approvals: 23,
 	rejections: 30,
 	comments: [],
-	suggestions: []
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
 });
 
 CREATE (n:Subject{
@@ -94,7 +109,9 @@ CREATE (n:Subject{
 	approvals: 23,
 	rejections: 30,
 	comments: [],
-	suggestions: [] 
+	suggestions: [] ,
+	resources: [],
+	learning_objectives: []
 });
 
 CREATE (n:Subject{
@@ -107,7 +124,9 @@ CREATE (n:Subject{
 	approvals: 97,
 	rejections: 23,
 	comments: [],
-	suggestions: []
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
 });
 
 CREATE (n:Subject{
@@ -120,7 +139,9 @@ CREATE (n:Subject{
 	approvals: 80,
 	rejections: 40,
 	comments: [],
-	suggestions: []
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
 });
 
 CREATE (n:Subject{
@@ -133,7 +154,9 @@ CREATE (n:Subject{
 	approvals: 74,
 	rejections: 23,
 	comments: [],
-	suggestions: []
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
 });
 
 CREATE (n:Subject{
@@ -146,7 +169,9 @@ CREATE (n:Subject{
 	approvals: 5,
 	rejections: 2,
 	comments: [],
-	suggestions: []
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
 	});
 
 
@@ -208,7 +233,9 @@ CREATE (n:Subject{
 	approvals: 200,
 	rejections: 30,
 	comments: [],
-	suggestions: []
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
 });
 
 CREATE (n:Subject{
@@ -221,7 +248,9 @@ CREATE (n:Subject{
 	approvals: 200,
 	rejections: 30,
 	comments: [],
-	suggestions: []
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
 });
 
 CREATE (n:Subject{
@@ -234,7 +263,9 @@ CREATE (n:Subject{
 	approvals: 200,
 	rejections: 30,
 	comments: [],
-	suggestions: []
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
 });
 
 CREATE (n:Subject{
@@ -247,7 +278,9 @@ CREATE (n:Subject{
 	approvals: 200,
 	rejections: 30,
 	comments: [],
-	suggestions: []
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
 });
 
 CREATE (n:Subject{
@@ -260,7 +293,9 @@ CREATE (n:Subject{
 	approvals: 200,
 	rejections: 30,
 	comments: [],
-	suggestions: []
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
 });
 
 MATCH (title:Subject{name: 'probability and statistics'}), (subject:Subject{name:'mean'})
@@ -283,3 +318,24 @@ MATCH (title:Subject{name: 'differentiation'}), (subject:Subject{name:'moment ge
 CREATE (title) - [:IS_USED_IN] -> (subject);
 MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'moment generating function'})
 CREATE (title) - [:IS_USED_IN] -> (subject);
+
+
+
+
+// ---------------------------------------------  PROGRAMMING THEME  --------------------------------------------- //
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

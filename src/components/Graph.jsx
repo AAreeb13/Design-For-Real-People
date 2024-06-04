@@ -11,14 +11,26 @@ const Graph = ({ nodes, links, subject, width, height, style }) => {
     return { name: n.name, type: n.type };
   });
 
+  console.log("nodes before filter: ", nodesToUse)
+  console.log("links before filter: ", links)
+
+  let linksToUse = links.map((link) => {
+    console.log("link", link)
+
+    if (link.source == null) {
+      return {source: link.source.source, target: link.source.target}
+    }
+    return {source: link.source, target: link.target}
+  })
+
   const nodeNameList = nodesToUse.map((n) => n.name);
-  const linksToUse = links.filter((link) => {
+  linksToUse = linksToUse.filter((link) => {
     return (
       nodeNameList.includes(link.source) && nodeNameList.includes(link.target)
     );
   });
-  console.log("nodes: ", nodesToUse);
-  console.log("links: ", linksToUse);
+  console.log("nodes after filter: ", nodesToUse);
+  console.log("links after filter: ", linksToUse);
 
   useEffect(() => {
     const svg = d3.select(svgRef.current);
