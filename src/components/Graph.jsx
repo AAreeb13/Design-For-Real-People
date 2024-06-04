@@ -11,17 +11,17 @@ const Graph = ({ nodes, links, subject, width, height, style }) => {
     return { name: n.name, type: n.type };
   });
 
-  console.log("nodes before filter: ", nodesToUse)
-  console.log("links before filter: ", links)
+  console.log("nodes before filter: ", nodesToUse);
+  console.log("links before filter: ", links);
 
   let linksToUse = links.map((link) => {
-    console.log("link", link)
+    console.log("link", link);
 
     if (link.source == null) {
-      return {source: link.source.source, target: link.source.target}
+      return { source: link.source.source, target: link.source.target };
     }
-    return {source: link.source, target: link.target}
-  })
+    return { source: link.source, target: link.target };
+  });
 
   const nodeNameList = nodesToUse.map((n) => n.name);
   linksToUse = linksToUse.filter((link) => {
@@ -52,7 +52,7 @@ const Graph = ({ nodes, links, subject, width, height, style }) => {
       .append("marker")
       .attr("id", "arrowhead")
       .attr("viewBox", "-0 -5 10 10")
-      .attr("refX", 30) // Increase this value to move the arrowhead closer to the end of the line
+      .attr("refX", 50) // Increase this value to move the arrowhead closer to the end of the line
       .attr("refY", 0)
       .attr("orient", "auto")
       .attr("markerWidth", 6)
@@ -70,7 +70,7 @@ const Graph = ({ nodes, links, subject, width, height, style }) => {
         d3
           .forceLink(linksToUse)
           .id((d) => d.name)
-          .distance(300)
+          .distance(900)
       ) // distance = link length
       .force("charge", d3.forceManyBody().strength(-10000))
       .force("center", d3.forceCenter(width / 30, height / 30));
@@ -97,30 +97,41 @@ const Graph = ({ nodes, links, subject, width, height, style }) => {
     node
       .append("ellipse")
       .filter((d) => d.type === "topic")
-      .attr("rx", 150) // ellipse width
-      .attr("ry", 50) // ellipse height
+      .attr("rx", 300) // ellipse width
+      .attr("ry", 100) // ellipse height
       .attr("fill", "#69b3a2")
       .attr("stroke", "#fff")
       .attr("stroke-width", 1.5);
 
     node
       .append("rect")
-      .filter((d) => d.type === "subject")
-      .attr("width", 300) // rectangle width
-      .attr("height", 100) // rectangle height
+      .filter((d) => d.type === "subject" && d.name === subject)
+      .attr("width", 800) // rectangle width (2x larger)
+      .attr("height", 200) // rectangle height (2x larger)
       .attr("fill", "#f86d6d")
       .attr("stroke", "#fff")
       .attr("stroke-width", 1.5)
-      .attr("x", -150) // to center the rectangle
-      .attr("y", -50); // to center the rectangle
+      .attr("x", -400) // to center rectangle
+      .attr("y", -100); // to center rectangle
+
+    node
+      .append("rect")
+      .filter((d) => d.type === "subject" && d.name !== subject)
+      .attr("width", 500) // rectangle width
+      .attr("height", 200) // rectangle height
+      .attr("fill", "#86e399")
+      .attr("stroke", "#fff")
+      .attr("stroke-width", 1.5)
+      .attr("x", -250) // to center rectangle
+      .attr("y", -100); // to center rectangle
 
     node
       .append("text")
       .attr("x", 0)
       .attr("y", 0)
-      .attr("dy", ".35em") // Adjust the vertical alignment
+      .attr("dy", ".35em")
       .attr("text-anchor", "middle")
-      .attr("font-size", "20px") // Text size in px
+      .attr("font-size", (d) => (d.name === subject ? "60px" : "40px"))
       .attr("fill", "#000")
       .text((d) => d.name);
 
