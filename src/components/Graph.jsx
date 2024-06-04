@@ -109,7 +109,7 @@ const Graph = ({ nodes, links, subject, width, height, style }) => {
       .attr("x", -400) // to center rectangle
       .attr("y", -100); // to center rectangle
 
-    node
+      node
       .append("rect")
       .filter((d) => d.type === "subject" && d.name !== subject)
       .attr("width", 500) // rectangle width
@@ -122,10 +122,23 @@ const Graph = ({ nodes, links, subject, width, height, style }) => {
       .style("cursor", "pointer") // Change cursor to pointer for clickable rectangles
       .on("click", (event, d) => {
         navigate('/graph/'+d.name);
+      })
+      .on("mouseover", function() {
+        d3.select(this)
+          .transition() 
+          .duration(200) 
+          .attr("fill", "#ff9999") 
+          .attr("stroke", "#666"); 
+      })
+      .on("mouseout", function() {
+        d3.select(this)
+          .transition() 
+          .duration(200) 
+          .attr("fill", "#86e399") 
+          .attr("stroke", "#fff"); 
       });
     
-
-    node
+      node
       .append("text")
       .attr("x", 0)
       .attr("y", 0)
@@ -133,7 +146,9 @@ const Graph = ({ nodes, links, subject, width, height, style }) => {
       .attr("text-anchor", "middle")
       .attr("font-size", (d) => (d.name === subject ? "60px" : "40px"))
       .attr("fill", "#000")
+      .style("pointer-events", "none")
       .text((d) => d.name);
+    
 
     simulation.on("tick", () => {
       link
@@ -146,8 +161,8 @@ const Graph = ({ nodes, links, subject, width, height, style }) => {
     });
 
     const initialTransform = d3.zoomIdentity
-      .translate(width / 3, height / 3)
-      .scale(0.4);
+      .translate(width / 2, height / 2)
+      .scale(0.25);
     svg.call(zoom.transform, initialTransform);
   }, [nodesToUse, linksToUse]);
 
