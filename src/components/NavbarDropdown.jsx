@@ -1,13 +1,14 @@
-import { Link } from "react-router-dom"
-import { useState } from "react";
+import React, { useState, useEffect } from 'react';
+import { Link } from "react-router-dom";
+import { getSubjects } from "../../database/graphData";
 
 const NavbarDropdown = () => {
-
     const dropDownMenuStyle = {
         width: "200px"
     };
 
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [subjects, setSubjects] = useState([]);
 
     const handleMouseEnter = () => {
         setIsDropdownOpen(true);
@@ -17,17 +18,42 @@ const NavbarDropdown = () => {
         setIsDropdownOpen(false);
     };
 
+    useEffect(() => {
+        const fetchSubjects = async () => {
+            try {
+                const subjectsData = await getSubjects();
+                setSubjects(subjectsData);
+            } catch (error) {
+                console.error('Error fetching subjects:', error);
+            }
+        };
+
+        fetchSubjects();
+    }, []);
+
     return (                
-        <div className={`collapse navbar-collapse ${isDropdownOpen ? 'show' : ''}`} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} style={dropDownMenuStyle}>
+        <div 
+            className={`collapse navbar-collapse ${isDropdownOpen ? 'show' : ''}`} 
+            onMouseEnter={handleMouseEnter} 
+            onMouseLeave={handleMouseLeave} 
+            style={dropDownMenuStyle}
+        >
             <ul className="navbar-nav me-auto mb-2 mb-lg-0" style={dropDownMenuStyle}>
                 <li className="nav-item dropdown" style={dropDownMenuStyle}>
-                    <Link className="nav-link dropdown-toggle" to="/grid-menu" role="button" aria-expanded={isDropdownOpen ? 'true' : 'false'}>
-                        Explore Our Topics
-                    </Link>
+                    <Link 
+                        className="nav-link dropdown-toggle" 
+                        to="/grid-menu" 
+                        role="button" 
+                        aria-expanded={isDropdownOpen ? 'true' : 'false'}
+                    > Explore Our Topics </Link>
                     <ul className={`dropdown-menu ${isDropdownOpen ? 'show' : ''}`}>
-                        <li><Link className="dropdown-item" to="/calculus">Calculus</Link></li>
-                        <li><Link className="dropdown-item" to="/networking">Networking</Link></li>
-                        <li><Link className="dropdown-item" to="/programming">Programming</Link></li>
+                        {subjects.map((subject, index) => (
+                            <li key={index}>
+                                <Link className="dropdown-item" to={`/graph/${subject.name}`}>
+                                    {subject.name}
+                                </Link>
+                            </li>
+                        ))}
                     </ul>
                 </li>
             </ul>
@@ -35,4 +61,4 @@ const NavbarDropdown = () => {
     )
 }
 
-export default NavbarDropdown
+export default NavbarDropdown;
