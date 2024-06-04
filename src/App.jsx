@@ -1,16 +1,23 @@
-import { useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.css';
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from "react";
+import "bootstrap/dist/css/bootstrap.css";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Link,
+  useParams,
+} from "react-router-dom";
+import HomePage from "./pages/HomePage";
 import Graph from "./components/Graph";
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
-import { getGraphData } from '../database/graphData';
-import Navbar from './components/Navbar';
-import GridMenu from './pages/GridMenu';
+import Navbar from "./components/Navbar";
+import GridMenu from "./pages/GridMenu";
+import { getGraphData } from "../database/graphData";
 
 function App() {
   const [graphData, setGraphData] = useState({ nodes: [], links: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
   let oldData = null;
 
   const fetchData = async () => {
@@ -19,7 +26,7 @@ function App() {
       if (oldData === null || !isEqualData(oldData, data)) {
         oldData = data;
         setGraphData(data);
-      } 
+      }
     } catch (err) {
       setError(err);
     } finally {
@@ -52,55 +59,54 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage graphData={graphData} />} />
           <Route path="/grid-menu" element={<GridMenu />} />
+          <Route
+            path="/graph/:subject"
+            element={<GraphRouteWrapper graphData={graphData} />}
+          />
         </Routes>
       </div>
     </Router>
   );
 }
 
-function HomePage({ graphData }) {
-  const ourExploreButton = {
-    width: "275px"
-  };
-
+function GraphRouteWrapper({ graphData }) {
+  const { subject } = useParams();
   return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px' }}>
-      <div style={{ flex: 1, margin: '10px' }}>
-        <h1>StudyChain</h1>
-        <h3>Studying Made Simple</h3>
-        <Link to="/grid-menu">
-          <button type="button" className="btn btn-dark" style={ourExploreButton}>Explore Our Topics</button>
-        </Link>
-      </div>
-
-      <div style={{ flex: 2, margin: '10px' }}>
-        <Graph 
-          nodes={graphData.nodes}
-          links={graphData.relationships}
-          subject={"calculus"} 
-        />
-      </div>
-    </div>
+    <Graph
+      nodes={graphData.nodes}
+      links={graphData.relationships}
+      subject={subject}
+      width={2000}
+      height={600}
+    />
   );
 }
 
 function isEqualData(oldData, data) {
   oldData.relationships = oldData.relationships.map((n) => {
     if (n.source.name != null) {
-      return { source: n.source.name, target: n.target.name }
+      return { source: n.source.name, target: n.target.name };
     } else {
-      return { source: n.source, target: n.target }
+      return { source: n.source, target: n.target };
     }
   });
 
-  if (oldData.nodes.length !== data.nodes.length || oldData.relationships.length !== data.relationships.length) {
+  if (
+    oldData.nodes.length !== data.nodes.length ||
+    oldData.relationships.length !== data.relationships.length
+  ) {
     return false;
   }
 
-  const nodesEqual = oldData.nodes.every((node, index) => node.name === data.nodes[index].name);
+  const nodesEqual = oldData.nodes.every(
+    (node, index) => node.name === data.nodes[index].name
+  );
 
   const relationshipsEqual = oldData.relationships.every((rel, index) => {
-    return rel.source === data.relationships[index].source && rel.target === data.relationships[index].target;
+    return (
+      rel.source === data.relationships[index].source &&
+      rel.target === data.relationships[index].target
+    );
   });
 
   return nodesEqual && relationshipsEqual;
