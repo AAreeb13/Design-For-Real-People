@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import { BrowserRouter as Router, Route, Routes, Link, useParams } from 'react-router-dom';
+import HomePage from './pages/HomePage';
 import Graph from './components/Graph';
 import Navbar from './components/Navbar';
 import GridMenu from './pages/GridMenu';
@@ -59,39 +60,14 @@ function App() {
   );
 }
 
-function HomePage({ graphData }) {
-  const ourExploreButton = {
-    width: "275px"
-  };
-
-  const graphStyle = {
-    marginLeft: '17%',
-    border: '1px solid black',
-    boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
-    borderRadius: '10px'
-  }
-
-  return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px' }}>
-      <div style={{ flex: 1, margin: '10px' }}>
-        <h1>StudyChain</h1>
-        <h3>Studying Made Simple</h3>
-        <Link to="/grid-menu">
-          <button type="button" className="btn btn-dark" style={ourExploreButton}>Explore Our Topics</button>
-        </Link>
-      </div>
-
-      <div style={{ flex: 2, margin: '10px' }}>
-        <Graph nodes={graphData.nodes} links={graphData.relationships} subject={"calculus"}  width={1000} height={800} style={graphStyle}/>
-      </div>
-    </div>
-  );
-}
-
 function GraphRouteWrapper({ graphData }) {
   const { subject } = useParams();
-
-  return <Graph nodes={graphData.nodes} links={graphData.relationships} subject={subject} width={2000} height={600} />;
+  return <Graph 
+    nodes={graphData.nodes} 
+    links={graphData.relationships} 
+    subject={subject} 
+    width={2000} 
+    height={600} />;
 }
 
 function isEqualData(oldData, data) {
@@ -103,12 +79,13 @@ function isEqualData(oldData, data) {
     }
   });
 
-  if (oldData.nodes.length !== data.nodes.length || oldData.relationships.length !== data.relationships.length) {
+  if (oldData.nodes.length !== data.nodes.length || 
+      oldData.relationships.length !== data.relationships.length) {
     return false;
   }
 
   const nodesEqual = oldData.nodes.every((node, index) => node.name === data.nodes[index].name);
-
+  
   const relationshipsEqual = oldData.relationships.every((rel, index) => {
     return rel.source === data.relationships[index].source && rel.target === data.relationships[index].target;
   });

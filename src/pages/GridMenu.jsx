@@ -55,22 +55,22 @@ const GridMenu = () => {
     console.log(themes);
 
     return (
-        <div className="col" style={gridContainer}>
-            {themes.map((theme) => (
-                <div style={gridSection} key={theme}>
-                    <h2 style={{ marginBottom: "20px" }}>{theme}</h2>
-                    {subjects
-                        .filter((subject) => subject.theme === theme)
-                        .map((subject, index) => (
-                            <Link to={`/graph/${subject.name}`} key={index}>
-                                <button className="btn btn-light btn-outline-success" style={gridButton}>
-                                    {subject.name}
-                                </button>
-                            </Link>
-                        ))}
-                </div>
-            ))}
-        </div>
+      <div className="col" style={gridContainer}>
+        {themes.map((theme) => (
+          <div style={gridSection} key={theme}>
+            <h2 style={{ marginBottom: "20px" }}>{theme}</h2>
+              {subjects
+                .filter((subject) => subject.theme === theme)
+                .map((subject, index) => (
+                  <Link to={`/graph/${subject.name}`} key={index}>
+                    <button className="btn btn-light btn-outline-success" style={gridButton}>
+                      {subject.name}
+                    </button>
+                  </Link>
+                ))}
+          </div>
+        ))}
+      </div>
     );
 };
 
