@@ -13,6 +13,7 @@ import Navbar from "./components/Navbar";
 import GridMenu from "./pages/GridMenu";
 import { getGraphData } from "../database/graphData";
 
+
 function App() {
   const [graphData, setGraphData] = useState({ nodes: [], links: [] });
   const [loading, setLoading] = useState(true);

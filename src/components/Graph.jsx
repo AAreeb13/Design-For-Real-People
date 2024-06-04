@@ -1,8 +1,10 @@
 import React, { useEffect, useRef } from "react";
 import * as d3 from "d3";
+import { useNavigate } from "react-router-dom";
 
 const Graph = ({ nodes, links, subject, width, height, style }) => {
   const svgRef = useRef();
+  const navigate = useNavigate();
 
   const validNodes = nodes.filter(
     (n) => n.name === subject || n.subject === subject
@@ -11,12 +13,7 @@ const Graph = ({ nodes, links, subject, width, height, style }) => {
     return { name: n.name, type: n.type };
   });
 
-  console.log("nodes before filter: ", nodesToUse);
-  console.log("links before filter: ", links);
-
   let linksToUse = links.map((link) => {
-    console.log("link", link);
-
     if (link.source == null) {
       return { source: link.source.source, target: link.source.target };
     }
@@ -29,8 +26,6 @@ const Graph = ({ nodes, links, subject, width, height, style }) => {
       nodeNameList.includes(link.source) && nodeNameList.includes(link.target)
     );
   });
-  console.log("nodes after filter: ", nodesToUse);
-  console.log("links after filter: ", linksToUse);
 
   useEffect(() => {
     const svg = d3.select(svgRef.current);
@@ -123,7 +118,12 @@ const Graph = ({ nodes, links, subject, width, height, style }) => {
       .attr("stroke", "#fff")
       .attr("stroke-width", 1.5)
       .attr("x", -250) // to center rectangle
-      .attr("y", -100); // to center rectangle
+      .attr("y", -100)
+      .style("cursor", "pointer") // Change cursor to pointer for clickable rectangles
+      .on("click", (event, d) => {
+        navigate('/graph/'+d.name);
+      });
+    
 
     node
       .append("text")
