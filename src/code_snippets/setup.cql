@@ -175,6 +175,246 @@ CREATE (n:Subject{
 });
 
 
+CREATE (n:Subject{
+	name: 'Functions',
+	subject: 'calculus',
+	type: 'topic',
+	description: 'A special type of set',
+	requires: ['integration'],
+	links: 'www.example.com',
+	approvals: 74,
+	rejections: 23,
+	comments: [],
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
+});
+
+CREATE (n:Subject{
+	name: 'Integration Preliminaries',
+	subject: 'calculus',
+	type: 'topic',
+	description: 'Techniques to learn before integration',
+	requires: ['integration'],
+	links: 'www.example.com',
+	approvals: 74,
+	rejections: 23,
+	comments: [],
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
+});
+
+CREATE (n:Subject{
+	name: 'Integration by inspection',
+	subject: 'calculus',
+	type: 'topic',
+	description: 'Reverse chain rule',
+	requires: ['integration'],
+	links: 'www.example.com',
+	approvals: 74,
+	rejections: 23,
+	comments: [],
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
+});
+
+CREATE (n:Subject{
+	name: 'Lengths volumes and surfaces',
+	subject: 'calculus',
+	type: 'topic',
+	description: 'Basic geometry',
+	requires: ['integration'],
+	links: 'www.example.com',
+	approvals: 74,
+	rejections: 23,
+	comments: [],
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
+});
+
+CREATE (n:Subject{
+	name: 'Integration by polar coordinates',
+	subject: 'calculus',
+	type: 'topic',
+	description: 'Using integration with polar coordinates',
+	requires: ['integration'],
+	links: 'www.example.com',
+	approvals: 74,
+	rejections: 23,
+	comments: [],
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
+});
+
+CREATE (n:Subject{
+	name: 'Sequences and series',
+	subject: 'calculus',
+	type: 'topic',
+	description: 'Sequences and series calculus basics',
+	requires: ['integration'],
+	links: 'www.example.com',
+	approvals: 74,
+	rejections: 23,
+	comments: [],
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
+});
+
+CREATE (n:Subject{
+	name: 'Fourier series',
+	subject: 'calculus',
+	type: 'topic',
+	description: 'Advanced calculus series',
+	requires: ['integration'],
+	links: 'www.example.com',
+	approvals: 74,
+	rejections: 23,
+	comments: [],
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
+});
+
+CREATE (n:Subject{
+	name: 'Laplace transformation',
+	subject: 'calculus',
+	type: 'topic',
+	description: 'Integration and complex numbers combined',
+	requires: ['integration'],
+	links: 'www.example.com',
+	approvals: 74,
+	rejections: 23,
+	comments: [],
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
+});
+
+CREATE (n:Subject{
+	name: 'Fourier transform',
+	subject: 'calculus',
+	type: 'topic',
+	description: 'Uses integration to output a new function',
+	requires: ['integration'],
+	links: 'www.example.com',
+	approvals: 74,
+	rejections: 23,
+	comments: [],
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
+});
+
+CREATE (n:Subject{
+	name: 'Ordinary differential equations',
+	subject: 'calculus',
+	type: 'topic',
+	description: 'ordinary differential equations',
+	requires: ['integration'],
+	links: 'www.example.com',
+	approvals: 74,
+	rejections: 23,
+	comments: [],
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
+});
+
+CREATE (n:Subject{
+	name: 'Differential equations',
+	subject: 'calculus',
+	type: 'topic',
+	description: 'Differential equations',
+	requires: ['integration'],
+	links: 'www.example.com',
+	approvals: 74,
+	rejections: 23,
+	comments: [],
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
+});
+
+CREATE (n:Subject{
+	name: 'First order differential equations',
+	subject: 'calculus',
+	type: 'topic',
+	description: 'Only uses single derivatives',
+	requires: ['integration'],
+	links: 'www.example.com',
+	approvals: 74,
+	rejections: 23,
+	comments: [],
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
+});
+
+CREATE (n:Subject{
+	name: 'Second order differential equations',
+	subject: 'calculus',
+	type: 'topic',
+	description: 'Uses derivatives up to the second level',
+	requires: ['integration'],
+	links: 'www.example.com',
+	approvals: 74,
+	rejections: 23,
+	comments: [],
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
+});
+
+CREATE (n:Subject{
+	name: 'Qualitative analysis',
+	subject: 'calculus',
+	type: 'topic',
+	description: 'Uses heuristics to analyse data',
+	requires: ['integration'],
+	links: 'www.example.com',
+	approvals: 74,
+	rejections: 23,
+	comments: [],
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
+});
+
+CREATE (n:Subject{
+	name: 'Bifurcations',
+	subject: 'calculus',
+	type: 'topic',
+	description: 'Splitting into branches',
+	requires: ['integration'],
+	links: 'www.example.com',
+	approvals: 74,
+	rejections: 23,
+	comments: [],
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
+});
+
+CREATE (n:Subject{
+	name: 'Multivariate calculus',
+	subject: 'calculus',
+	type: 'topic',
+	description: 'Differentiation and integration with multiple variables',
+	requires: ['integration'],
+	links: 'www.example.com',
+	approvals: 74,
+	rejections: 23,
+	comments: [],
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
+});
+
 
 
 MATCH (title:Subject{name: 'calculus'}), (subject:Subject{name:'basic arithmetic'})
