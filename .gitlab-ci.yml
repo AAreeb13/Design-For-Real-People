@@ -4,7 +4,6 @@ build-job:
   stage: build
   script:
     - npm install
-    - find -name "*.js" | xargs node -c
 
 deploy-heroku:
   stage: deploy

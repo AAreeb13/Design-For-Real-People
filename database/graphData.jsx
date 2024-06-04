@@ -36,9 +36,6 @@ const runQuery = async (query, params = {}) => {
   }
 };
 
-const closeDriver = async () => {
-    await driver.close();
-};
 
 const getGraphData = async () => {
   let nodes = {}
@@ -75,4 +72,10 @@ const nodeExists = async (label, properties) => {
   }
 };
 
-export { getGraphData, runQuery, nodeExists };
+const getSubjects = async () => {
+  let {nodes, relationships} = await getGraphData();
+  nodes = nodes.filter( n => n.type === "subject")
+  return nodes
+}
+
+export { getGraphData, runQuery, nodeExists, getSubjects };
