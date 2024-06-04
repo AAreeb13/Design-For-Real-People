@@ -1,16 +1,16 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import React, { useEffect } from 'react';
-import Graph from "./components/Graph";
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
-import { getGraphData } from '../database/graphData';
+import { BrowserRouter as Router, Route, Routes, Link, useParams } from 'react-router-dom';
+import Graph from './components/Graph';
 import Navbar from './components/Navbar';
 import GridMenu from './pages/GridMenu';
+import { getGraphData } from '../database/graphData';
 
 function App() {
   const [graphData, setGraphData] = useState({ nodes: [], links: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
   let oldData = null;
 
   const fetchData = async () => {
@@ -19,7 +19,7 @@ function App() {
       if (oldData === null || !isEqualData(oldData, data)) {
         oldData = data;
         setGraphData(data);
-      } 
+      }
     } catch (err) {
       setError(err);
     } finally {
@@ -52,6 +52,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage graphData={graphData} />} />
           <Route path="/grid-menu" element={<GridMenu />} />
+          <Route path="/graph/:subject" element={<GraphRouteWrapper graphData={graphData}/>} />
         </Routes>
       </div>
     </Router>
@@ -62,6 +63,13 @@ function HomePage({ graphData }) {
   const ourExploreButton = {
     width: "275px"
   };
+
+  const graphStyle = {
+    marginLeft: '17%',
+    border: '1px solid black',
+    boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
+    borderRadius: '10px'
+  }
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px' }}>
@@ -74,22 +82,24 @@ function HomePage({ graphData }) {
       </div>
 
       <div style={{ flex: 2, margin: '10px' }}>
-        <Graph 
-          nodes={graphData.nodes}
-          links={graphData.relationships}
-          subject={"calculus"} 
-        />
+        <Graph nodes={graphData.nodes} links={graphData.relationships} subject={"calculus"}  width={1000} height={800} style={graphStyle}/>
       </div>
     </div>
   );
 }
 
+function GraphRouteWrapper({ graphData }) {
+  const { subject } = useParams();
+
+  return <Graph nodes={graphData.nodes} links={graphData.relationships} subject={subject} width={2000} height={600} />;
+}
+
 function isEqualData(oldData, data) {
-  oldData.relationships = oldData.relationships.map((n) => {
+  oldData.relationships = oldData.relationships.map(n => {
     if (n.source.name != null) {
-      return { source: n.source.name, target: n.target.name }
+      return { source: n.source.name, target: n.target.name };
     } else {
-      return { source: n.source, target: n.target }
+      return { source: n.source, target: n.target };
     }
   });
 

@@ -1,10 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 
-const Graph = ({ nodes, links, subject }) => {
+const Graph = ({ nodes, links, subject, width, height, style }) => {
   const svgRef = useRef();
-  const width = 1000;
-  const height = 800;
 
   const validNodes = nodes.filter((n) => n.name === subject || n.subject === subject)
   const nodesToUse = validNodes.map((n) => {return {name: n.name, type: n.type}})
@@ -109,14 +107,9 @@ const Graph = ({ nodes, links, subject }) => {
   return (
     <svg
       ref={svgRef}
-      width={800}
-      height={600}
-      style={{
-        marginLeft: '30%',
-        border: '1px solid black',
-        boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
-        borderRadius: '10px'
-      }}
+      width={width}
+      height={height}
+      style={style}
     ></svg>
   );
 };
