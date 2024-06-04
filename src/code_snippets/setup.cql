@@ -172,7 +172,8 @@ CREATE (n:Subject{
 	suggestions: [],
 	resources: [],
 	learning_objectives: []
-	});
+});
+
 
 
 
@@ -210,9 +211,63 @@ CREATE (title) - [:IS_USED_IN] -> (subject);
 MATCH (title:Subject{name: 'differentiation'}), (subject:Subject{name:'LHospitals rule'})
 CREATE (title) - [:IS_USED_IN] -> (subject);
 
+MATCH (title:Subject{name: 'calculus'}), (subject:Subject{name:'functions'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
 
+MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'integration preliminaries'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
 
+MATCH (title:Subject{name: 'integration preliminaries'}), (subject:Subject{name:'integration by substitution'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
 
+MATCH (title:Subject{name: 'integration preliminaries'}), (subject:Subject{name:'integration by parts'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
+
+MATCH (title:Subject{name: 'integration preliminaries'}), (subject:Subject{name:'integration by inspection'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
+
+MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'lengths volumes and surfaces'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
+
+MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'integration by polar coordinates'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
+MATCH (title:Subject{name: 'integration preliminaries'}), (subject:Subject{name:'integration by polar coordinates'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
+
+MATCH (title:Subject{name: 'calculus'}), (subject:Subject{name:'sequences and series'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
+
+MATCH (title:Subject{name: 'calculus'}), (subject:Subject{name:'fourier series'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
+MATCH (title:Subject{name: 'sequences and series'}), (subject:Subject{name:'fourier series'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
+
+MATCH (title:Subject{name: 'calculus'}), (subject:Subject{name:'laplace transform'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
+
+MATCH (title:Subject{name: 'fourier series'}), (subject:Subject{name:'fourier transform'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
+
+MATCH (title:Subject{name: 'differentiation'}), (subject:Subject{name:'ordinary differential equations'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
+
+MATCH (title:Subject{name: 'differentiation'}), (subject:Subject{name:'differential equations'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
+
+MATCH (title:Subject{name: 'differentiation'}), (subject:Subject{name:'first order differential equations'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
+
+MATCH (title:Subject{name: 'first order differential equations'}), (subject:Subject{name:'second order differential equations'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
+
+MATCH (title:Subject{name: 'calculus'}), (subject:Subject{name:'qualitative analysis'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
+
+MATCH (title:Subject{name: 'calculus'}), (subject:Subject{name:'bifurcations'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
+
+MATCH (title:Subject{name: 'calculus'}), (subject:Subject{name:'multivariate calculus'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
 
 // ------------------   Probability here   ------------------ //
 
