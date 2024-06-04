@@ -1,11 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import 'bootstrap/dist/css/bootstrap.css';
-import { BrowserRouter as Router, Route, Routes, Link, useParams } from 'react-router-dom';
-import HomePage from './pages/HomePage';
-import Graph from './components/Graph';
-import Navbar from './components/Navbar';
-import GridMenu from './pages/GridMenu';
-import { getGraphData } from '../database/graphData';
+import React, { useState, useEffect } from "react";
+import "bootstrap/dist/css/bootstrap.css";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Link,
+  useParams,
+} from "react-router-dom";
+import HomePage from "./pages/HomePage";
+import Graph from "./components/Graph";
+import Navbar from "./components/Navbar";
+import GridMenu from "./pages/GridMenu";
+import { getGraphData } from "../database/graphData";
 
 function App() {
   const [graphData, setGraphData] = useState({ nodes: [], links: [] });
@@ -53,7 +59,10 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage graphData={graphData} />} />
           <Route path="/grid-menu" element={<GridMenu />} />
-          <Route path="/graph/:subject" element={<GraphRouteWrapper graphData={graphData}/>} />
+          <Route
+            path="/graph/:subject"
+            element={<GraphRouteWrapper graphData={graphData} />}
+          />
         </Routes>
       </div>
     </Router>
@@ -62,16 +71,19 @@ function App() {
 
 function GraphRouteWrapper({ graphData }) {
   const { subject } = useParams();
-  return <Graph 
-    nodes={graphData.nodes} 
-    links={graphData.relationships} 
-    subject={subject} 
-    width={2000} 
-    height={600} />;
+  return (
+    <Graph
+      nodes={graphData.nodes}
+      links={graphData.relationships}
+      subject={subject}
+      width={2000}
+      height={600}
+    />
+  );
 }
 
 function isEqualData(oldData, data) {
-  oldData.relationships = oldData.relationships.map(n => {
+  oldData.relationships = oldData.relationships.map((n) => {
     if (n.source.name != null) {
       return { source: n.source.name, target: n.target.name };
     } else {
@@ -79,15 +91,22 @@ function isEqualData(oldData, data) {
     }
   });
 
-  if (oldData.nodes.length !== data.nodes.length || 
-      oldData.relationships.length !== data.relationships.length) {
+  if (
+    oldData.nodes.length !== data.nodes.length ||
+    oldData.relationships.length !== data.relationships.length
+  ) {
     return false;
   }
 
-  const nodesEqual = oldData.nodes.every((node, index) => node.name === data.nodes[index].name);
-  
+  const nodesEqual = oldData.nodes.every(
+    (node, index) => node.name === data.nodes[index].name
+  );
+
   const relationshipsEqual = oldData.relationships.every((rel, index) => {
-    return rel.source === data.relationships[index].source && rel.target === data.relationships[index].target;
+    return (
+      rel.source === data.relationships[index].source &&
+      rel.target === data.relationships[index].target
+    );
   });
 
   return nodesEqual && relationshipsEqual;

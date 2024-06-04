@@ -1,64 +1,59 @@
-import neo4j from 'neo4j-driver';
+import neo4j from "neo4j-driver";
 
-const URI = 'neo4j+s://1ac9a69f.databases.neo4j.io';
-const USERNAME = 'neo4j' // todo remove later since shouldnt expose our data
-const PASSWORD = 'ddMjBybR78Yb4FXEmjeQBLscuVgGGD4BX2FCoT5BlDU'
+const URI = "neo4j+s://1ac9a69f.databases.neo4j.io";
+const USERNAME = "neo4j"; // todo remove later since shouldnt expose our data
+const PASSWORD = "ddMjBybR78Yb4FXEmjeQBLscuVgGGD4BX2FCoT5BlDU";
 
-const driver = neo4j.driver(
-    URI,
-    neo4j.auth.basic(USERNAME, PASSWORD)
-);
+const driver = neo4j.driver(URI, neo4j.auth.basic(USERNAME, PASSWORD));
 
 const runQuery = async (query, params = {}) => {
   const session = driver.session();
   try {
-      const result = await session.run(query, params);
+    const result = await session.run(query, params);
 
-      const nodes = new Map();
-      const relationships = new Map();
+    const nodes = new Map();
+    const relationships = new Map();
 
-      result.records.forEach(record => {
-          const n = record.get('n');
-          const m = record.get('m');
-          const r = record.get('r');
+    result.records.forEach((record) => {
+      const n = record.get("n");
+      const m = record.get("m");
+      const r = record.get("r");
 
-          nodes.set(n.identity.toString(), n);
-          nodes.set(m.identity.toString(), m);
-          relationships.set(r.identity.toString(), r);
-      });
+      nodes.set(n.identity.toString(), n);
+      nodes.set(m.identity.toString(), m);
+      relationships.set(r.identity.toString(), r);
+    });
 
-      return {
-          nodes: Array.from(nodes.values()),
-          relationships: Array.from(relationships.values())
-      };
+    return {
+      nodes: Array.from(nodes.values()),
+      relationships: Array.from(relationships.values()),
+    };
   } finally {
-      await session.close();
+    await session.close();
   }
 };
 
-
 const getGraphData = async () => {
-  let nodes = {}
-  let relationships = []
+  let nodes = {};
+  let relationships = [];
   try {
-      let results = await runQuery("MATCH (n)-[r]->(m) RETURN n, r, m");
-      results.nodes.forEach(function (n) {
-        nodes[n.identity.low] = n.properties
-      });
-      relationships = results.relationships;
-      
-      relationships = relationships.map(function (r) {
-        return {source: nodes[r.start.low].name, target: nodes[r.end.low].name}
-      })
+    let results = await runQuery("MATCH (n)-[r]->(m) RETURN n, r, m");
+    results.nodes.forEach(function (n) {
+      nodes[n.identity.low] = n.properties;
+    });
+    relationships = results.relationships;
 
+    relationships = relationships.map(function (r) {
+      return { source: nodes[r.start.low].name, target: nodes[r.end.low].name };
+    });
 
-      nodes = Object.entries(nodes)
-        .sort(([a], [b]) => a - b)
-        .map(([, value]) => value);
+    nodes = Object.entries(nodes)
+      .sort(([a], [b]) => a - b)
+      .map(([, value]) => value);
   } catch (error) {
-      console.error('Error fetching graph data:', error);
+    console.error("Error fetching graph data:", error);
   }
-  return {nodes, relationships}
+  return { nodes, relationships };
 };
 
 const nodeExists = async (label, properties) => {
@@ -73,9 +68,9 @@ const nodeExists = async (label, properties) => {
 };
 
 const getSubjects = async () => {
-  let {nodes, relationships} = await getGraphData();
-  nodes = nodes.filter( n => n.type === "subject")
-  return nodes
-}
+  let { nodes, relationships } = await getGraphData();
+  nodes = nodes.filter((n) => n.type === "subject");
+  return nodes;
+};
 
 export { getGraphData, runQuery, nodeExists, getSubjects };
