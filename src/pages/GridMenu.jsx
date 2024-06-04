@@ -1,25 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { getSubjects } from '../../database/graphData';
 
-const RoadmapButtons = () => {
+const GridMenu = () => {
     const [subjects, setSubjects] = useState(null);
-    const mathTopics = ['Calculus', 'Probability and Statistics', 'Analysis', 'Linear Algebra'];
-    const languages = ['Python', 'Java', 'C', 'C++', 'Haskell'];
         
     const gridButton = {
-        width: "20%",
-        height: "70px",
-        marginBottom: "10px",
-        fontSize: "18px",
-        fontWeight: "bold",
-        borderRadius: "8px",
-        boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
-        transition: "transform 0.2s",
-        margin: "1% 5%"
-    };
+      width: "calc(33.333% - 50px)",
+      minWidth: "200px",
+      height: "70px",
+      marginBottom: "10px",
+      fontSize: "18px",
+      fontWeight: "bold",
+      borderRadius: "8px",
+      boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+      transition: "transform 0.2s",
+      margin: "1% 1%"
+  };
 
     const gridContainer = {
-        maxWidth: "100%",
+        width: "1000px",
         margin: "0 auto",
         display: "flex",
         flexWrap: "wrap",
@@ -49,23 +48,35 @@ const RoadmapButtons = () => {
         return <div>Loading...</div>;
     }
 
-    return (
-        <div className="col" style={gridContainer}>
-            <div style={gridSection}>
-                <h2 style={{ marginBottom: "20px" }}>Mathematics</h2>
-                {mathTopics.map((language, index) => (
-                    <button key={index} className="btn btn-light btn-outline-success" style={gridButton}>{language}</button>
-                ))}
-            </div>
+    console.log("subjects", subjects)
 
-            <div style={gridSection}>
-                <h2 style={{ marginBottom: "20px" }}>Programming</h2>
-                {languages.map((profession, index) => (
-                    <button key={index} className="btn btn-light btn-outline-success" style={gridButton}>{profession}</button>
-                ))}
-            </div>
-        </div>
-    );
+    const themes = [...new Set(subjects.map(subject => subject.theme))];
+    console.log(themes)
+
+    return (
+      <div className="col" style={gridContainer}>
+        {
+          themes.map((theme) => {
+            return (
+              <div style={gridSection} key={theme}>
+                  <h2 style={{ marginBottom: "20px" }}>{theme}</h2>
+                    {
+                      subjects
+                        .filter((subject) => subject.theme === theme)
+                        .map((subject, index) => {
+                          return (
+                            <button key={index} className="btn btn-light btn-outline-success" style={gridButton}>{subject.name}</button>
+                          );
+                        })
+                    }
+              </div>
+            );
+          })
+        }
+  
+      </div>
+  );
+  
 }
 
-export default RoadmapButtons;
+export default GridMenu;
