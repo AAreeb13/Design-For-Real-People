@@ -60,6 +60,10 @@ const FormOverlay = ({ onClose }) => {
     color: "#333",
   };
 
+  const submitButtonStyle = {
+    marginTop: "30px"
+  }
+
   return (
     <div style={overlayStyle}>
       <div style={formContainerStyle}>
@@ -168,7 +172,7 @@ const FormOverlay = ({ onClose }) => {
 
             </>
           )}
-          <button type="submit" className="btn btn-primary">
+          <button type="submit" className="btn btn-success" style={submitButtonStyle}>
             Submit
           </button>
         </form>
