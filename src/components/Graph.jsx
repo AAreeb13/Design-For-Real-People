@@ -96,7 +96,10 @@ const Graph = ({ nodes, links, subject, width, height, style }) => {
       .attr("ry", 100) // ellipse height
       .attr("fill", "#69b3a2")
       .attr("stroke", "#fff")
-      .attr("stroke-width", 1.5);
+      .attr("stroke-width", 1.5)
+      .on("click", (event, d) => {
+          navigate('/topic/' + d.name);
+      })
 
     node
       .append("rect")
