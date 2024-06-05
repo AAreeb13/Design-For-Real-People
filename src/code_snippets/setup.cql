@@ -1,92 +1,53 @@
-// ---------------------------------------------  MATHEMATICS THEME  --------------------------------------------- //
+// ---------------------------------------------  Mathematics THEME  --------------------------------------------- //
 
 
 // ------------------  Calculus here   ------------------ //
 CREATE (n:Subject{
 	name:'calculus',
 	type: 'subject',
-	theme: 'mathematics'
+	theme: 'Mathematics',
+	mainSubject: True
 });
 
 
 CREATE (n:Subject{
 	name: 'basic arithmetic',
 	subject: 'calculus',
-	type: 'topic',
-	description: 'The study of arithmetic',
-	requires: ['calculus'],
-	links: 'www.example.com',
-	approvals: 200,
-	rejections: 30,
-	comments: [],
-	suggestions: [],
-	resources: [],
-	learning_objectives: []
+	type: 'subject',
+	mainSubject: False
 });
 
 CREATE (n:Subject{
 	name: 'proofs',
 	subject: 'calculus',
-	type: 'topic',
-	description: 'The art of verifying mathematical statements ',
-	requires: ['basic arithmetic'],
-	links: 'www.example.com',
-	approvals: 102,
-	rejections: 23,
-	comments: [],
-	suggestions: [],
-	resources: [],
-	learning_objectives: []
+	type: 'subject',
+	mainSubject: False
 });
 
 CREATE (n:Subject{
 	name: 'differentiation',
 	subject: 'calculus',
-	type: 'topic',
-	description: 'The gradient of things',
-	requires: ['basic arithmetic'],
-	links: 'www.example.com',
-	approvals: 102,
-	rejections: 50,
-	comments: [],
-	suggestions: [],
-	resources: [],
-	learning_objectives: []
+	type: 'subject',
+	mainSubject: False
 });
 
 CREATE (n:Subject{
 	name: 'integration',
 	subject: 'calculus',
-	type: 'topic',
-	description: 'The study of infinite sums',
-	requires: ['basic arithmetic'],
-	links: 'www.example.com',
-	approvals: 100,
-	rejections: 50,
-	comments: [],
-	suggestions: [],
-	resources: [],
-	learning_objectives: []
+	type: 'subject',
+	mainSubject: False
 });
 
 CREATE (n:Subject{
 	name: 'limits',
 	subject: 'calculus',
-	type: 'topic',
-	description: 'The study of infinity and zero',
-	requires: ['basic arithmetic'],
-	links: 'www.examples.com',
-	approvals: 89,
-	rejections: 14,
-	comments: [],
-	suggestions: [],
-	resources: [],
-	learning_objectives: []
+	type: 'subject',
+	mainSubject: False
 });
 
 CREATE (n:Subject{
 	name: 'limit ratio test',
-	subject: 'calculus',
+	subject: 'limits',
 	type: 'topic',
 	description:'The study of limit testing with ratios',
 	requires: ['proofs', 'limits'],
@@ -101,7 +62,7 @@ CREATE (n:Subject{
 
 CREATE (n:Subject{
 	name: 'lhopitals rule',
-	subject: 'calculus',
+	subject: 'limits',
 	type: 'topic',
 	description:'The study of limit testing with ratios',
 	requires: ['proofs', 'limits', 'differentiation'],
@@ -116,7 +77,7 @@ CREATE (n:Subject{
 
 CREATE (n:Subject{
 	name: 'chain rule',
-	subject: 'calculus',
+	subject: 'differentiation',
 	type: 'topic',
 	description:'Technique for differentiation' ,
 	requires: ['differentiation'],
@@ -131,7 +92,7 @@ CREATE (n:Subject{
 
 CREATE (n:Subject{
 	name: 'product rule',
-	subject: 'calculus',
+	subject: 'differentiation',
 	type: 'topic',
 	description:'Technique for differentiation' ,
 	requires: ['differentiation'],
@@ -146,7 +107,7 @@ CREATE (n:Subject{
 
 CREATE (n:Subject{
 	name: 'integration by Parts',
-	subject: 'calculus',
+	subject: 'integration',
 	type: 'topic',
 	description: 'Technique for integration',
 	requires: ['integration'],
@@ -161,7 +122,7 @@ CREATE (n:Subject{
 
 CREATE (n:Subject{
 	name: 'integration by Substitution',
-	subject: 'calculus',
+	subject: 'integration',
 	type: 'topic',
 	description: 'Technique for integration',
 	requires: ['integration'],
@@ -192,10 +153,77 @@ CREATE (n:Subject{
 
 CREATE (n:Subject{
 	name: 'integration preliminaries',
-	subject: 'calculus',
+	subject: 'integration',
+	type: 'subject',
+	mainSubject: False
+});
+
+CREATE (n:Subject{
+	name: 'integrating a constant',
+	subject: 'integration preliminaries',
 	type: 'topic',
-	description: 'Techniques to learn before integration',
-	requires: ['integration'],
+	description: 'How to integrate a number such as 1, 2, e, pi, etc...',
+	requires: ['integration preliminaries'],
+	links: 'www.example.com',
+	approvals: 74,
+	rejections: 23,
+	comments: [],
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
+});
+
+CREATE (n:Subject{
+	name: 'integrating a positive power',
+	subject: 'integration preliminaries',
+	type: 'topic',
+	description: 'How to integrate terms such as x, x^2, x^3',
+	requires: ['integration preliminaries'],
+	links: 'www.example.com',
+	approvals: 74,
+	rejections: 23,
+	comments: [],
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
+});
+
+CREATE (n:Subject{
+	name: 'integrating a negative power',
+	subject: 'integration preliminaries',
+	type: 'topic',
+	description: 'How to integrate a terms such as x^-1, x^-2 etc...',
+	requires: ['integration preliminaries'],
+	links: 'www.example.com',
+	approvals: 74,
+	rejections: 23,
+	comments: [],
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
+});
+
+CREATE (n:Subject{
+	name: 'integrating a fractional power',
+	subject: 'integration preliminaries',
+	type: 'topic',
+	description: 'How to integrate a terms such as x^0.5, x^3.5 etc...',
+	requires: ['integration preliminaries'],
+	links: 'www.example.com',
+	approvals: 74,
+	rejections: 23,
+	comments: [],
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
+});
+
+CREATE (n:Subject{
+	name: 'integrating a denominator variable',
+	subject: 'integration preliminaries',
+	type: 'topic',
+	description: 'How to integrate a terms such as 1/x',
+	requires: ['integration preliminaries'],
 	links: 'www.example.com',
 	approvals: 74,
 	rejections: 23,
@@ -207,7 +235,7 @@ CREATE (n:Subject{
 
 CREATE (n:Subject{
 	name: 'integration by inspection',
-	subject: 'calculus',
+	subject: 'integration',
 	type: 'topic',
 	description: 'Reverse chain rule',
 	requires: ['integration'],
@@ -222,7 +250,7 @@ CREATE (n:Subject{
 
 CREATE (n:Subject{
 	name: 'lengths volumes and surfaces',
-	subject: 'calculus',
+	subject: 'integration',
 	type: 'topic',
 	description: 'Basic geometry',
 	requires: ['integration'],
@@ -237,7 +265,7 @@ CREATE (n:Subject{
 
 CREATE (n:Subject{
 	name: 'integration by polar coordinates',
-	subject: 'calculus',
+	subject: 'integration',
 	type: 'topic',
 	description: 'Using integration with polar coordinates',
 	requires: ['integration'],
@@ -253,21 +281,13 @@ CREATE (n:Subject{
 CREATE (n:Subject{
 	name: 'sequences and series',
 	subject: 'calculus',
-	type: 'topic',
-	description: 'Sequences and series calculus basics',
-	requires: ['integration'],
-	links: 'www.example.com',
-	approvals: 74,
-	rejections: 23,
-	comments: [],
-	suggestions: [],
-	resources: [],
-	learning_objectives: []
+	type: 'subject',
+	mainSubject: False
 });
 
 CREATE (n:Subject{
 	name: 'fourier series',
-	subject: 'calculus',
+	subject: 'series',
 	type: 'topic',
 	description: 'Advanced calculus series',
 	requires: ['integration'],
@@ -282,10 +302,10 @@ CREATE (n:Subject{
 
 CREATE (n:Subject{
 	name: 'laplace transformation',
-	subject: 'calculus',
+	subject: 'differentiation',
 	type: 'topic',
 	description: 'Integration and complex numbers combined',
-	requires: ['integration'],
+	requires: ['integration', 'differentiation'],
 	links: 'www.example.com',
 	approvals: 74,
 	rejections: 23,
@@ -297,7 +317,7 @@ CREATE (n:Subject{
 
 CREATE (n:Subject{
 	name: 'fourier transform',
-	subject: 'calculus',
+	subject: 'differentiation',
 	type: 'topic',
 	description: 'Uses integration to output a new function',
 	requires: ['integration'],
@@ -312,7 +332,7 @@ CREATE (n:Subject{
 
 CREATE (n:Subject{
 	name: 'ordinary differential equations',
-	subject: 'calculus',
+	subject: 'differential equations',
 	type: 'topic',
 	description: 'ordinary differential equations',
 	requires: ['integration'],
@@ -327,22 +347,14 @@ CREATE (n:Subject{
 
 CREATE (n:Subject{
 	name: 'differential equations',
-	subject: 'calculus',
-	type: 'topic',
-	description: 'Differential equations',
-	requires: ['integration'],
-	links: 'www.example.com',
-	approvals: 74,
-	rejections: 23,
-	comments: [],
-	suggestions: [],
-	resources: [],
-	learning_objectives: []
+	subject: 'differentiation',
+	type: 'subject',
+	mainSubject: False
 });
 
 CREATE (n:Subject{
 	name: 'first order differential equations',
-	subject: 'calculus',
+	subject: 'differential equations',
 	type: 'topic',
 	description: 'Only uses single derivatives',
 	requires: ['integration'],
@@ -357,7 +369,7 @@ CREATE (n:Subject{
 
 CREATE (n:Subject{
 	name: 'second order differential equations',
-	subject: 'calculus',
+	subject: 'differential equations',
 	type: 'topic',
 	description: 'Uses derivatives up to the second level',
 	requires: ['integration'],
@@ -402,10 +414,10 @@ CREATE (n:Subject{
 
 CREATE (n:Subject{
 	name: 'multivariate calculus',
-	subject: 'calculus',
+	subject: 'integration',
 	type: 'topic',
 	description: 'Differentiation and integration with multiple variables',
-	requires: ['integration'],
+	requires: ['integration', 'differentiation'],
 	links: 'www.example.com',
 	approvals: 74,
 	rejections: 23,
@@ -466,6 +478,21 @@ CREATE (title) - [:IS_USED_IN] -> (subject);
 MATCH (title:Subject{name: 'integration preliminaries'}), (subject:Subject{name:'integration by inspection'})
 CREATE (title) - [:IS_USED_IN] -> (subject);
 
+MATCH (title:Subject{name: 'integration preliminaries'}), (subject:Subject{name:'integrating a constant'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
+
+MATCH (title:Subject{name: 'integration preliminaries'}), (subject:Subject{name:'integrating a positive power'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
+
+MATCH (title:Subject{name: 'integration preliminaries'}), (subject:Subject{name:'integrating a negative power'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
+
+MATCH (title:Subject{name: 'integration preliminaries'}), (subject:Subject{name:'integrating a fractional power'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
+
+MATCH (title:Subject{name: 'integration preliminaries'}), (subject:Subject{name:'integrating a denominator variable'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
+
 MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'lengths volumes and surfaces'})
 CREATE (title) - [:IS_USED_IN] -> (subject);
 
@@ -477,27 +504,25 @@ CREATE (title) - [:IS_USED_IN] -> (subject);
 MATCH (title:Subject{name: 'calculus'}), (subject:Subject{name:'sequences and series'})
 CREATE (title) - [:IS_USED_IN] -> (subject);
 
-MATCH (title:Subject{name: 'calculus'}), (subject:Subject{name:'fourier series'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
 MATCH (title:Subject{name: 'sequences and series'}), (subject:Subject{name:'fourier series'})
 CREATE (title) - [:IS_USED_IN] -> (subject);
 
-MATCH (title:Subject{name: 'calculus'}), (subject:Subject{name:'laplace transform'})
+MATCH (title:Subject{name: 'differentiation'}), (subject:Subject{name:'laplace transform'})
 CREATE (title) - [:IS_USED_IN] -> (subject);
 
-MATCH (title:Subject{name: 'fourier series'}), (subject:Subject{name:'fourier transform'})
+MATCH (title:Subject{name: 'differentiation'}), (subject:Subject{name:'fourier transform'})
 CREATE (title) - [:IS_USED_IN] -> (subject);
 
-MATCH (title:Subject{name: 'differentiation'}), (subject:Subject{name:'ordinary differential equations'})
+MATCH (title:Subject{name: 'differential equations'}), (subject:Subject{name:'ordinary differential equations'})
 CREATE (title) - [:IS_USED_IN] -> (subject);
 
 MATCH (title:Subject{name: 'differentiation'}), (subject:Subject{name:'differential equations'})
 CREATE (title) - [:IS_USED_IN] -> (subject);
 
-MATCH (title:Subject{name: 'differentiation'}), (subject:Subject{name:'first order differential equations'})
+MATCH (title:Subject{name: 'differential equations'}), (subject:Subject{name:'first order differential equations'})
 CREATE (title) - [:IS_USED_IN] -> (subject);
 
-MATCH (title:Subject{name: 'first order differential equations'}), (subject:Subject{name:'second order differential equations'})
+MATCH (title:Subject{name: 'differential equations'}), (subject:Subject{name:'second order differential equations'})
 CREATE (title) - [:IS_USED_IN] -> (subject);
 
 MATCH (title:Subject{name: 'calculus'}), (subject:Subject{name:'qualitative analysis'})
@@ -506,7 +531,7 @@ CREATE (title) - [:IS_USED_IN] -> (subject);
 MATCH (title:Subject{name: 'calculus'}), (subject:Subject{name:'bifurcations'})
 CREATE (title) - [:IS_USED_IN] -> (subject);
 
-MATCH (title:Subject{name: 'calculus'}), (subject:Subject{name:'multivariate calculus'})
+MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'multivariate calculus'})
 CREATE (title) - [:IS_USED_IN] -> (subject);
 
 // ------------------   Probability here   ------------------ //
@@ -514,7 +539,8 @@ CREATE (title) - [:IS_USED_IN] -> (subject);
 CREATE (n:Subject{
 	name:'probability and statistics',
 	type: 'subject',
-	theme: 'mathematics'
+	theme: 'Mathematics',
+	mainSubject: True
 });
 
 

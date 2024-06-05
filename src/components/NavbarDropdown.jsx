@@ -50,7 +50,7 @@ const NavbarDropdown = () => {
             Explore Our Topics{" "}
           </Link>
           <ul className={`dropdown-menu ${isDropdownOpen ? "show" : ""}`}>
-            {subjects.map((subject, index) => (
+            {subjects.slice(0, 5).map((subject, index) => (
               <li key={index}>
                 <Link className="dropdown-item" to={`/graph/${subject.name}`}>
                   {subject.name}
