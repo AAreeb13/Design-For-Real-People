@@ -32,12 +32,12 @@ const FormOverlay = ({ onClose }) => {
     event.preventDefault();
     console.log("formdata", formData);
 
-    if (formData.type === "subject") {
-
+    if (formData.type === "main-subject") {
+        console.log("handling main subject")
+    } else if (formData.type === "mini-subject") {
+        console.log("handling mini-subject here")
     } else if (formData.type === "topic") {
-
-    } else if (formData.type === "subject") {
-
+        console.log("handling topic here")
     }
 
     onClose()
