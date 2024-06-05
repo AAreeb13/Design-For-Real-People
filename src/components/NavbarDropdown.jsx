@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { getSubjects } from "../../database/graphData";
+import { getMainSubjects } from "../../database/graphData";
 
 const NavbarDropdown = () => {
   const dropDownMenuStyle = {
@@ -21,8 +21,8 @@ const NavbarDropdown = () => {
   useEffect(() => {
     const fetchSubjects = async () => {
       try {
-        const subjectsData = await getSubjects();
-        setSubjects(subjectsData);
+        const subjectsData = await getMainSubjects();
+        setSubjects(subjectsData)
       } catch (error) {
         console.error("Error fetching subjects:", error);
       }
@@ -50,13 +50,15 @@ const NavbarDropdown = () => {
             Explore Our Topics{" "}
           </Link>
           <ul className={`dropdown-menu ${isDropdownOpen ? "show" : ""}`}>
-            {subjects.map((subject, index) => (
+            {subjects.slice(0, 5).map((subject, index) => { 
+              return (
               <li key={index}>
                 <Link className="dropdown-item" to={`/graph/${subject.name}`}>
                   {subject.name}
                 </Link>
               </li>
-            ))}
+            )
+            })}
           </ul>
         </li>
       </ul>
