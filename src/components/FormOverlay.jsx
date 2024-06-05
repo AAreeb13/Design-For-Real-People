@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { addMainSubjectToGraph, addMiniSubjectToGraph, addTopicToGraph, mainSubjectExists, miniSubjectExists, nodeExists } from "../../database/graphData";
+import { addMainSubjectToGraph, addMiniSubjectToGraph, addTopicToGraph, mainSubjectExists, subjectExists, nodeExists } from "../../database/graphData";
 
 const FormOverlay = ({ onClose }) => {
   const [selectedType, setSelectedType] = useState("");
@@ -36,8 +36,8 @@ const FormOverlay = ({ onClose }) => {
 
   const validateMiniSubject = async (data) => {
     const nonEmpty = data.name.trim() !== "" && data.subject.trim() !== "" && data.prerequisites.trim() !== "";
-    const mainSubExst = await mainSubjectExists("Subject", data, false);
-    const minSubExst = await miniSubjectExists("Subject", data);
+    const mainSubExst = await mainSubjectExists("Subject", data);
+    const minSubExst = await subjectExists("Subject", data);
 
     const prerequisitesArray = data.prerequisites.split(',').map(prereq => prereq.trim());
 
@@ -45,7 +45,7 @@ const FormOverlay = ({ onClose }) => {
       const exists = await nodeExists("Subject", {name: prerequisite});
       if (!exists) return false;
     }
-
+    
     return nonEmpty && mainSubExst && !minSubExst
   };
 
