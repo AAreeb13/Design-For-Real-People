@@ -113,13 +113,15 @@ const addMiniSubjectToGraph = async (name, subject, prerequisites) => {
 };
 
 const addTopicToGraph = async (name, subject, prerequisites) => {
+  const formattedPrerequisites = `[${prerequisites.split(',').map(item => `'${item.trim()}'`).join(', ')}]`;
+
   let query = `
     CREATE (n:Subject{
       name: $name,
       subject: $subject,
       type: 'topic',
       description: 'to add later',
-      requires: [$prerequisites],
+      requires: $formattedPrerequisites,
       links: '',
       approvals: 0,
       rejections: 0,
@@ -129,20 +131,19 @@ const addTopicToGraph = async (name, subject, prerequisites) => {
       learning_objectives: []
     });
   `;
-  
-  const prereqAsList = prerequisites.split(',').map(item => item.trim())
 
-  const params = { name, subject, prereqAsList };
+  const params = { name, subject, formattedPrerequisites };
   const results = await runQuery(query, params);
 
   if (results === false) {
     return false;
   }
-
-  return addRelationshipsToGraph(prerequisites, name);
+  const prereqAsList = prerequisites.split(',').map(item => item.trim())
+  return addRelationshipsToGraph(prereqAsList, name);
 };
 
 function addRelationshipsToGraph(prerequisites, name) {
+  
   prerequisites.forEach(async (prerequisite) => {
     const query = `
   MATCH (title:Subject{name: $prerequisite}), (subject:Subject{name: $name})
