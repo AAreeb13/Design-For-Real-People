@@ -1,8 +1,10 @@
 import React, { useEffect, useRef } from "react";
 import * as d3 from "d3";
+import { useNavigate } from "react-router-dom";
 
 const Graph = ({ nodes, links, subject, width, height, style }) => {
   const svgRef = useRef();
+  const navigate = useNavigate();
 
   const validNodes = nodes.filter(
     (n) => n.name === subject || n.subject === subject
@@ -101,7 +103,10 @@ const Graph = ({ nodes, links, subject, width, height, style }) => {
       .attr("ry", 50) // ellipse height
       .attr("fill", "#69b3a2")
       .attr("stroke", "#fff")
-      .attr("stroke-width", 1.5);
+      .attr("stroke-width", 1.5)
+      .on("click", (event, d) => {
+          navigate('/topic/' + d.name);
+      })
 
     node
       .append("rect")
@@ -113,6 +118,36 @@ const Graph = ({ nodes, links, subject, width, height, style }) => {
       .attr("stroke-width", 1.5)
       .attr("x", -150) // to center the rectangle
       .attr("y", -50); // to center the rectangle
+
+      // node
+      // .append("rect")
+      // .filter((d) => d.type === "subject" && d.name !== subject)
+      // .attr("width", 500) // rectangle width
+      // .attr("height", 200) // rectangle height
+      // .attr("fill", "#86e399")
+      // .attr("stroke", "#fff")
+      // .attr("stroke-width", 1.5)
+      // .attr("x", -250) // to center rectangle
+      // .attr("y", -100)
+      // .style("cursor", "pointer") // Change cursor to pointer for clickable rectangles
+      // .on("click", (event, d) => {
+      //   navigate('/graph/'+d.name);
+      // })
+      // .on("mouseover", function() {
+      //   d3.select(this)
+      //     .transition() 
+      //     .duration(200) 
+      //     .attr("fill", "#ff9999") 
+      //     .attr("stroke", "#666"); 
+      // })
+      // .on("mouseout", function() {
+      //   d3.select(this)
+      //     .transition() 
+      //     .duration(200) 
+      //     .attr("fill", "#86e399") 
+      //     .attr("stroke", "#fff"); 
+      // });
+
 
     node
       .append("text")
