@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { addMainSubjectToGraph, addMiniSubjectToGraph, addTopicToGraph } from "../../database/graphData";
 
 const FormOverlay = ({ onClose }) => {
   const [selectedType, setSelectedType] = useState("");
@@ -34,10 +35,13 @@ const FormOverlay = ({ onClose }) => {
 
     if (formData.type === "main-subject") {
         console.log("handling main subject")
+        addMainSubjectToGraph(formData.name, formData.theme)
     } else if (formData.type === "mini-subject") {
         console.log("handling mini-subject here")
+        addMiniSubjectToGraph(formData.name, formData.subject, formData.prerequisites)
     } else if (formData.type === "topic") {
         console.log("handling topic here")
+        addTopicToGraph(formData.name, formData.subject, formData.prerequisites)
     }
 
     onClose()

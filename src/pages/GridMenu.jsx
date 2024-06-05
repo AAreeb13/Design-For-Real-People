@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { getSubjects } from "../../database/graphData";
+import { getMainSubjects } from "../../database/graphData";
 
 const GridMenu = () => {
   const [subjects, setSubjects] = useState(null);
@@ -34,7 +34,7 @@ const GridMenu = () => {
   useEffect(() => {
     const fetchSubjects = async () => {
       try {
-        const subjectsData = await getSubjects();
+        const subjectsData = await getMainSubjects();
         setSubjects(subjectsData);
         console.log("Subject", subjectsData);
       } catch (error) {
