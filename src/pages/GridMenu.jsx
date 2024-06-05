@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { getSubjects } from "../../database/graphData";
+import { getMainSubjects } from "../../database/graphData";
 
 const GridMenu = () => {
   const [subjects, setSubjects] = useState(null);
@@ -34,9 +34,8 @@ const GridMenu = () => {
   useEffect(() => {
     const fetchSubjects = async () => {
       try {
-        const subjectsData = await getSubjects();
+        const subjectsData = await getMainSubjects();
         setSubjects(subjectsData);
-        console.log("Subject", subjectsData);
       } catch (error) {
         console.error("Error fetching subjects:", error);
       }
@@ -48,12 +47,7 @@ const GridMenu = () => {
   if (!subjects) {
     return <div>Loading...</div>;
   }
-
-  console.log("subjects", subjects);
-
   const themes = [...new Set(subjects.map((subject) => subject.theme))];
-  console.log(themes);
-
   return (
     <div className="col" style={gridContainer}>
       {themes.map((theme) => (

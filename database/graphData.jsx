@@ -28,6 +28,8 @@ const runQuery = async (query, params = {}) => {
       nodes: Array.from(nodes.values()),
       relationships: Array.from(relationships.values()),
     };
+  } catch {
+    return false;
   } finally {
     await session.close();
   }
@@ -58,19 +60,157 @@ const getGraphData = async () => {
 
 const nodeExists = async (label, properties) => {
   const session = driver.session();
+  const name = properties.name;
+  const params = { name }
   try {
     const query = `MATCH (n:${label} {name: $name}) RETURN n LIMIT 1`;
-    const result = await session.run(query, { name: properties.name });
+    const result = await session.run(query, params);
     return result.records.length > 0;
   } finally {
     await session.close();
   }
 };
 
-const getSubjects = async () => {
-  let { nodes, relationships } = await getGraphData();
+const mainSubjectExists = async (label, properties, isMainSubject=true) => {
+  const session = driver.session();
+  const name = isMainSubject ? properties.name : properties.subject
+  const params = { name };
+  try {
+    const query = `MATCH (n:${label} {name: $name, type: 'subject', mainSubject: True}) RETURN n`;
+    const result = await session.run(query, params);
+    console.log("result", result)
+    return result.records.length > 0;
+  } finally {
+    await session.close();
+  }
+}
+
+const miniSubjectExists = async (label, properties) => {
+  const session = driver.session();
+  try {
+    const query = `MATCH (n:${label} {name: $name, type: 'subject', subject: $subject, mainSubject: False}) RETURN n LIMIT 1`;
+    const result = await session.run(query, {name: properties.name, subject: properties.subject});
+    return result.records.length > 0;
+  } finally {
+    await session.close();
+  }
+}
+
+
+
+const getMainSubjects = async () => {
+  let nodes = await getAllNodes("MATCH (n:Subject{type: 'subject', mainSubject: True}) RETURN (n)");
   nodes = nodes.filter((n) => n.type === "subject" && n.mainSubject);
   return nodes;
 };
 
-export { getGraphData, runQuery, nodeExists, getSubjects };
+const addMainSubjectToGraph = async (name, theme) => {
+  const query = `
+      CREATE (n:Subject{
+        name: $name,
+        type: 'subject',
+        theme: $theme,
+        mainSubject: True
+      })
+    `;
+  const params = { name, theme };
+  return await runQuery(query, params);
+};
+
+const addMiniSubjectToGraph = async (name, subject, prerequisites) => {
+  let query = `
+      CREATE (n:Subject{
+        name: $name,
+        type: 'subject',
+        subject: $subject,
+        mainSubject: False
+      });
+  `;
+  
+  let params = { name, subject };
+  let results = await runQuery(query, params);
+
+  if (results === false) {
+    return false;
+  }
+
+  const prereqAsList = prerequisites.split(',').map(item => item.trim())
+
+  return addRelationshipsToGraph(prereqAsList, name);
+};
+
+const addTopicToGraph = async (name, subject, prerequisites) => {
+  const formattedPrerequisites = `[${prerequisites.split(',').map(item => `'${item.trim()}'`).join(', ')}]`;
+
+  let query = `
+    CREATE (n:Subject{
+      name: $name,
+      subject: $subject,
+      type: 'topic',
+      description: 'to add later',
+      requires: $formattedPrerequisites,
+      links: '',
+      approvals: 0,
+      rejections: 0,
+      comments: [],
+      suggestions: [],
+      resources: [],
+      learning_objectives: []
+    });
+  `;
+
+  const params = { name, subject, formattedPrerequisites };
+  const results = await runQuery(query, params);
+  const prereqAsList = prerequisites.split(',').map(item => item.trim())
+
+
+  return !results ? 
+    results : (prereqAsList.length <= 0) ?  
+      addRelationshipsToGraph([subject], name) :
+      addRelationshipsToGraph(prereqAsList, name);
+};
+
+function addRelationshipsToGraph(prerequisites, name) {
+  
+  prerequisites.forEach(async (prerequisite) => {
+    const query = `
+  MATCH (title:Subject{name: $prerequisite}), (subject:Subject{name: $name})
+  CREATE (title) - [:IS_USED_IN] -> (subject);
+  `;
+    const params = { prerequisite, name };
+    const results = await runQuery(query, params);
+    if (results === false) {
+      return false;
+    }
+  });
+  return true;
+}
+
+const getAllNodes = async (query) => {
+  const session = driver.session();
+  try {
+    const result = await session.run(query);
+    const nodes = new Map();
+
+    result.records.forEach((record) => {
+      const n = record.get("n");
+      nodes.set(n.identity.toString(), n);
+    });
+    return Array.from(nodes.values()).map(n => n.properties);
+  } catch {
+    return false;
+  } finally {
+    await session.close();
+  }
+};
+
+export { 
+  getGraphData, 
+  mainSubjectExists,
+  miniSubjectExists,
+  nodeExists,
+  getMainSubjects, 
+  addMainSubjectToGraph, 
+  addMiniSubjectToGraph, 
+  addTopicToGraph };
+
