@@ -51,7 +51,6 @@ const NavbarDropdown = () => {
           </Link>
           <ul className={`dropdown-menu ${isDropdownOpen ? "show" : ""}`}>
             {subjects.slice(0, 5).map((subject, index) => { 
-              console.log("subject", subject);
               return (
               <li key={index}>
                 <Link className="dropdown-item" to={`/graph/${subject.name}`}>

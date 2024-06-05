@@ -36,7 +36,6 @@ const GridMenu = () => {
       try {
         const subjectsData = await getMainSubjects();
         setSubjects(subjectsData);
-        console.log("Subject", subjectsData);
       } catch (error) {
         console.error("Error fetching subjects:", error);
       }
@@ -48,12 +47,7 @@ const GridMenu = () => {
   if (!subjects) {
     return <div>Loading...</div>;
   }
-
-  console.log("subjects", subjects);
-
   const themes = [...new Set(subjects.map((subject) => subject.theme))];
-  console.log(themes);
-
   return (
     <div className="col" style={gridContainer}>
       {themes.map((theme) => (

@@ -99,6 +99,7 @@ const addMiniSubjectToGraph = async (name, subject, prerequisites) => {
         mainSubject: False
       });
   `;
+  
   let params = { name, subject };
   let results = await runQuery(query, params);
 
@@ -106,7 +107,9 @@ const addMiniSubjectToGraph = async (name, subject, prerequisites) => {
     return false;
   }
 
-  return addRelationshipsToGraph(prerequisites, name);
+  const prereqAsList = prerequisites.split(',').map(item => item.trim())
+
+  return addRelationshipsToGraph(prereqAsList, name);
 };
 
 const addTopicToGraph = async (name, subject, prerequisites) => {
@@ -116,7 +119,7 @@ const addTopicToGraph = async (name, subject, prerequisites) => {
       subject: $subject,
       type: 'topic',
       description: 'to add later',
-      requires: $prerequisites,
+      requires: [$prerequisites],
       links: '',
       approvals: 0,
       rejections: 0,
@@ -126,7 +129,10 @@ const addTopicToGraph = async (name, subject, prerequisites) => {
       learning_objectives: []
     });
   `;
-  const params = { name, subject, prerequisites };
+  
+  const prereqAsList = prerequisites.split(',').map(item => item.trim())
+
+  const params = { name, subject, prereqAsList };
   const results = await runQuery(query, params);
 
   if (results === false) {
@@ -155,14 +161,12 @@ const getAllNodes = async (query) => {
   const session = driver.session();
   try {
     const result = await session.run(query);
-    console.log(result)
     const nodes = new Map();
 
     result.records.forEach((record) => {
       const n = record.get("n");
       nodes.set(n.identity.toString(), n);
     });
-    console.log("returning: ", Array.from(nodes.values()).map(n => n.properties))
     return Array.from(nodes.values()).map(n => n.properties);
   } catch {
     return false;
