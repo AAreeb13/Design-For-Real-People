@@ -159,6 +159,81 @@ CREATE (n:Subject{
 });
 
 CREATE (n:Subject{
+	name: 'integrating a constant',
+	subject: 'integration preliminaries',
+	type: 'topic',
+	description: 'How to integrate a number such as 1, 2, e, pi, etc...',
+	requires: ['integration preliminaries'],
+	links: 'www.example.com',
+	approvals: 74,
+	rejections: 23,
+	comments: [],
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
+});
+
+CREATE (n:Subject{
+	name: 'integrating a positive power',
+	subject: 'integration preliminaries',
+	type: 'topic',
+	description: 'How to integrate terms such as x, x^2, x^3',
+	requires: ['integration preliminaries'],
+	links: 'www.example.com',
+	approvals: 74,
+	rejections: 23,
+	comments: [],
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
+});
+
+CREATE (n:Subject{
+	name: 'integrating a negative power',
+	subject: 'integration preliminaries',
+	type: 'topic',
+	description: 'How to integrate a terms such as x^-1, x^-2 etc...',
+	requires: ['integration preliminaries'],
+	links: 'www.example.com',
+	approvals: 74,
+	rejections: 23,
+	comments: [],
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
+});
+
+CREATE (n:Subject{
+	name: 'integrating a fractional power',
+	subject: 'integration preliminaries',
+	type: 'topic',
+	description: 'How to integrate a terms such as x^0.5, x^3.5 etc...',
+	requires: ['integration preliminaries'],
+	links: 'www.example.com',
+	approvals: 74,
+	rejections: 23,
+	comments: [],
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
+});
+
+CREATE (n:Subject{
+	name: 'integrating a denominator variable',
+	subject: 'integration preliminaries',
+	type: 'topic',
+	description: 'How to integrate a terms such as 1/x',
+	requires: ['integration preliminaries'],
+	links: 'www.example.com',
+	approvals: 74,
+	rejections: 23,
+	comments: [],
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
+});
+
+CREATE (n:Subject{
 	name: 'integration by inspection',
 	subject: 'integration',
 	type: 'topic',
@@ -401,6 +476,21 @@ MATCH (title:Subject{name: 'integration preliminaries'}), (subject:Subject{name:
 CREATE (title) - [:IS_USED_IN] -> (subject);
 
 MATCH (title:Subject{name: 'integration preliminaries'}), (subject:Subject{name:'integration by inspection'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
+
+MATCH (title:Subject{name: 'integration preliminaries'}), (subject:Subject{name:'integrating a constant'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
+
+MATCH (title:Subject{name: 'integration preliminaries'}), (subject:Subject{name:'integrating a positive power'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
+
+MATCH (title:Subject{name: 'integration preliminaries'}), (subject:Subject{name:'integrating a negative power'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
+
+MATCH (title:Subject{name: 'integration preliminaries'}), (subject:Subject{name:'integrating a fractional power'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
+
+MATCH (title:Subject{name: 'integration preliminaries'}), (subject:Subject{name:'integrating a denominator variable'})
 CREATE (title) - [:IS_USED_IN] -> (subject);
 
 MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'lengths volumes and surfaces'})

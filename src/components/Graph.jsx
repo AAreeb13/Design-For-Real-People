@@ -67,7 +67,7 @@ const Graph = ({ nodes, links, subject, width, height, style }) => {
           .id((d) => d.name)
           .distance(900)
       ) // distance = link length
-      .force("charge", d3.forceManyBody().strength(-10000))
+      .force("charge", d3.forceManyBody().strength(-50000))
       .force("center", d3.forceCenter(width / 30, height / 30));
 
     const link = svgGroup
