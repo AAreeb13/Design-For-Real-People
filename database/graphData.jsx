@@ -69,7 +69,7 @@ const nodeExists = async (label, properties) => {
 
 const getSubjects = async () => {
   let { nodes, relationships } = await getGraphData();
-  nodes = nodes.filter((n) => n.type === "subject");
+  nodes = nodes.filter((n) => n.type === "subject" && n.mainSubject);
   return nodes;
 };
 

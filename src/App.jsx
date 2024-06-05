@@ -13,6 +13,7 @@ import Navbar from "./components/Navbar";
 import GridMenu from "./pages/GridMenu";
 import { getGraphData } from "../database/graphData";
 
+
 function App() {
   const [graphData, setGraphData] = useState({ nodes: [], links: [] });
   const [loading, setLoading] = useState(true);
@@ -76,7 +77,7 @@ function GraphRouteWrapper({ graphData }) {
       nodes={graphData.nodes}
       links={graphData.relationships}
       subject={subject}
-      width={2000}
+      width={1500}
       height={600}
     />
   );
