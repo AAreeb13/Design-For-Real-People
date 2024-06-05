@@ -3,6 +3,7 @@ import React, { useState } from "react";
 const FormOverlay = ({ onClose }) => {
   const [selectedType, setSelectedType] = useState("");
   const [formData, setFormData] = useState({
+    type: "",
     name: "",
     subject: "",
     theme: "",
@@ -10,7 +11,13 @@ const FormOverlay = ({ onClose }) => {
   });
 
   const handleTypeChange = (event) => {
-    setSelectedType(event.target.value);
+    const newType = event.target.value
+    setFormData((prevData) => {
+        const newData = prevData;
+        newData.type = newType;
+        return newData
+    })
+    setSelectedType(newType);
   };
 
   const handleChange = (event) => {
@@ -23,8 +30,17 @@ const FormOverlay = ({ onClose }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // todo backend for
-    console.log(formData);
+    console.log("formdata", formData);
+
+    if (formData.type === "subject") {
+
+    } else if (formData.type === "topic") {
+
+    } else if (formData.type === "subject") {
+
+    }
+
+    onClose()
   };
 
   const overlayStyle = {
@@ -82,9 +98,9 @@ const FormOverlay = ({ onClose }) => {
               onChange={handleTypeChange}
             >
               <option value="">Select Type</option>
-              <option value="topic">Topic</option>
               <option value="main-subject">Main Subject</option>
               <option value="mini-subject">Mini Subject</option>
+              <option value="topic">Topic</option>
             </select>
           </div>
           {selectedType && (
@@ -154,19 +170,33 @@ const FormOverlay = ({ onClose }) => {
 
 
               {selectedType === "mini-subject" && (
-                <div className="form-group">
-                  <label htmlFor="subject">Subject</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="subject"
-                    name="subject"
-                    placeholder="Enter the name of the subject this mini-subject belongs to"
-                    value={formData.subject}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
+                <>
+                    <div className="form-group">
+                    <label htmlFor="subject">Subject</label>
+                    <input
+                        type="text"
+                        className="form-control"
+                        id="subject"
+                        name="subject"
+                        placeholder="Enter the name of the subject this mini-subject belongs to"
+                        value={formData.subject}
+                        onChange={handleChange}
+                        required
+                    />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="prerequisites">Prerequisites</label>
+                        <textarea
+                        className="form-control"
+                        id="prerequisites"
+                        name="prerequisites"
+                        placeholder="Enter prerequisites, separated by a ',' and ensure that it the prerequisite spelled correctly"
+                        value={formData.prerequisites}
+                        onChange={handleChange}
+                        required
+                        ></textarea>
+                    </div>
+                </>
               )}
 
 
