@@ -32,7 +32,7 @@ const TopicEntry = ({ node }) => {
 
   return (
     <div>
-      <h1 className="topic-header">{topicNode.subject + "/" + topicNode.name}</h1>
+      <h1 className="topic-header">{topicNode.subject}</h1>
       <h2 className="topic-name">{topicNode.name}</h2>
 
       <h3>Description:</h3>
