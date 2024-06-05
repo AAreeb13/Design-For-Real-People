@@ -1,16 +1,22 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import NavbarDropdown from "./NavbarDropdown";
+import FormOverlay from "./FormOverlay";
 
-function MyNavbar() {
+const MyNavbar = () => {
+  const [isFormOpen, setIsFormOpen] = useState(false);
+
+  const handleOpenForm = () => {
+    setIsFormOpen(true);
+  };
+
+  const handleCloseForm = () => {
+    setIsFormOpen(false);
+  };
+
   const ourLogo = {
     padding: "5px 5px 5px 5px",
     width: "150px",
-  };
-
-  const ourTopicAdder = {
-    padding: "5px 5px 5px 5px",
-    marginRight: "10%",
   };
 
   const navStyle = {
@@ -32,47 +38,54 @@ function MyNavbar() {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg bg-body-tertiary" style={navStyle}>
-      <div className="container-fluid">
-        <Link className="navbar-brand" to="/" style={ourLogo}>
-          StudyChain
-        </Link>
+    <div>
+      <nav className="navbar navbar-expand-lg bg-body-tertiary" style={navStyle}>
+        <div className="container-fluid">
+          <Link className="navbar-brand" to="/" style={ourLogo}>
+            StudyChain
+          </Link>
 
-        <button
-          className="navbar-toggler"
-          type="button"
-          aria-label="Toggle navigation"
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
-
-        <NavbarDropdown />
-
-        <li className="nav-item" style={ourTopicAdder}>
-          <a className="btn btn-outline-success" aria-disabled="true">
-            Add a Topic
-          </a>
-        </li>
-
-        <form className="d-flex" role="search">
-          <input
-            className="form-control me-2"
-            type="search"
-            placeholder="Enter a Topic"
-            aria-label="Search"
-          />
-          <button className="btn btn-outline-success" type="submit">
-            Search
+          <button
+            className="navbar-toggler"
+            type="button"
+            aria-label="Toggle navigation"
+          >
+            <span className="navbar-toggler-icon"></span>
           </button>
-        </form>
 
-        <button className="btn btn-outline-success" style={loginStyle}>
-          Login
-        </button>
-        <button className="btn btn-outline-success">Sign Up</button>
-      </div>
-    </nav>
+          <NavbarDropdown />
+
+          <div className="collapse navbar-collapse">
+            <ul className="navbar-nav mr-auto">
+              <li className="nav-item">
+                <button className="btn btn-success" onClick={handleOpenForm}>
+                  Add a Topic
+                </button>
+              </li>
+            </ul>
+          </div>
+
+          <form className="d-flex" role="search">
+            <input
+              className="form-control me-2"
+              type="search"
+              placeholder="Enter a Topic"
+              aria-label="Search"
+            />
+            <button className="btn btn-outline-success" type="submit">
+              Search
+            </button>
+          </form>
+
+          <button className="btn btn-outline-success" style={loginStyle}>
+            Login
+          </button>
+          <button className="btn btn-outline-success">Sign Up</button>
+        </div>
+      </nav>
+      {isFormOpen && <FormOverlay onClose={handleCloseForm} />}
+    </div>
   );
-}
+};
 
 export default MyNavbar;
