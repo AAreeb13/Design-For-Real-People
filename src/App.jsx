@@ -12,6 +12,7 @@ import Graph from "./components/Graph";
 import Navbar from "./components/Navbar";
 import GridMenu from "./pages/GridMenu";
 import { getGraphData } from "../database/graphData";
+import TopicEntry from "./components/TopicEntry";
 
 
 function App() {
@@ -64,10 +65,16 @@ function App() {
             path="/graph/:subject"
             element={<GraphRouteWrapper graphData={graphData} />}
           />
+          <Route path="/topic/:node" element={<TopicRouteWrapper />} />
         </Routes>
       </div>
     </Router>
   );
+}
+
+function TopicRouteWrapper() {
+  const { node } = useParams();
+  return <TopicEntry node={node} />;
 }
 
 function GraphRouteWrapper({ graphData }) {

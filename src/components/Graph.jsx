@@ -96,7 +96,24 @@ const Graph = ({ nodes, links, subject, width, height, style }) => {
       .attr("ry", 100) // ellipse height
       .attr("fill", "#69b3a2")
       .attr("stroke", "#fff")
-      .attr("stroke-width", 1.5);
+      .attr("stroke-width", 1.5)
+      .on("click", (event, d) => {
+          navigate('/topic/' + d.name);
+      })
+      .on("mouseover", function() {
+        d3.select(this)
+          .transition() 
+          .duration(200) 
+          .attr("fill", "#508a7c") 
+          .attr("stroke", "#666"); 
+      })
+      .on("mouseout", function() {
+        d3.select(this)
+          .transition() 
+          .duration(200) 
+          .attr("fill", "#69b3a2") 
+          .attr("stroke", "#fff"); 
+      });
 
     node
       .append("rect")
