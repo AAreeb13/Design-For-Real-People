@@ -71,26 +71,33 @@ const nodeExists = async (label, properties) => {
   }
 };
 
-const mainSubjectExists = async (label, properties, isMainSubject=true) => {
+const subjectExists = async (label, properties, isMainSubject=true) => {
   const session = driver.session();
   const name = isMainSubject ? properties.name : properties.subject
   const params = { name };
   try {
-    const query = `MATCH (n:${label} {name: $name, type: 'subject', mainSubject: True}) RETURN n`;
+    const query = `MATCH (n:${label} {name: $name, type: 'subject'}) RETURN n`;
     const result = await session.run(query, params);
-    console.log("result", result)
     return result.records.length > 0;
   } finally {
     await session.close();
   }
 }
 
-const miniSubjectExists = async (label, properties) => {
+const mainSubjectExists = async (label, properties) => {
   const session = driver.session();
+  let name = properties.name;
+  let params = { name };
   try {
-    const query = `MATCH (n:${label} {name: $name, type: 'subject', subject: $subject, mainSubject: False}) RETURN n LIMIT 1`;
-    const result = await session.run(query, {name: properties.name, subject: properties.subject});
-    return result.records.length > 0;
+    const query = `MATCH (n:${label} {name: $name, type: 'subject'}) RETURN n`;
+    let result = await session.run(query, params);
+    if (result.records.length == 0) {
+      name = properties.subject
+      params = { name };
+      const query = `MATCH (n:${label} {name: $name, type: 'subject'}) RETURN n`;
+      result = await session.run(query, params);
+    }
+    return result.records.length > 0
   } finally {
     await session.close();
   }
@@ -207,7 +214,7 @@ const getAllNodes = async (query) => {
 export { 
   getGraphData, 
   mainSubjectExists,
-  miniSubjectExists,
+  subjectExists,
   nodeExists,
   getMainSubjects, 
   addMainSubjectToGraph, 
