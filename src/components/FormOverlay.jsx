@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { addMainSubjectToGraph, addMiniSubjectToGraph, addTopicToGraph } from "../../database/graphData";
+import { addMainSubjectToGraph, addMiniSubjectToGraph, addTopicToGraph, mainSubjectExists, miniSubjectExists, nodeExists } from "../../database/graphData";
 
 const FormOverlay = ({ onClose }) => {
   const [selectedType, setSelectedType] = useState("");
@@ -12,12 +12,11 @@ const FormOverlay = ({ onClose }) => {
   });
 
   const handleTypeChange = (event) => {
-    const newType = event.target.value
-    setFormData((prevData) => {
-        const newData = prevData;
-        newData.type = newType;
-        return newData
-    })
+    const newType = event.target.value;
+    setFormData((prevData) => ({
+      ...prevData,
+      type: newType,
+    }));
     setSelectedType(newType);
   };
 
@@ -29,22 +28,74 @@ const FormOverlay = ({ onClose }) => {
     }));
   };
 
-  const handleSubmit = (event) => {
+  const validateMainSubject = async (data) => {
+    const nonEmpty = data.name.trim() !== "" && data.theme.trim() !== "";
+    const subjectExists = await mainSubjectExists("Subject", data)
+    return nonEmpty && !subjectExists
+  };
+
+  const validateMiniSubject = async (data) => {
+    const nonEmpty = data.name.trim() !== "" && data.subject.trim() !== "" && data.prerequisites.trim() !== "";
+    const mainSubExst = await mainSubjectExists("Subject", data, false);
+    const minSubExst = await miniSubjectExists("Subject", data);
+
+    const prerequisitesArray = data.prerequisites.split(',').map(prereq => prereq.trim());
+
+    for (const prerequisite of prerequisitesArray) {
+      const exists = await nodeExists("Subject", {name: prerequisite});
+      if (!exists) return false;
+    }
+
+    return nonEmpty && mainSubExst && !minSubExst
+  };
+
+  const validateTopic = async (data) => {
+    const nonEmpty = data.name.trim() !== "" && data.subject.trim() !== "" && data.prerequisites.trim() !== "";
+    const mainSubExst = await mainSubjectExists("Subject", data, false);
+    const topicExst = await nodeExists("Subject", data);
+
+    const prerequisitesArray = data.prerequisites.split(',').map(prereq => prereq.trim());
+
+    for (const prerequisite of prerequisitesArray) {
+      const exists = await nodeExists("Subject", {name: prerequisite});
+      if (!exists) return false;
+    }
+
+    return nonEmpty && mainSubExst && !topicExst    
+  };
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     console.log("formdata", formData);
 
+    let isValid = false;
+
     if (formData.type === "main-subject") {
-        console.log("handling main subject")
-        addMainSubjectToGraph(formData.name, formData.theme)
+      isValid = await validateMainSubject(formData);
+      if (isValid) {
+        addMainSubjectToGraph(formData.name, formData.theme);
+      } else {
+        alert("Please ensure all fields are filled, and that the subject doesn't currently exist")
+      }
     } else if (formData.type === "mini-subject") {
-        console.log("handling mini-subject here")
-        addMiniSubjectToGraph(formData.name, formData.subject, formData.prerequisites)
+      isValid = await validateMiniSubject(formData);
+      if (isValid) {
+        addMiniSubjectToGraph(formData.name, formData.subject, formData.prerequisites);
+      } else {
+        alert("Please ensure that all fields are filled, the name doesn't exist, the subject does exist and that the prerequisites are correctly spelled")
+      }
     } else if (formData.type === "topic") {
-        console.log("handling topic here")
-        addTopicToGraph(formData.name, formData.subject, formData.prerequisites)
+      isValid = await validateTopic(formData);
+      if (isValid) {
+        addTopicToGraph(formData.name, formData.subject, formData.prerequisites);
+      } else {
+        alert("Please ensure that all fields are filled, the name doesn't exist, the subject does exist and that the prerequisites are correctly spelled")
+      }
     }
 
-    onClose()
+    if (isValid) {
+      onClose();
+    }
   };
 
   const overlayStyle = {
@@ -82,7 +133,7 @@ const FormOverlay = ({ onClose }) => {
 
   const submitButtonStyle = {
     marginTop: "30px"
-  }
+  };
 
   return (
     <div style={overlayStyle}>
@@ -109,7 +160,6 @@ const FormOverlay = ({ onClose }) => {
           </div>
           {selectedType && (
             <>
-            
               <div className="form-group">
                 <label htmlFor="name">Name</label>
                 <input
@@ -123,7 +173,6 @@ const FormOverlay = ({ onClose }) => {
                   required
                 />
               </div>
-
 
               {selectedType === "topic" && (
                 <>
@@ -155,7 +204,6 @@ const FormOverlay = ({ onClose }) => {
                 </>
               )}
 
-
               {selectedType === "main-subject" && (
                 <div className="form-group">
                   <label htmlFor="theme">Theme</label>
@@ -164,7 +212,7 @@ const FormOverlay = ({ onClose }) => {
                     className="form-control"
                     id="theme"
                     name="theme"
-                    placeholder="Enter the theme of this topic, for example 'mathematics' "
+                    placeholder="Enter the theme of this topic, for example 'mathematics'"
                     value={formData.theme}
                     onChange={handleChange}
                     required
@@ -172,38 +220,35 @@ const FormOverlay = ({ onClose }) => {
                 </div>
               )}
 
-
               {selectedType === "mini-subject" && (
                 <>
-                    <div className="form-group">
+                  <div className="form-group">
                     <label htmlFor="subject">Subject</label>
                     <input
-                        type="text"
-                        className="form-control"
-                        id="subject"
-                        name="subject"
-                        placeholder="Enter the name of the subject this mini-subject belongs to"
-                        value={formData.subject}
-                        onChange={handleChange}
-                        required
+                      type="text"
+                      className="form-control"
+                      id="subject"
+                      name="subject"
+                      placeholder="Enter the name of the subject this mini-subject belongs to"
+                      value={formData.subject}
+                      onChange={handleChange}
+                      required
                     />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="prerequisites">Prerequisites</label>
-                        <textarea
-                        className="form-control"
-                        id="prerequisites"
-                        name="prerequisites"
-                        placeholder="Enter prerequisites, separated by a ',' and ensure that it the prerequisite spelled correctly"
-                        value={formData.prerequisites}
-                        onChange={handleChange}
-                        required
-                        ></textarea>
-                    </div>
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="prerequisites">Prerequisites</label>
+                    <textarea
+                      className="form-control"
+                      id="prerequisites"
+                      name="prerequisites"
+                      placeholder="Enter prerequisites, separated by a ',' and ensure that it the prerequisite spelled correctly"
+                      value={formData.prerequisites}
+                      onChange={handleChange}
+                      required
+                    ></textarea>
+                  </div>
                 </>
               )}
-
-
             </>
           )}
           <button type="submit" className="btn btn-success" style={submitButtonStyle}>

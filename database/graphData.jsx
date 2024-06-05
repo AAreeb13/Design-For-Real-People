@@ -60,14 +60,41 @@ const getGraphData = async () => {
 
 const nodeExists = async (label, properties) => {
   const session = driver.session();
+  const name = properties.name;
+  const params = { name }
   try {
     const query = `MATCH (n:${label} {name: $name}) RETURN n LIMIT 1`;
-    const result = await session.run(query, { name: properties.name });
+    const result = await session.run(query, params);
     return result.records.length > 0;
   } finally {
     await session.close();
   }
 };
+
+const mainSubjectExists = async (label, properties, isMainSubject=true) => {
+  const session = driver.session();
+  const name = isMainSubject ? properties.name : properties.subject
+  const params = { name };
+  try {
+    const query = `MATCH (n:${label} {name: $name, type: 'subject', mainSubject: True}) RETURN n`;
+    const result = await session.run(query, params);
+    console.log("result", result)
+    return result.records.length > 0;
+  } finally {
+    await session.close();
+  }
+}
+
+const miniSubjectExists = async (label, properties) => {
+  const session = driver.session();
+  try {
+    const query = `MATCH (n:${label} {name: $name, type: 'subject', subject: $subject, mainSubject: False}) RETURN n LIMIT 1`;
+    const result = await session.run(query, {name: properties.name, subject: properties.subject});
+    return result.records.length > 0;
+  } finally {
+    await session.close();
+  }
+}
 
 
 
@@ -134,12 +161,13 @@ const addTopicToGraph = async (name, subject, prerequisites) => {
 
   const params = { name, subject, formattedPrerequisites };
   const results = await runQuery(query, params);
-
-  if (results === false) {
-    return false;
-  }
   const prereqAsList = prerequisites.split(',').map(item => item.trim())
-  return addRelationshipsToGraph(prereqAsList, name);
+
+
+  return !results ? 
+    results : (prereqAsList.length <= 0) ?  
+      addRelationshipsToGraph([subject], name) :
+      addRelationshipsToGraph(prereqAsList, name);
 };
 
 function addRelationshipsToGraph(prerequisites, name) {
@@ -176,5 +204,13 @@ const getAllNodes = async (query) => {
   }
 };
 
-export { getGraphData, nodeExists, getMainSubjects, addMainSubjectToGraph, addMiniSubjectToGraph, addTopicToGraph };
+export { 
+  getGraphData, 
+  mainSubjectExists,
+  miniSubjectExists,
+  nodeExists,
+  getMainSubjects, 
+  addMainSubjectToGraph, 
+  addMiniSubjectToGraph, 
+  addTopicToGraph };
 
