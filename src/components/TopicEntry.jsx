@@ -62,11 +62,11 @@ const TopicEntry = ({ node }) => {
   );
 };
 
-export default TopicEntry;
-
 const getTopic = async (name) => {
   console.log("we got here");
   const { nodes, relationships } = await getGraphData();
-
+  
   return nodes.filter((n) => n.name === name);
 };
+
+export default TopicEntry;

@@ -641,3 +641,220 @@ CREATE (title) - [:IS_USED_IN] -> (subject);
 MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'moment generating function'})
 CREATE (title) - [:IS_USED_IN] -> (subject)
 
+// ------------ A level maths here -------------------
+
+CREATE (n:Subject{
+	name:'a level maths',
+	type: 'subject',
+	theme: 'Mathematics',
+	mainSubject: True
+});
+
+CREATE (n:Subject{
+	name: 'numerical methods',
+	subject: 'a level maths',
+	type: 'topic',
+	description: 'For when analytical solutions are not available',
+	requires: ['a level maths'],
+	links: 'www.example.com',
+	approvals: 200,
+	rejections: 30,
+	comments: [],
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
+});
+
+CREATE (n:Subject{
+	name: 'rotate lines around x and y axes',
+	subject: 'a level maths',
+	type: 'topic',
+	description: 'Find the volume contained within a curve',
+	requires: ['a level maths'],
+	links: 'www.example.com',
+	approvals: 200,
+	rejections: 30,
+	comments: [],
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
+});
+
+CREATE (n:Subject{
+	name: 'matrices',
+	subject: 'a level maths',
+	type: 'topic',
+	description: 'Represent a table of data',
+	requires: ['a level maths'],
+	links: 'www.example.com',
+	approvals: 200,
+	rejections: 30,
+	comments: [],
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
+});
+
+CREATE (n:Subject{
+	name: 'determinant',
+	subject: 'a level maths',
+	type: 'topic',
+	description: 'Tests whether matrix is invertible',
+	requires: ['matrices'],
+	links: 'www.example.com',
+	approvals: 200,
+	rejections: 30,
+	comments: [],
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
+});
+
+CREATE (n:Subject{
+	name: 'matrix multiplication',
+	subject: 'a level maths',
+	type: 'topic',
+	description: 'Multiplying two matrices',
+	requires: ['matrices'],
+	links: 'www.example.com',
+	approvals: 200,
+	rejections: 30,
+	comments: [],
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
+});
+
+CREATE (n:Subject{
+	name: 'inverse matrices',
+	subject: 'a level maths',
+	type: 'topic',
+	description: 'Find the inverse of a matrix',
+	requires: ['matrices'],
+	links: 'www.example.com',
+	approvals: 200,
+	rejections: 30,
+	comments: [],
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
+});
+
+CREATE (n:Subject{
+	name: 'exponentials',
+	subject: 'a level maths',
+	type: 'topic',
+	description: 'Plot graphs of the form y=ab^x',
+	requires: ['a level maths'],
+	links: 'www.example.com',
+	approvals: 200,
+	rejections: 30,
+	comments: [],
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
+});
+
+CREATE (n:Subject{
+	name: 'logarithms',
+	subject: 'a level maths',
+	type: 'topic',
+	description: 'Plot graphs of the form y=ax^b',
+	requires: ['a level maths'],
+	links: 'www.example.com',
+	approvals: 200,
+	rejections: 30,
+	comments: [],
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
+});
+
+CREATE (n:Subject{
+	name: 'hyperbolic trigonometry',
+	subject: 'a level maths',
+	type: 'topic',
+	description: 'Study hyperbolic trigonometry functions like sinh, cosh, tanh',
+	requires: ['a level maths'],
+	links: 'www.example.com',
+	approvals: 200,
+	rejections: 30,
+	comments: [],
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
+});
+
+CREATE (n:Subject{
+	name: 'mechanics',
+	subject: 'a level maths',
+	type: 'topic',
+	description: 'Study newtonian mechanics including forces',
+	requires: ['a level maths'],
+	links: 'www.example.com',
+	approvals: 200,
+	rejections: 30,
+	comments: [],
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
+});
+
+CREATE (n:Subject{
+	name: 'moments',
+	subject: 'a level maths',
+	type: 'topic',
+	description: 'Rotational force',
+	requires: ['mechanics'],
+	links: 'www.example.com',
+	approvals: 200,
+	rejections: 30,
+	comments: [],
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
+});
+
+CREATE (n:Subject{
+	name: 'constant acceleration formulae',
+	subject: 'a level maths',
+	type: 'topic',
+	description: 'Study the SUVAT formulae',
+	requires: ['mechanics'],
+	links: 'www.example.com',
+	approvals: 200,
+	rejections: 30,
+	comments: [],
+	suggestions: [],
+	resources: [],
+	learning_objectives: []
+});
+
+MATCH (title:Subject{name: 'a level maths'}), (subject:Subject{name:'numerical methods'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
+MATCH (title:Subject{name: 'a level maths'}), (subject:Subject{name:'rotate lines around x and y axes'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
+MATCH (title:Subject{name: 'a level maths'}), (subject:Subject{name:'matrices'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
+MATCH (title:Subject{name: 'a level maths'}), (subject:Subject{name:'exponentials'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
+MATCH (title:Subject{name: 'a level maths'}), (subject:Subject{name:'logarithms'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
+MATCH (title:Subject{name: 'a level maths'}), (subject:Subject{name:'hyperbolic trigonometry'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
+MATCH (title:Subject{name: 'a level maths'}), (subject:Subject{name:'mechanics'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
+
+MATCH (title:Subject{name: 'matrices'}), (subject:Subject{name:'abc'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
+MATCH (title:Subject{name: 'matrices'}), (subject:Subject{name:'determinant'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
+MATCH (title:Subject{name: 'matrices'}), (subject:Subject{name:'matrix multiplication'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
+MATCH (title:Subject{name: 'matrices'}), (subject:Subject{name:'inverse matrices'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
+
+MATCH (title:Subject{name: 'mechanics'}), (subject:Subject{name:'moments'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
+MATCH (title:Subject{name: 'mechanics'}), (subject:Subject{name:'constant acceleration formulae'})
+CREATE (title) - [:IS_USED_IN] -> (subject);
