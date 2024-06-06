@@ -80,6 +80,9 @@ function TopicRouteWrapper() {
 
 function GraphRouteWrapper({ graphData }) {
   const { subject } = useParams();
+  console.log("Graph Route wrapper")
+  console.log("nodes", graphData.nodes)
+  console.log("Relationships", graphData.relationships)
   return (
     <Graph
       nodes={graphData.nodes}

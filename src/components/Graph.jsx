@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 const Graph = ({ nodes, links, subject=null, width, height, style }) => {
 
+
   const svgRef = useRef();
   const navigate = useNavigate();
 
@@ -25,11 +26,16 @@ const Graph = ({ nodes, links, subject=null, width, height, style }) => {
   });
 
   const nodeNameList = nodesToUse.map((n) => n.name);
-  linksToUse = linksToUse.filter((link) => {
-    return (
-      nodeNameList.includes(link.source) && nodeNameList.includes(link.target)
-    );
-  });
+  linksToUse = subject == null ? 
+    linksToUse : 
+    linksToUse.filter((link) => {
+      return (
+        nodeNameList.includes(link.source) && nodeNameList.includes(link.target)
+      );
+    });
+
+    console.log("nodes To use", nodesToUse)
+    console.log("links to use", linksToUse)
 
   useEffect(() => {
     const svg = d3.select(svgRef.current);
@@ -73,7 +79,7 @@ const Graph = ({ nodes, links, subject=null, width, height, style }) => {
       ) // distance = link length
       .force("charge", d3.forceManyBody().strength(-50000))
       .force("center", d3.forceCenter(width / 30, height / 30));
-
+    
     const link = svgGroup
       .append("g")
       .attr("stroke", "#999")
