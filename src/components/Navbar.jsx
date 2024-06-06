@@ -68,10 +68,10 @@ const MyNavbar = () => {
 
           <SearchBar />
 
-          <button className="btn btn-outline-success" style={loginStyle}>
+          {/* <button className="btn btn-outline-success" style={loginStyle}>
             Login
           </button>
-          <button className="btn btn-outline-success">Sign Up</button>
+          <button className="btn btn-outline-success">Sign Up</button> */}
         </div>
       </nav>
       {isFormOpen && <FormOverlay onClose={handleCloseForm} />}
