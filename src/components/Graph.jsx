@@ -36,7 +36,7 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
 
     const zoom = d3
       .zoom()
-      .scaleExtent([0.1, 4]) // Minimum and maximum zoom levels
+      .scaleExtent([0.05, 4]) // Minimum and maximum zoom levels
       .on("zoom", (event) => {
         svgGroup.attr("transform", event.transform);
       });
@@ -219,7 +219,7 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
 
     const initialTransform = d3.zoomIdentity
       .translate(width / 2, height / 2)
-      .scale(0.25);
+      .scale(0.20);
     svg.call(zoom.transform, initialTransform);
   }, [nodesToUse, linksToUse]);
 
