@@ -2,30 +2,39 @@ import React, { useEffect, useRef } from "react";
 import * as d3 from "d3";
 import { useNavigate } from "react-router-dom";
 
-const Graph = ({ nodes, links, subject, width, height, style }) => {
+const Graph = ({ nodes, links, subject=null, width, height, style }) => {
+
   const svgRef = useRef();
   const navigate = useNavigate();
 
-  const validNodes = nodes.filter(
-    (n) => n.name === subject || n.subject === subject
-  );
+  const validNodes = subject == null ? 
+    nodes : 
+    nodes.filter(
+      (n) => n.name === subject || n.subject === subject
+    );
+
   const nodesToUse = validNodes.map((n) => {
     return { name: n.name, type: n.type };
   });
 
   let linksToUse = links.map((link) => {
     if (link.source == null) {
-      return { source: link.source.source, target: link.source.target };
+      return { source: link.source.source, target: link.source.target};
     }
-    return { source: link.source, target: link.target };
+    return { source: link.source, target: link.target};
   });
 
   const nodeNameList = nodesToUse.map((n) => n.name);
-  linksToUse = linksToUse.filter((link) => {
-    return (
-      nodeNameList.includes(link.source) && nodeNameList.includes(link.target)
-    );
-  });
+  linksToUse = subject == null ? 
+    linksToUse : 
+    linksToUse.filter((link) => {
+      return (
+        nodeNameList.includes(link.source) && nodeNameList.includes(link.target)
+      );
+    });
+
+    console.log("nodes To use", nodesToUse)
+    console.log("links to use", linksToUse)
 
   useEffect(() => {
     const svg = d3.select(svgRef.current);
@@ -57,7 +66,7 @@ const Graph = ({ nodes, links, subject, width, height, style }) => {
       .attr("d", "M 0,-5 L 10 ,0 L 0,5")
       .attr("fill", "#999")
       .style("stroke", "none");
-
+    
     const simulation = d3
       .forceSimulation(nodesToUse)
       .force(
@@ -67,8 +76,21 @@ const Graph = ({ nodes, links, subject, width, height, style }) => {
           .id((d) => d.name)
           .distance(900)
       ) // distance = link length
-      .force("charge", d3.forceManyBody().strength(-50000))
+      .force("charge", subject == null ? d3.forceManyBody().strength(-5000) : d3.forceManyBody().strength(-50000))
       .force("center", d3.forceCenter(width / 30, height / 30));
+    
+    console.log("we are using", linksToUse);
+    console.log("with nodes", nodesToUse)
+    linksToUse = linksToUse.map((link, index) => {
+      const sourceNode = nodesToUse.find((n) => n.name === link.source.name)
+      const targetNode = nodesToUse.find((n) => n.name === link.target.name)
+      const toReturn = {
+        source: sourceNode,
+        target: targetNode,
+        index: index
+      }
+      return toReturn
+    })
 
     const link = svgGroup
       .append("g")
@@ -117,7 +139,7 @@ const Graph = ({ nodes, links, subject, width, height, style }) => {
 
     node
       .append("rect")
-      .filter((d) => d.type === "subject" && d.name === subject)
+      .filter((d) => (d.type === "subject") && (d.name === subject))
       .attr("width", 800) // rectangle width (2x larger)
       .attr("height", 200) // rectangle height (2x larger)
       .attr("fill", "#f86d6d")
@@ -126,9 +148,10 @@ const Graph = ({ nodes, links, subject, width, height, style }) => {
       .attr("x", -400) // to center rectangle
       .attr("y", -100); // to center rectangle
 
+
       node
       .append("rect")
-      .filter((d) => d.type === "subject" && d.name !== subject)
+      .filter((d) => (d.type === "subject") && (subject == null || d.name !== subject))
       .attr("width", 500) // rectangle width
       .attr("height", 200) // rectangle height
       .attr("fill", "#86e399")
@@ -161,11 +184,11 @@ const Graph = ({ nodes, links, subject, width, height, style }) => {
       .attr("y", 0)
       .attr("dy", ".35em")
       .attr("text-anchor", "middle")
-      .attr("font-size", (d) => (d.name === subject ? "60px" : "40px"))
+      .attr("font-size", (d) => (subject == null ? "40" : d.name === subject ? "60px" : "40px"))
       .attr("fill", "#000")
       .style("pointer-events", "none")
       .text((d) => d.name);
-    
+  
 
     simulation.on("tick", () => {
       link
