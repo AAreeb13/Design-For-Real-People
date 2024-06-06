@@ -2,14 +2,13 @@ import React, { useEffect, useRef } from "react";
 import * as d3 from "d3";
 import { useNavigate } from "react-router-dom";
 
-const Graph = ({ nodes, links, subject=null, width, height, style }) => {
-
+const Graph = ({ nodes, links, subject = null, width, height, style }) => {
   const svgRef = useRef();
   const navigate = useNavigate();
 
-  const validNodes = subject == null ? 
-    nodes : 
-    nodes.filter(
+  const validNodes = subject == null
+    ? nodes
+    : nodes.filter(
       (n) => n.name === subject || n.subject === subject
     );
 
@@ -19,22 +18,19 @@ const Graph = ({ nodes, links, subject=null, width, height, style }) => {
 
   let linksToUse = links.map((link) => {
     if (link.source == null) {
-      return { source: link.source.source, target: link.source.target};
+      return { source: link.source.source, target: link.source.target };
     }
-    return { source: link.source, target: link.target};
+    return { source: link.source, target: link.target };
   });
 
   const nodeNameList = nodesToUse.map((n) => n.name);
-  linksToUse = subject == null ? 
-    linksToUse : 
-    linksToUse.filter((link) => {
+  linksToUse = subject == null
+    ? linksToUse
+    : linksToUse.filter((link) => {
       return (
         nodeNameList.includes(link.source) && nodeNameList.includes(link.target)
       );
     });
-
-    console.log("nodes To use", nodesToUse)
-    console.log("links to use", linksToUse)
 
   useEffect(() => {
     const svg = d3.select(svgRef.current);
@@ -66,7 +62,7 @@ const Graph = ({ nodes, links, subject=null, width, height, style }) => {
       .attr("d", "M 0,-5 L 10 ,0 L 0,5")
       .attr("fill", "#999")
       .style("stroke", "none");
-    
+
     const simulation = d3
       .forceSimulation(nodesToUse)
       .force(
@@ -74,13 +70,11 @@ const Graph = ({ nodes, links, subject=null, width, height, style }) => {
         d3
           .forceLink(linksToUse)
           .id((d) => d.name)
-          .distance(900)
+          .distance(90)
       ) // distance = link length
-      .force("charge", subject == null ? d3.forceManyBody().strength(-5000) : d3.forceManyBody().strength(-50000))
+      .force("charge", subject == null ? d3.forceManyBody().strength(-5000) : d3.forceManyBody().strength(-200000))
       .force("center", d3.forceCenter(width / 30, height / 30));
-    
-    console.log("we are using", linksToUse);
-    console.log("with nodes", nodesToUse)
+
     linksToUse = linksToUse.map((link, index) => {
       const sourceNode = nodesToUse.find((n) => n.name === link.source.name)
       const targetNode = nodesToUse.find((n) => n.name === link.target.name)
@@ -103,6 +97,15 @@ const Graph = ({ nodes, links, subject=null, width, height, style }) => {
       .attr("stroke-width", 15) // number = thickness of lines
       .attr("marker-end", "url(#arrowhead)");
 
+    const text = svgGroup.selectAll("text")
+      .data(linksToUse)
+      .enter()
+      .append("text")
+      .text((d, i) => i + 1)
+      .attr("font-size", "100px")
+      .attr("fill", "#000")
+      .style("pointer-events", "none");
+
     const node = svgGroup
       .append("g")
       .selectAll("g")
@@ -120,21 +123,21 @@ const Graph = ({ nodes, links, subject=null, width, height, style }) => {
       .attr("stroke", "#fff")
       .attr("stroke-width", 1.5)
       .on("click", (event, d) => {
-          navigate('/topic/' + d.name);
+        navigate('/topic/' + d.name);
       })
-      .on("mouseover", function() {
+      .on("mouseover", function () {
         d3.select(this)
-          .transition() 
-          .duration(200) 
-          .attr("fill", "#508a7c") 
-          .attr("stroke", "#666"); 
+          .transition()
+          .duration(200)
+          .attr("fill", "#508a7c")
+          .attr("stroke", "#666");
       })
-      .on("mouseout", function() {
+      .on("mouseout", function () {
         d3.select(this)
-          .transition() 
-          .duration(200) 
-          .attr("fill", "#69b3a2") 
-          .attr("stroke", "#fff"); 
+          .transition()
+          .duration(200)
+          .attr("fill", "#69b3a2")
+          .attr("stroke", "#fff");
       });
 
     node
@@ -149,7 +152,7 @@ const Graph = ({ nodes, links, subject=null, width, height, style }) => {
       .attr("y", -100); // to center rectangle
 
 
-      node
+    node
       .append("rect")
       .filter((d) => (d.type === "subject") && (subject == null || d.name !== subject))
       .attr("width", 500) // rectangle width
@@ -161,24 +164,24 @@ const Graph = ({ nodes, links, subject=null, width, height, style }) => {
       .attr("y", -100)
       .style("cursor", "pointer") // Change cursor to pointer for clickable rectangles
       .on("click", (event, d) => {
-        navigate('/graph/'+d.name);
+        navigate('/graph/' + d.name);
       })
-      .on("mouseover", function() {
+      .on("mouseover", function () {
         d3.select(this)
-          .transition() 
-          .duration(200) 
-          .attr("fill", "#ff9999") 
-          .attr("stroke", "#666"); 
+          .transition()
+          .duration(200)
+          .attr("fill", "#ff9999")
+          .attr("stroke", "#666");
       })
-      .on("mouseout", function() {
+      .on("mouseout", function () {
         d3.select(this)
-          .transition() 
-          .duration(200) 
-          .attr("fill", "#86e399") 
-          .attr("stroke", "#fff"); 
+          .transition()
+          .duration(200)
+          .attr("fill", "#86e399")
+          .attr("stroke", "#fff");
       });
-    
-      node
+
+    node
       .append("text")
       .attr("x", 0)
       .attr("y", 0)
@@ -188,7 +191,7 @@ const Graph = ({ nodes, links, subject=null, width, height, style }) => {
       .attr("fill", "#000")
       .style("pointer-events", "none")
       .text((d) => d.name);
-  
+
 
     simulation.on("tick", () => {
       link
@@ -196,6 +199,10 @@ const Graph = ({ nodes, links, subject=null, width, height, style }) => {
         .attr("y1", (d) => d.source.y)
         .attr("x2", (d) => d.target.x)
         .attr("y2", (d) => d.target.y);
+
+      text
+        .attr("x", (d) => (d.source.x + d.target.x) / 2)
+        .attr("y", (d) => (d.source.y + d.target.y) / 2);
 
       node.attr("transform", (d) => `translate(${d.x},${d.y})`);
     });
