@@ -18,7 +18,6 @@ const runQuery = async (query, params = {}) => {
       const n = record.get("n");
       const m = record.get("m");
       const r = record.get("r");
-
       nodes.set(n.identity.toString(), n);
       nodes.set(m.identity.toString(), m);
       relationships.set(r.identity.toString(), r);
@@ -71,26 +70,33 @@ const nodeExists = async (label, properties) => {
   }
 };
 
-const mainSubjectExists = async (label, properties, isMainSubject=true) => {
+const subjectExists = async (label, properties, isMainSubject=true) => {
   const session = driver.session();
   const name = isMainSubject ? properties.name : properties.subject
   const params = { name };
   try {
-    const query = `MATCH (n:${label} {name: $name, type: 'subject', mainSubject: True}) RETURN n`;
+    const query = `MATCH (n:${label} {name: $name, type: 'subject'}) RETURN n`;
     const result = await session.run(query, params);
-    console.log("result", result)
     return result.records.length > 0;
   } finally {
     await session.close();
   }
 }
 
-const miniSubjectExists = async (label, properties) => {
+const mainSubjectExists = async (label, properties) => {
   const session = driver.session();
+  let name = properties.name;
+  let params = { name };
   try {
-    const query = `MATCH (n:${label} {name: $name, type: 'subject', subject: $subject, mainSubject: False}) RETURN n LIMIT 1`;
-    const result = await session.run(query, {name: properties.name, subject: properties.subject});
-    return result.records.length > 0;
+    const query = `MATCH (n:${label} {name: $name, type: 'subject'}) RETURN n`;
+    let result = await session.run(query, params);
+    if (result.records.length == 0) {
+      name = properties.subject
+      params = { name };
+      const query = `MATCH (n:${label} {name: $name, type: 'subject'}) RETURN n`;
+      result = await session.run(query, params);
+    }
+    return result.records.length > 0
   } finally {
     await session.close();
   }
@@ -204,13 +210,79 @@ const getAllNodes = async (query) => {
   }
 };
 
+const getDependencyGraph = async (topicName) => {
+  const session = driver.session();
+  const query = `
+    MATCH (n:Subject)-[r:IS_USED_IN*]->(m:Subject{name: $topicName}) 
+    RETURN n, r, m;
+  `;
+  const params = { topicName };
+
+  try {
+    const result = await session.run(query, params);
+    const nodes = new Map();
+    const relationships = new Map();
+
+    result.records.forEach((record) => {
+      const n = record.get("n");
+      const m = record.get("m");
+      const relList = record.get("r");
+      
+      // Extract properties from Neo4j node objects
+      const nProperties = { id: n.identity.toString(), ...n.properties };
+      const mProperties = { id: m.identity.toString(), ...m.properties };
+
+      // Store nodes in the map with their properties
+      nodes.set(n.identity.toString(), nProperties);
+      nodes.set(m.identity.toString(), mProperties);
+
+      relList.forEach((rel) => {
+        const startNode = nodes.get(rel.start.low.toString());
+        const endNode = nodes.get(rel.end.low.toString());
+
+        // Update properties of start and end nodes
+        nodes.set(startNode.id.toString(), { ...startNode, ...startNode.properties });
+        nodes.set(endNode.id.toString(), { ...endNode, ...endNode.properties });
+
+        relationships.set(rel.identity.toString(), {
+          id: rel.identity.toString(),
+          source: startNode.id.toString(),
+          target: endNode.id.toString(),
+          ...rel.properties,
+        });
+      });
+    });
+
+    const filteredNodes = Array.from(nodes.values());
+    const filteredRelationships = Array.from(relationships.values());
+
+    return { nodes: filteredNodes, relationships: filteredRelationships };
+  } catch (error) {
+    console.error("Failed to fetch dependency graph:", error);
+    throw error;
+  } finally {
+    await session.close();
+  }
+};
+
+
+const getNode = async (nodeName) => {
+  const {nodes, relationships} = await getGraphData();
+  return nodes.find((n) => n.name === nodeName)
+}
+
+
+
 export { 
   getGraphData, 
   mainSubjectExists,
-  miniSubjectExists,
+  subjectExists,
   nodeExists,
   getMainSubjects, 
   addMainSubjectToGraph, 
   addMiniSubjectToGraph, 
-  addTopicToGraph };
+  addTopicToGraph,
+  getDependencyGraph,
+  getNode
+};
 
