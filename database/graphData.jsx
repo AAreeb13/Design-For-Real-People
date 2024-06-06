@@ -266,7 +266,10 @@ const getDependencyGraph = async (topicName) => {
 };
 
 
-
+const getNode = async (nodeName) => {
+  const {nodes, relationships} = await getGraphData();
+  return nodes.find((n) => n.name === nodeName)
+}
 
 
 
@@ -279,6 +282,7 @@ export {
   addMainSubjectToGraph, 
   addMiniSubjectToGraph, 
   addTopicToGraph,
-  getDependencyGraph
+  getDependencyGraph,
+  getNode
 };
 

@@ -11,7 +11,7 @@ import HomePage from "./pages/HomePage";
 import Graph from "./components/Graph";
 import Navbar from "./components/Navbar";
 import GridMenu from "./pages/GridMenu";
-import { getGraphData } from "../database/graphData";
+import { getGraphData, getNode } from "../database/graphData";
 import SubGraph from "./components/SubGraph";
 import TopicEntry from "./components/TopicEntry";
 
@@ -66,7 +66,7 @@ function App() {
             element={<GraphRouteWrapper graphData={graphData} />}
           />
           <Route path="/topic/:node" element={<TopicRouteWrapper />} />
-          <Route path="/subgraph/:topicName" element={<SubgraphRouteWrapper />}/>
+          <Route path="/subgraph/:topicName" element={<SubgraphRouteWrapper graphData={graphData}/>}/>
         </Routes>
       </div>
     </Router>
@@ -94,9 +94,18 @@ function GraphRouteWrapper({ graphData }) {
   );
 }
 
-function SubgraphRouteWrapper() {
+function SubgraphRouteWrapper({ graphData }) {
   const { topicName } = useParams();
-  return <SubGraph topicName={topicName}/>
+  const node = graphData.nodes.find((n) => n.name === topicName)
+  console.log("node", node)
+  const subject = node.subject
+  return (<Graph
+            nodes={graphData.nodes}
+            links={graphData.relationships}
+            subject={subject}
+            width={1500}
+            height={600}
+          />)
 }
 
 function isEqualData(oldData, data) {

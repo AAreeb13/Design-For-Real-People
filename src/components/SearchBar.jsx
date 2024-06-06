@@ -26,7 +26,7 @@ const SearchBar = () => {
       const filteredNodes = nodes.filter((node) =>
         node.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
-      setSuggestions(filteredNodes);
+      //setSuggestions(filteredNodes.slice(0, 5));
     } else {
       setSuggestions([]);
     }
@@ -42,9 +42,23 @@ const SearchBar = () => {
     navigate(`/subgraph/${topicName}`);
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (searchTerm) {
+      const matchingNode = nodes.find((node) =>
+        node.name.toLowerCase() === searchTerm.toLowerCase()
+      );
+      if (matchingNode) {
+        navigate(`/subgraph/${matchingNode.name}`);
+      } else {
+        alert("Topic not found");
+      }
+    }
+  };
+
   return (
     <div className="search-bar">
-      <form className="d-flex" role="search">
+      <form className="d-flex" role="search" onSubmit={handleSubmit}>
         <input
           className="form-control me-2"
           type="search"
