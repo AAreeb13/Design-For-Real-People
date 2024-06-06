@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 
 const Graph = ({ nodes, links, subject=null, width, height, style }) => {
 
-
   const svgRef = useRef();
   const navigate = useNavigate();
 
@@ -20,9 +19,9 @@ const Graph = ({ nodes, links, subject=null, width, height, style }) => {
 
   let linksToUse = links.map((link) => {
     if (link.source == null) {
-      return { source: link.source.source, target: link.source.target };
+      return { source: link.source.source, target: link.source.target};
     }
-    return { source: link.source, target: link.target };
+    return { source: link.source, target: link.target};
   });
 
   const nodeNameList = nodesToUse.map((n) => n.name);
@@ -67,7 +66,7 @@ const Graph = ({ nodes, links, subject=null, width, height, style }) => {
       .attr("d", "M 0,-5 L 10 ,0 L 0,5")
       .attr("fill", "#999")
       .style("stroke", "none");
-
+    
     const simulation = d3
       .forceSimulation(nodesToUse)
       .force(
@@ -77,9 +76,22 @@ const Graph = ({ nodes, links, subject=null, width, height, style }) => {
           .id((d) => d.name)
           .distance(900)
       ) // distance = link length
-      .force("charge", d3.forceManyBody().strength(-50000))
+      .force("charge", subject == null ? d3.forceManyBody().strength(-5000) : d3.forceManyBody().strength(-50000))
       .force("center", d3.forceCenter(width / 30, height / 30));
     
+    console.log("we are using", linksToUse);
+    console.log("with nodes", nodesToUse)
+    linksToUse = linksToUse.map((link, index) => {
+      const sourceNode = nodesToUse.find((n) => n.name === link.source.name)
+      const targetNode = nodesToUse.find((n) => n.name === link.target.name)
+      const toReturn = {
+        source: sourceNode,
+        target: targetNode,
+        index: index
+      }
+      return toReturn
+    })
+
     const link = svgGroup
       .append("g")
       .attr("stroke", "#999")
