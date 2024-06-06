@@ -217,9 +217,6 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       node.attr("transform", (d) => `translate(${d.x},${d.y})`);
     });
 
-    // Trigger the initial tick to position nodes immediately
-    simulation.alpha(1).restart();
-
     const initialTransform = d3.zoomIdentity
       .translate(width / 2, height / 2)
       .scale(0.25);
