@@ -26,7 +26,7 @@ const SearchBar = () => {
       const filteredNodes = nodes.filter((node) =>
         node.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
-      //setSuggestions(filteredNodes.slice(0, 5));
+      setSuggestions(filteredNodes.slice(0, 5));
     } else {
       setSuggestions([]);
     }
