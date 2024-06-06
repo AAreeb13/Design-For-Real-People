@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import NavbarDropdown from "./NavbarDropdown";
 import FormOverlay from "./FormOverlay";
+import SearchBar from "./SearchBar";
 
 const MyNavbar = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -65,17 +66,7 @@ const MyNavbar = () => {
             </ul>
           </div>
 
-          <form className="d-flex" role="search">
-            <input
-              className="form-control me-2"
-              type="search"
-              placeholder="Enter a Topic"
-              aria-label="Search"
-            />
-            <button className="btn btn-outline-success" type="submit">
-              Search
-            </button>
-          </form>
+          <SearchBar />
 
           <button className="btn btn-outline-success" style={loginStyle}>
             Login
