@@ -1,5 +1,8 @@
 image: node:20
 
+before_script:
+  - apt update -y
+
 build-job:
   stage: build
   script:
@@ -8,7 +11,7 @@ build-job:
 deploy-heroku:
   stage: deploy
   script:
-    - apt-get update -qy
+    # - apt-get update -qy
     - apt-get install -y ruby-dev
     - gem install dpl
     - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_PRODUCTION_KEY
