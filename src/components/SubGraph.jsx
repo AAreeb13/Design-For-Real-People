@@ -1,36 +1,53 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Graph from "./Graph";
-import { getGraphData } from "../../database/graphData";
+import { getDependencyGraph } from "../../database/graphData";
 
 const SubGraph = ({ topicName }) => {
-  const [nodes, setNodes] = useState([])
-  const [relationships, setRelationships] = useState([])
+  const [nodes, setNodes] = useState([]);
+  const [relationships, setRelationships] = useState([]);
+  const [error, setError] = useState(null);
+
+  const graphStyle = {
+    marginLeft: "17%",
+    border: "1px solid black",
+    boxShadow:
+      "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+    borderRadius: "10px",
+  };
 
   useEffect(() => {
     const fetchGraphData = async () => {
       try {
-        const { nodes, relationships } = await getGraphData();
+        const { nodes, relationships } = await getDependencyGraph(topicName);
         setNodes(nodes);
-        setRelationships(relationships)
+        setRelationships(relationships);
       } catch (error) {
-        console.error("Failed to getch graph data:", error)
+        setError("Failed to fetch graph data.");
+        console.error("Failed to fetch graph data:", error);
       }
+    };
 
-      fetchGraphData();
-    }
-  }, [])
+    fetchGraphData();
+  }, [topicName]);
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
+  if (!nodes.length) {
+    return <div>Loading...</div>;
+  }
 
 
   return (
     <div>
       <h2>SubGraph for {topicName}</h2>
       <Graph
-        nodes={ nodes }
-        links={ relationships}
+        nodes={nodes}
+        links={relationships}
         width={800}
         height={600}
-        subject={topicName}
-        style={{ margin: "auto" }}
+        style={graphStyle}
       />
     </div>
   );

@@ -18,7 +18,6 @@ const runQuery = async (query, params = {}) => {
       const n = record.get("n");
       const m = record.get("m");
       const r = record.get("r");
-
       nodes.set(n.identity.toString(), n);
       nodes.set(m.identity.toString(), m);
       relationships.set(r.identity.toString(), r);
@@ -211,6 +210,66 @@ const getAllNodes = async (query) => {
   }
 };
 
+const getDependencyGraph = async (topicName) => {
+  const session = driver.session();
+  const query = `
+    MATCH (n:Subject)-[r:IS_USED_IN*]->(m:Subject{name: $topicName}) 
+    RETURN n, r, m;
+  `;
+  const params = { topicName };
+
+  try {
+    const result = await session.run(query, params);
+    const nodes = new Map();
+    const relationships = new Map();
+
+    result.records.forEach((record) => {
+      const n = record.get("n");
+      const m = record.get("m");
+      const relList = record.get("r");
+      
+      // Extract properties from Neo4j node objects
+      const nProperties = { id: n.identity.toString(), ...n.properties };
+      const mProperties = { id: m.identity.toString(), ...m.properties };
+
+      // Store nodes in the map with their properties
+      nodes.set(n.identity.toString(), nProperties);
+      nodes.set(m.identity.toString(), mProperties);
+
+      relList.forEach((rel) => {
+        const startNode = nodes.get(rel.start.low.toString());
+        const endNode = nodes.get(rel.end.low.toString());
+
+        // Update properties of start and end nodes
+        nodes.set(startNode.id.toString(), { ...startNode, ...startNode.properties });
+        nodes.set(endNode.id.toString(), { ...endNode, ...endNode.properties });
+
+        relationships.set(rel.identity.toString(), {
+          id: rel.identity.toString(),
+          source: startNode.id.toString(),
+          target: endNode.id.toString(),
+          ...rel.properties,
+        });
+      });
+    });
+
+    const filteredNodes = Array.from(nodes.values());
+    const filteredRelationships = Array.from(relationships.values());
+
+    return { nodes: filteredNodes, relationships: filteredRelationships };
+  } catch (error) {
+    console.error("Failed to fetch dependency graph:", error);
+    throw error;
+  } finally {
+    await session.close();
+  }
+};
+
+
+
+
+
+
 export { 
   getGraphData, 
   mainSubjectExists,
@@ -219,5 +278,7 @@ export {
   getMainSubjects, 
   addMainSubjectToGraph, 
   addMiniSubjectToGraph, 
-  addTopicToGraph };
+  addTopicToGraph,
+  getDependencyGraph
+};
 

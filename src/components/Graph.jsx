@@ -2,13 +2,17 @@ import React, { useEffect, useRef } from "react";
 import * as d3 from "d3";
 import { useNavigate } from "react-router-dom";
 
-const Graph = ({ nodes, links, subject, width, height, style }) => {
+const Graph = ({ nodes, links, subject=null, width, height, style }) => {
+
   const svgRef = useRef();
   const navigate = useNavigate();
 
-  const validNodes = nodes.filter(
-    (n) => n.name === subject || n.subject === subject
-  );
+  const validNodes = subject == null ? 
+    nodes : 
+    nodes.filter(
+      (n) => n.name === subject || n.subject === subject
+    );
+
   const nodesToUse = validNodes.map((n) => {
     return { name: n.name, type: n.type };
   });
@@ -117,7 +121,7 @@ const Graph = ({ nodes, links, subject, width, height, style }) => {
 
     node
       .append("rect")
-      .filter((d) => d.type === "subject" && d.name === subject)
+      .filter((d) => (d.type === "subject") && (d.name === subject))
       .attr("width", 800) // rectangle width (2x larger)
       .attr("height", 200) // rectangle height (2x larger)
       .attr("fill", "#f86d6d")
@@ -126,9 +130,10 @@ const Graph = ({ nodes, links, subject, width, height, style }) => {
       .attr("x", -400) // to center rectangle
       .attr("y", -100); // to center rectangle
 
+
       node
       .append("rect")
-      .filter((d) => d.type === "subject" && d.name !== subject)
+      .filter((d) => (d.type === "subject") && (subject == null || d.name !== subject))
       .attr("width", 500) // rectangle width
       .attr("height", 200) // rectangle height
       .attr("fill", "#86e399")
@@ -161,11 +166,11 @@ const Graph = ({ nodes, links, subject, width, height, style }) => {
       .attr("y", 0)
       .attr("dy", ".35em")
       .attr("text-anchor", "middle")
-      .attr("font-size", (d) => (d.name === subject ? "60px" : "40px"))
+      .attr("font-size", (d) => (subject == null ? "40" : d.name === subject ? "60px" : "40px"))
       .attr("fill", "#000")
       .style("pointer-events", "none")
       .text((d) => d.name);
-    
+  
 
     simulation.on("tick", () => {
       link
