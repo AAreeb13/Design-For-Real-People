@@ -106,8 +106,8 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
           .filter((l) => l.target.name === currentNode.name)
           .attr("stroke", "blue")
           .each(function (l) {
-            if (!highlightedNodes.has(l.target.name)) {
-              highlightRecursive(l.target);
+            if (!highlightedNodes.has(l.source.name)) {
+              highlightRecursive(l.source);
             }
           });
       };
@@ -159,7 +159,9 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
 
     node
       .append("rect")
-      .filter((d) => (d.type === "subject") && (subject == null || d.name !== subject))
+      .filter(
+        (d) => d.type === "subject" && (subject == null || d.name !== subject)
+      )
       .attr("width", 500) // rectangle width
       .attr("height", 200) // rectangle height
       .attr("fill", "#86e399")
@@ -174,7 +176,7 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .on("mouseover", function (event, d) {
         d3.select(this)
           .transition()
-          .duration(200) // Quicker transition duration
+          .duration(50) // Quicker transition duration
           .attr("fill", "#ff9999")
           .attr("stroke", "#666");
 
@@ -184,7 +186,7 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .on("mouseout", function (event, d) {
         d3.select(this)
           .transition()
-          .duration(200) // Quicker transition duration
+          .duration(50) // Quicker transition duration
           .attr("fill", "#86e399")
           .attr("stroke", "#fff");
 
@@ -214,6 +216,9 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
 
       node.attr("transform", (d) => `translate(${d.x},${d.y})`);
     });
+
+    // Trigger the initial tick to position nodes immediately
+    simulation.alpha(1).restart();
 
     const initialTransform = d3.zoomIdentity
       .translate(width / 2, height / 2)
