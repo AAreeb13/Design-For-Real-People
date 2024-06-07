@@ -90,6 +90,20 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .attr("stroke-width", 15) // number = thickness of lines
       .attr("marker-end", "url(#arrowhead)");
 
+      const text = svgGroup.selectAll("text")
+      .data(linksToUse)
+      .enter()
+      .append("text")
+      .text((d, i) => i + 1)
+      .attr("font-size", "100px")
+      .attr("fill", "blue")
+      .style("font-weight", "bold") // Make the text bold
+      .style("stroke", "#FFF") // Outline the text with white color
+      .style("stroke-width", "3px") // Width of the outline
+      .style("text-shadow", "2px 2px 4px rgba(0, 0, 0, 0.5)") // Add a shadow to the text
+      .style("pointer-events", "none");
+
+
     const node = svgGroup
       .append("g")
       .selectAll("g")
@@ -213,6 +227,11 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
         .attr("y1", (d) => d.source.y)
         .attr("x2", (d) => d.target.x)
         .attr("y2", (d) => d.target.y);
+
+      text
+        .attr("x", (d) => (d.source.x + d.target.x) / 2)
+        .attr("y", (d) => (d.source.y + d.target.y) / 2);
+
 
       node.attr("transform", (d) => `translate(${d.x},${d.y})`);
     });
