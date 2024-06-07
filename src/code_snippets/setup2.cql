@@ -1141,12 +1141,6 @@ CREATE (n:Subject{
 	mainSubject: False
 });
 
-CREATE (n:Subject{
-	name: 'linear algebra',
-	subject: 'algebra',
-	type: 'subject',
-	mainSubject: False
-});
 
 CREATE (n:Subject{
   name: 'polynomial equations',
