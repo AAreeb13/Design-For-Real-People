@@ -24,7 +24,8 @@ const SearchBar = () => {
   useEffect(() => {
     if (searchTerm) {
       const filteredNodes = nodes.filter((node) =>
-        node.name.toLowerCase().includes(searchTerm.toLowerCase())
+        node.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        (node.type === "topic" || !node.mainSubject)
       );
       setSuggestions(filteredNodes.slice(0, 5));
     } else {
@@ -48,11 +49,13 @@ const SearchBar = () => {
       const matchingNode = nodes.find((node) =>
         node.name.toLowerCase() === searchTerm.toLowerCase()
       );
-      if (matchingNode) {
+      if (matchingNode && (matchingNode.type === "topic" || !matchingNode.mainSubject)) {
         navigate(`/subgraph/${matchingNode.name}`);
       } else {
-        alert("Topic not found");
+        alert("Topic or mini subject not found");
       }
+      setSearchTerm("");
+      setSuggestions([]);
     }
   };
 
