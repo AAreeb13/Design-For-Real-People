@@ -57,6 +57,7 @@ function App() {
   return (
     <Router>
       <div>
+        <Navbar />
         <Routes>
           <Route path="/" element={<HomePage graphData={graphData} />} />
           <Route path="/grid-menu" element={<GridMenu />} />
