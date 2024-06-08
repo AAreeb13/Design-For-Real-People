@@ -1,28 +1,22 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import NavbarDropdown from "./NavbarDropdown";
-import FormOverlay from "./FormOverlay";
+import AuthFormOverlay from "./FormOverlay"; 
 import SearchBar from "./SearchBar";
 
 const MyNavbar = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [formType, setFormType] = useState(""); 
 
-  const handleOpenForm = () => {
+  const handleOpenForm = (type) => { 
     setIsFormOpen(true);
+    setFormType(type); 
   };
 
   const handleCloseForm = () => {
     setIsFormOpen(false);
   };
-
-  const handleLogin = () => {
-    setIsLoggedIn(true);
-  };
-
-  const handleSignUp = () => {
-    setIsLoggedIn(true);
-  }
 
   const handleLogout = () => {
     setIsLoggedIn(false);
@@ -57,7 +51,7 @@ const MyNavbar = () => {
 
   const logoutStyle = {
     marginLeft: "27%",
-  }
+  };
 
   return (
     <div>
@@ -80,7 +74,7 @@ const MyNavbar = () => {
           <div className="collapse navbar-collapse">
             <ul className="navbar-nav mr-auto">
               <li className="nav-item">
-                <button className="btn btn-success" onClick={handleOpenForm} style={addTopicStyle}>
+                <button className="btn btn-success" onClick={() => handleOpenForm("add")} style={addTopicStyle}>
                   Add a Topic
                 </button>
               </li>
@@ -91,10 +85,10 @@ const MyNavbar = () => {
 
           {!isLoggedIn ? (
             <>
-              <button className="btn btn-outline-success" style={loginStyle} onClick={handleLogin}>
+              <button className="btn btn-outline-success" style={loginStyle} onClick={() => handleOpenForm("login")}>
                 Login
               </button>
-              <button className="btn btn-outline-success" onClick={handleSignUp}>
+              <button className="btn btn-outline-success" onClick={() => handleOpenForm("signup")}>
                 Sign Up
               </button>
             </>
@@ -105,7 +99,7 @@ const MyNavbar = () => {
           )}
         </div>
       </nav>
-      {isFormOpen && <FormOverlay onClose={handleCloseForm} />}
+      {isFormOpen && <AuthFormOverlay onClose={handleCloseForm} formType={formType} />}
     </div>
   );
 };
