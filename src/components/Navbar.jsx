@@ -6,6 +6,7 @@ import SearchBar from "./SearchBar";
 
 const MyNavbar = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const handleOpenForm = () => {
     setIsFormOpen(true);
@@ -13,6 +14,18 @@ const MyNavbar = () => {
 
   const handleCloseForm = () => {
     setIsFormOpen(false);
+  };
+
+  const handleLogin = () => {
+    setIsLoggedIn(true);
+  };
+
+  const handleSignUp = () => {
+    setIsLoggedIn(true);
+  }
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
   };
 
   const ourLogo = {
@@ -38,6 +51,14 @@ const MyNavbar = () => {
     marginRight: "2%",
   };
 
+  const addTopicStyle = {
+    marginRight: "20px",
+  };
+
+  const logoutStyle = {
+    marginLeft: "27%",
+  }
+
   return (
     <div>
       <nav className="navbar navbar-expand-lg bg-body-tertiary" style={navStyle}>
@@ -59,7 +80,7 @@ const MyNavbar = () => {
           <div className="collapse navbar-collapse">
             <ul className="navbar-nav mr-auto">
               <li className="nav-item">
-                <button className="btn btn-success" onClick={handleOpenForm}>
+                <button className="btn btn-success" onClick={handleOpenForm} style={addTopicStyle}>
                   Add a Topic
                 </button>
               </li>
@@ -68,10 +89,20 @@ const MyNavbar = () => {
 
           <SearchBar />
 
-          {/* <button className="btn btn-outline-success" style={loginStyle}>
-            Login
-          </button>
-          <button className="btn btn-outline-success">Sign Up</button> */}
+          {!isLoggedIn ? (
+            <>
+              <button className="btn btn-outline-success" style={loginStyle} onClick={handleLogin}>
+                Login
+              </button>
+              <button className="btn btn-outline-success" onClick={handleSignUp}>
+                Sign Up
+              </button>
+            </>
+          ) : (
+            <button className="btn btn-outline-danger" style={logoutStyle} onClick={handleLogout}>
+              Logout
+            </button>
+          )}
         </div>
       </nav>
       {isFormOpen && <FormOverlay onClose={handleCloseForm} />}
