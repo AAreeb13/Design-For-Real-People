@@ -12,7 +12,6 @@ import Graph from "./components/Graph";
 import Navbar from "./components/Navbar";
 import GridMenu from "./pages/GridMenu";
 import { getGraphData, getNode } from "../database/graphData";
-import SubGraph from "./components/SubGraph";
 import TopicEntry from "./components/TopicEntry";
 
 function App() {
@@ -80,9 +79,6 @@ function TopicRouteWrapper() {
 
 function GraphRouteWrapper({ graphData }) {
   const { subject } = useParams();
-  console.log("Graph Route wrapper")
-  console.log("nodes", graphData.nodes)
-  console.log("Relationships", graphData.relationships)
   return (
     <Graph
       nodes={graphData.nodes}
@@ -97,7 +93,6 @@ function GraphRouteWrapper({ graphData }) {
 function SubgraphRouteWrapper({ graphData }) {
   const { topicName } = useParams();
   const node = graphData.nodes.find((n) => n.name === topicName)
-  console.log("node", node)
   const subject = node.subject
   return (<Graph
             nodes={graphData.nodes}

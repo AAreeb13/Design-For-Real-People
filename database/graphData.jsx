@@ -271,7 +271,14 @@ const getNode = async (nodeName) => {
   return nodes.find((n) => n.name === nodeName)
 }
 
-
+const getOrder = async (linkToUse) => {
+  const query = "MATCH (n:Subject{name: $name1}) -[r:IS_USED_IN]-> (m:Subject{name: $name2}) RETURN n, r, m"
+  const params = {name1: linkToUse.source.name, name2: linkToUse.target.name}
+  const {nodes, relationships} = await runQuery(query, params)
+  console.log("nodessss", nodes)
+  console.log("linksssssss", relationships)
+  return relationships[0].properties.order !== undefined ? relationships[0].properties.order : -1
+}
 
 export { 
   getGraphData, 
@@ -283,6 +290,7 @@ export {
   addMiniSubjectToGraph, 
   addTopicToGraph,
   getDependencyGraph,
-  getNode
+  getNode,
+  getOrder
 };
 
