@@ -146,7 +146,8 @@ const addMiniSubjectToGraph = async (name, subject, prerequisites) => {
 };
 
 const addTopicToGraph = async (name, subject, prerequisites) => {
-  const formattedPrerequisites = `[${prerequisites.split(',').map(item => `'${item.trim()}'`).join(', ')}]`;
+  // Convert prerequisites to an array of strings
+  const prereqAsList = prerequisites.split(',').map(item => item.trim());
 
   let query = `
     CREATE (n:Subject{
@@ -154,7 +155,7 @@ const addTopicToGraph = async (name, subject, prerequisites) => {
       subject: $subject,
       type: 'topic',
       description: 'to add later',
-      requires: $formattedPrerequisites,
+      requires: $prereqAsList,
       links: '',
       approvals: 0,
       rejections: 0,
@@ -165,16 +166,16 @@ const addTopicToGraph = async (name, subject, prerequisites) => {
     });
   `;
 
-  const params = { name, subject, formattedPrerequisites };
+  const params = { name, subject, prereqAsList };
   const results = await runQuery(query, params);
-  const prereqAsList = prerequisites.split(',').map(item => item.trim())
 
-
+  // Add relationships for prerequisites if they exist
   return !results ? 
     results : (prereqAsList.length <= 0) ?  
       addRelationshipsToGraph([subject], name) :
       addRelationshipsToGraph(prereqAsList, name);
 };
+
 
 function addRelationshipsToGraph(prerequisites, name) {
   
@@ -275,8 +276,6 @@ const getOrder = async (linkToUse) => {
   const query = "MATCH (n:Subject{name: $name1}) -[r:IS_USED_IN]-> (m:Subject{name: $name2}) RETURN n, r, m"
   const params = {name1: linkToUse.source.name, name2: linkToUse.target.name}
   const {nodes, relationships} = await runQuery(query, params)
-  console.log("nodessss", nodes)
-  console.log("linksssssss", relationships)
   return relationships[0].properties.order !== undefined ? relationships[0].properties.order : -1
 }
 

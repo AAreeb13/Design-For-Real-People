@@ -55,7 +55,6 @@ const FormOverlay = ({ onClose }) => {
     const topicExst = await nodeExists("Subject", data);
 
     const prerequisitesArray = data.prerequisites.split(',').map(prereq => prereq.trim());
-
     for (const prerequisite of prerequisitesArray) {
       const exists = await nodeExists("Subject", {name: prerequisite});
       if (!exists) return false;
