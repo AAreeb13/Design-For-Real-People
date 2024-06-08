@@ -49,7 +49,7 @@ CREATE (n:Subject{
 
 CREATE (n:Subject{
   name: 'Limit Ratio Test',
-  subject: 'limits',
+  subject: 'proofs',
   type: 'topic',
   description: 'The study of limit testing with ratios',
   requires: ['proofs', 'limits'],
@@ -77,8 +77,8 @@ CREATE (n:Subject{
 });
 
 CREATE (n:Subject{
-  name: 'L\'Hopital\'s Rule',
-  subject: 'limits',
+  name: "L'Hopitals Rule",
+  subject: 'proofs',
   type: 'topic',
   description: 'An essential technique for evaluating limits that result in indeterminate forms, using derivatives to find the limit.',
   requires: ['proofs', 'limits', 'differentiation'],
@@ -461,7 +461,7 @@ CREATE (n:Subject{
 
 CREATE (n:Subject{
   name: 'Fourier Series',
-  subject: 'series',
+  subject: 'sequences and series',
   type: 'topic',
   description: 'A mathematical tool used to decompose periodic functions into sums of simpler, sinusoidal functions. Essential for applications in signal processing, physics, and engineering.',
   requires: ['integration', 'differential equations'],
@@ -696,111 +696,102 @@ CREATE (n2:Subject{
 });
 
 
+// Grouped these by page
 
 MATCH (title:Subject{name: 'calculus'}), (subject:Subject{name:'basic arithmetic'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
+CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
+MATCH (title:Subject{name: 'calculus'}), (subject:Subject{name:'Functions'})
+CREATE (title) - [:IS_USED_IN{order: 2}] -> (subject);
+MATCH (title:Subject{name: 'calculus'}), (subject:Subject{name:'Qualitative Analysis'})
+CREATE (title) - [:IS_USED_IN{order: 3}] -> (subject);
+MATCH (title:Subject{name: 'calculus'}), (subject:Subject{name:'Bifurcations'})
+CREATE (title) - [:IS_USED_IN{order: 4}] -> (subject);
+MATCH (title:Subject{name: 'calculus'}), (subject:Subject{name:'sequences and series'})
+CREATE (title) - [:IS_USED_IN{order: 5}] -> (subject);
+MATCH (title:Subject{name: 'basic arithmetic'}), (subject:Subject{name:'proofs'})
+CREATE (title) - [:IS_USED_IN{order: 6}] -> (subject);
+MATCH (title:Subject{name: 'basic arithmetic'}), (subject:Subject{name:'limits'})
+CREATE (title) - [:IS_USED_IN{order: 7}] -> (subject);
+MATCH (title:Subject{name: 'basic arithmetic'}), (subject:Subject{name:'differentiation'})
+CREATE (title) - [:IS_USED_IN{order: 8}] -> (subject);
+MATCH (title:Subject{name: 'basic arithmetic'}), (subject:Subject{name:'integration'})
+CREATE (title) - [:IS_USED_IN{order: 9}] -> (subject);
+
+
 
 MATCH (title:Subject{name: 'limits'}), (subject:Subject{name:'L\'Hopital\'s Rule'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
+CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
 MATCH (title:Subject{name: 'limits'}), (subject:Subject{name:'Limit Ratio Test'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
+CREATE (title) - [:IS_USED_IN{order: 2}] -> (subject);
 
-MATCH (title:Subject{name: 'proofs'}), (subject:Subject{name:'L\'Hopital\'s Rule'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
+MATCH (title:Subject{name: 'proofs'}), (subject:Subject{name:"L'Hopitals Rule"})
+CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
 MATCH (title:Subject{name: 'proofs'}), (subject:Subject{name:'Limit Ratio Test'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
+CREATE (title) - [:IS_USED_IN{order: 2}] -> (subject);
 
-MATCH (title:Subject{name: 'basic arithmetic'}), (subject:Subject{name:'proofs'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-MATCH (title:Subject{name: 'basic arithmetic'}), (subject:Subject{name:'limits'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-MATCH (title:Subject{name: 'basic arithmetic'}), (subject:Subject{name:'differentiation'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-MATCH (title:Subject{name: 'basic arithmetic'}), (subject:Subject{name:'integration'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
+
 
 MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'integration by substitution'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
+CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
 MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'integration by parts'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
-MATCH (title:Subject{name: 'differentiation'}), (subject:Subject{name:'Product Rule'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-MATCH (title:Subject{name: 'differentiation'}), (subject:Subject{name:'Chain Rule'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-MATCH (title:Subject{name: 'differentiation'}), (subject:Subject{name:'L\'Hopital\'s Rule'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
-MATCH (title:Subject{name: 'calculus'}), (subject:Subject{name:'Functions'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
+CREATE (title) - [:IS_USED_IN{order: 2}] -> (subject);
 MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'integration preliminaries'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
+CREATE (title) - [:IS_USED_IN{order: 3}] -> (subject);
+MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'Lengths Volumes, and Surfaces'})
+CREATE (title) - [:IS_USED_IN{order: 4}] -> (subject);
+MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'Integration by Polar Coordinates'})
+CREATE (title) - [:IS_USED_IN{order: 5}] -> (subject);
+MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'Multivariate Calculus'})
+CREATE (title) - [:IS_USED_IN{order: 6}] -> (subject);
+MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'moment generating function'})
+CREATE (title) - [:IS_USED_IN{order: 7}] -> (subject)
 
-MATCH (title:Subject{name: 'integration preliminaries'}), (subject:Subject{name:'integration by substitution'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
 
-MATCH (title:Subject{name: 'integration preliminaries'}), (subject:Subject{name:'integration by parts'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
-MATCH (title:Subject{name: 'integration preliminaries'}), (subject:Subject{name:'integration by inspection'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
 
 MATCH (title:Subject{name: 'integration preliminaries'}), (subject:Subject{name:'integrating a constant'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
+CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
 MATCH (title:Subject{name: 'integration preliminaries'}), (subject:Subject{name:'integrating a positive power'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
+CREATE (title) - [:IS_USED_IN{order: 2}] -> (subject);
 MATCH (title:Subject{name: 'integration preliminaries'}), (subject:Subject{name:'integrating a negative power'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
+CREATE (title) - [:IS_USED_IN{order: 3}] -> (subject);
 MATCH (title:Subject{name: 'integration preliminaries'}), (subject:Subject{name:'integrating a fractional power'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
+CREATE (title) - [:IS_USED_IN{order: 4}] -> (subject);
 MATCH (title:Subject{name: 'integration preliminaries'}), (subject:Subject{name:'integrating a denominator variable'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
+CREATE (title) - [:IS_USED_IN{order: 5}] -> (subject);
 
-MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'Lengths Volumes, and Surfaces'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
 
-MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'Integration by Polar Coordinates'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-MATCH (title:Subject{name: 'integration preliminaries'}), (subject:Subject{name:'Integration by Polar Coordinates'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
 
-MATCH (title:Subject{name: 'calculus'}), (subject:Subject{name:'sequences and series'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
 
-MATCH (title:Subject{name: 'sequences and series'}), (subject:Subject{name:'Fourier Series'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
+MATCH (title:Subject{name: 'differentiation'}), (subject:Subject{name:'Product Rule'})
+CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
+MATCH (title:Subject{name: 'differentiation'}), (subject:Subject{name:'Chain Rule'})
+CREATE (title) - [:IS_USED_IN{order: 2}] -> (subject);
+MATCH (title:Subject{name: 'differentiation'}), (subject:Subject{name:'L\'Hopital\'s Rule'})
+CREATE (title) - [:IS_USED_IN{order: 3}] -> (subject);
 MATCH (title:Subject{name: 'differentiation'}), (subject:Subject{name:'Laplace Transformation'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
+CREATE (title) - [:IS_USED_IN{order: 4}] -> (subject);
 MATCH (title:Subject{name: 'differentiation'}), (subject:Subject{name:'Fourier Transform'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
+CREATE (title) - [:IS_USED_IN{order: 5}] -> (subject);
+MATCH (title:Subject{name: 'differentiation'}), (subject:Subject{name:'differential equations'})
+CREATE (title) - [:IS_USED_IN{order: 6}] -> (subject);
+MATCH (title:Subject{name: 'differentiation'}), (subject:Subject{name:'moment generating function'})
+CREATE (title) - [:IS_USED_IN{order: 7}] -> (subject);
+
+
 
 MATCH (title:Subject{name: 'differential equations'}), (subject:Subject{name:'Ordinary Differential Equations'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
-MATCH (title:Subject{name: 'differentiation'}), (subject:Subject{name:'differential equations'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
+CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
 MATCH (title:Subject{name: 'differential equations'}), (subject:Subject{name:'First Order Differential Equations'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
+CREATE (title) - [:IS_USED_IN{order: 2}] -> (subject);
 MATCH (title:Subject{name: 'differential equations'}), (subject:Subject{name:'Second Order Differential Equations'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
+CREATE (title) - [:IS_USED_IN{order: 3}] -> (subject);
 
-MATCH (title:Subject{name: 'calculus'}), (subject:Subject{name:'Qualitative Analysis'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
 
-MATCH (title:Subject{name: 'calculus'}), (subject:Subject{name:'Bifurcations'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
 
-MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'Multivariate Calculus'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
+MATCH (title:Subject{name: 'sequences and series'}), (subject:Subject{name:'Fourier Series'})
+CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
+
+
 
 // ------------------   Probability here   ------------------ //
 
@@ -886,26 +877,19 @@ CREATE
 
 
 MATCH (title:Subject{name: 'probability and statistics'}), (subject:Subject{name:'mean'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
+CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
 MATCH (title:Subject{name: 'probability and statistics'}), (subject:Subject{name:'variance'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
+CREATE (title) - [:IS_USED_IN{order: 2}] -> (subject);
 MATCH (title:Subject{name: 'probability and statistics'}), (subject:Subject{name:'skewness'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
+CREATE (title) - [:IS_USED_IN{order: 3}] -> (subject);
 MATCH (title:Subject{name: 'variance'}), (subject:Subject{name:'standard deviation'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
+CREATE (title) - [:IS_USED_IN{order: 4}] -> (subject);
 MATCH (title:Subject{name: 'mean'}), (subject:Subject{name:'moment generating function'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
+CREATE (title) - [:IS_USED_IN{order: 5}] -> (subject);
 MATCH (title:Subject{name: 'standard deviation'}), (subject:Subject{name:'moment generating function'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
+CREATE (title) - [:IS_USED_IN{order: 6}] -> (subject);
 MATCH (title:Subject{name: 'skewness'}), (subject:Subject{name:'moment generating function'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-MATCH (title:Subject{name: 'differentiation'}), (subject:Subject{name:'moment generating function'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'moment generating function'})
-CREATE (title) - [:IS_USED_IN] -> (subject)
-
+CREATE (title) - [:IS_USED_IN{order: 7}] -> (subject);
 
 
 
@@ -1092,31 +1076,34 @@ CREATE (n:Subject{
   ]
 });
 
-// Relationships
 
 MATCH (title:Subject{name: 'linear algebra'}), (subject:Subject{name:'vector spaces'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
+CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
 MATCH (title:Subject{name: 'linear algebra'}), (subject:Subject{name:'linear transformations'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
+CREATE (title) - [:IS_USED_IN{order: 2}] -> (subject);
 MATCH (title:Subject{name: 'linear algebra'}), (subject:Subject{name:'matrix theory'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
+CREATE (title) - [:IS_USED_IN{order: 3}] -> (subject);
+MATCH (title:Subject{name: 'linear algebra'}), (subject:Subject{name:'linear equations'})
+CREATE (title) - [:IS_USED_IN{order: 4}] -> (subject);
+
+
 
 MATCH (title:Subject{name: 'vector spaces'}), (subject:Subject{name:'basis and dimension'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
+CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
 MATCH (title:Subject{name: 'vector spaces'}), (subject:Subject{name:'Inner Product Spaces'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
+CREATE (title) - [:IS_USED_IN{order: 2}] -> (subject);
+
+
 
 MATCH (title:Subject{name: 'matrix theory'}), (subject:Subject{name:'Eigenvalues and Eigenvectors'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
+CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
 MATCH (title:Subject{name: 'matrix theory'}), (subject:Subject{name:'Determinants'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
+CREATE (title) - [:IS_USED_IN{order: 2}] -> (subject);
+
+
 
 MATCH (title:Subject{name: 'linear transformations'}), (subject:Subject{name:'linear operators'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
+CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
 
 
 // ------------------  Algebra here   ------------------ //
@@ -1293,29 +1280,25 @@ CREATE (n:Subject{
 // Relationships
 
 MATCH (title:Subject{name: 'algebra'}), (subject:Subject{name:'basic algebra'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
+CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
 MATCH (title:Subject{name: 'algebra'}), (subject:Subject{name:'abstract algebra'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
+CREATE (title) - [:IS_USED_IN{order: 2}] -> (subject);
 MATCH (title:Subject{name: 'algebra'}), (subject:Subject{name:'linear algebra'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
+CREATE (title) - [:IS_USED_IN{order: 3}] -> (subject);
+
+
 
 MATCH (title:Subject{name: 'basic algebra'}), (subject:Subject{name:'polynomial equations'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
+CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
+
+
 
 MATCH (title:Subject{name: 'abstract algebra'}), (subject:Subject{name:'group theory'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
+CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
 MATCH (title:Subject{name: 'abstract algebra'}), (subject:Subject{name:'ring theory'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
+CREATE (title) - [:IS_USED_IN{order: 2}] -> (subject);
 MATCH (title:Subject{name: 'abstract algebra'}), (subject:Subject{name:'field theory'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
-MATCH (title:Subject{name: 'linear algebra'}), (subject:Subject{name:'linear equations'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
+CREATE (title) - [:IS_USED_IN{order: 3}] -> (subject);
 
 
 // ------------------  Discrete Mathematics here   ------------------ //
@@ -1492,28 +1475,31 @@ CREATE (n:Subject{
   ]
 });
 
-// Relationships
+
+
 
 MATCH (title:Subject{name: 'discrete mathematics'}), (subject:Subject{name:'graph theory'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
+CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
 MATCH (title:Subject{name: 'discrete mathematics'}), (subject:Subject{name:'combinatorics'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
+CREATE (title) - [:IS_USED_IN{order: 2}] -> (subject);
 MATCH (title:Subject{name: 'discrete mathematics'}), (subject:Subject{name:'logic'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
+CREATE (title) - [:IS_USED_IN{order: 3}] -> (subject);
+
+
 
 MATCH (title:Subject{name: 'graph theory'}), (subject:Subject{name:'Graph Connectivity'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
+CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
 MATCH (title:Subject{name: 'graph theory'}), (subject:Subject{name:'Shortest Path Algorithms'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
+CREATE (title) - [:IS_USED_IN{order: 2}] -> (subject);
+
+
 
 MATCH (title:Subject{name: 'combinatorics'}), (subject:Subject{name:'Permutations and Combinations'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
+CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
+
+
 
 MATCH (title:Subject{name: 'logic'}), (subject:Subject{name:'Propositional Logic'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
+CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
 MATCH (title:Subject{name: 'logic'}), (subject:Subject{name:'Set Theory'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
+CREATE (title) - [:IS_USED_IN{order: 2}] -> (subject);
