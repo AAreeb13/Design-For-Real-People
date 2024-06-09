@@ -4,7 +4,26 @@ import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
 import TopicAdderForm from "./TopicAdderForm.jsx";
 import { addMainSubjectToGraph, addMiniSubjectToGraph, addTopicToGraph, mainSubjectExists, subjectExists, nodeExists } from "../../database/graphData";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { auth, db } from "../../database/firebase.js";
+import { collection, getDocs } from "firebase/firestore";
 
+const usersCollectionRef = collection(db, "Users");
+const [usersData, setUsersData] = useState([]);
+export const [userEmail, setUserEmail] = useState("guest");
+
+const getUsersData = async () => {
+
+  try{
+    const data = await getDocs(usersCollectionRef);
+    const filteredData = data.docs.map((doc) => ({...doc.data(), id: doc.id, }));
+    console.log(filteredData);
+    setUsersData(filteredData);
+  } catch (err) {
+    console.error(err);
+  }
+
+}
 
 
 const FormOverlay = ({ onClose, formType }) => {
@@ -79,9 +98,29 @@ const FormOverlay = ({ onClose, formType }) => {
     console.log("formdata", formData);
     let isValid = false;
 
+    const signingUp = async () => {
+      try {
+        await createUserWithEmailAndPassword(auth, formData.username, formData.password);
+        setUserEmail(formData.username);
+      } catch (error) {
+        console.error(error)
+      }
+    }
+
+    const loggingIn = async () => {
+      try {
+        await signInWithEmailAndPassword(auth, formData.username, formData.password);
+        setUserEmail(formData.username);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
     if (formType === "login") {
+      loggingIn();
       isValid = true // todo backend for
     } else if (formType === "signup") {
+      signingUp();
       isValid = true // todo backend for
     } else {
       isValid = await handleTopicAdderSubmit(formData, isValid, validateMainSubject, validateMiniSubject, validateTopic);
@@ -187,7 +226,7 @@ const validateTopic = async (data) => {
   const nonEmpty = data.name.trim() !== "" && data.subject.trim() !== "" && data.prerequisites.trim() !== "";
   const mainSubExst = await mainSubjectExists("Subject", data, false);
   const topicExst = await nodeExists("Subject", data);
-
+ 
   const prerequisitesArray = data.prerequisites.split(',').map(prereq => prereq.trim());
   for (const prerequisite of prerequisitesArray) {
     const exists = await nodeExists("Subject", {name: prerequisite});
