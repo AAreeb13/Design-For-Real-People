@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import * as d3 from "d3";
 import { useNavigate } from "react-router-dom";
+import { getOrder } from "../../database/graphData";
 
 const Graph = ({ nodes, links, subject = null, width, height, style }) => {
   const svgRef = useRef();
@@ -89,20 +90,6 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .append("line")
       .attr("stroke-width", 15) // number = thickness of lines
       .attr("marker-end", "url(#arrowhead)");
-
-      const text = svgGroup.selectAll("text")
-      .data(linksToUse)
-      .enter()
-      .append("text")
-      .text((d, i) => i + 1)
-      .attr("font-size", "100px")
-      .attr("fill", "blue")
-      .style("font-weight", "bold") // Make the text bold
-      .style("stroke", "#FFF") // Outline the text with white color
-      .style("stroke-width", "3px") // Width of the outline
-      .style("text-shadow", "2px 2px 4px rgba(0, 0, 0, 0.5)") // Add a shadow to the text
-      .style("pointer-events", "none");
-
 
     const node = svgGroup
       .append("g")
@@ -221,6 +208,20 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .style("pointer-events", "none")
       .text((d) => d.name);
 
+    // Define text elements for link orders
+    const text = svgGroup
+      .selectAll("text.link-order")
+      .data(linksToUse)
+      .enter()
+      .append("text")
+      .attr("class", "link-order")
+      .attr("font-size", "150px")
+      .attr("fill", "red")
+      .style("font-weight", "bold")
+      .style("stroke", "black")
+      .style("stroke-width", "3px")
+      .style("pointer-events", "none");
+
     simulation.on("tick", () => {
       link
         .attr("x1", (d) => d.source.x)
@@ -232,7 +233,6 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
         .attr("x", (d) => (d.source.x + d.target.x) / 2)
         .attr("y", (d) => (d.source.y + d.target.y) / 2);
 
-
       node.attr("transform", (d) => `translate(${d.x},${d.y})`);
     });
 
@@ -240,6 +240,16 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .translate(width / 2, height / 2)
       .scale(0.20);
     svg.call(zoom.transform, initialTransform);
+
+    // Function to update text elements with fetched orders
+    const updateText = async () => {
+      const promises = linksToUse.map((d) => getOrder(d));
+      const orders = await Promise.all(promises);
+
+      text.text((d, i) => orders[i]);
+    };
+
+    updateText();
   }, [nodesToUse, linksToUse]);
 
   return <svg ref={svgRef} width={width} height={height} style={style}></svg>;

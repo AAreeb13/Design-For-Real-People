@@ -49,7 +49,7 @@ CREATE (n:Subject{
 
 CREATE (n:Subject{
   name: 'Limit Ratio Test',
-  subject: 'limits',
+  subject: 'proofs',
   type: 'topic',
   description: 'The study of limit testing with ratios',
   requires: ['proofs', 'limits'],
@@ -77,8 +77,8 @@ CREATE (n:Subject{
 });
 
 CREATE (n:Subject{
-  name: 'L\'Hopital\'s Rule',
-  subject: 'limits',
+  name: "L'Hopitals Rule",
+  subject: 'proofs',
   type: 'topic',
   description: 'An essential technique for evaluating limits that result in indeterminate forms, using derivatives to find the limit.',
   requires: ['proofs', 'limits', 'differentiation'],
@@ -461,7 +461,7 @@ CREATE (n:Subject{
 
 CREATE (n:Subject{
   name: 'Fourier Series',
-  subject: 'series',
+  subject: 'sequences and series',
   type: 'topic',
   description: 'A mathematical tool used to decompose periodic functions into sums of simpler, sinusoidal functions. Essential for applications in signal processing, physics, and engineering.',
   requires: ['integration', 'differential equations'],
@@ -696,112 +696,6 @@ CREATE (n2:Subject{
 });
 
 
-
-MATCH (title:Subject{name: 'calculus'}), (subject:Subject{name:'basic arithmetic'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
-MATCH (title:Subject{name: 'limits'}), (subject:Subject{name:'L\'Hopital\'s Rule'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-MATCH (title:Subject{name: 'limits'}), (subject:Subject{name:'Limit Ratio Test'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
-MATCH (title:Subject{name: 'proofs'}), (subject:Subject{name:'L\'Hopital\'s Rule'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-MATCH (title:Subject{name: 'proofs'}), (subject:Subject{name:'Limit Ratio Test'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
-MATCH (title:Subject{name: 'basic arithmetic'}), (subject:Subject{name:'proofs'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-MATCH (title:Subject{name: 'basic arithmetic'}), (subject:Subject{name:'limits'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-MATCH (title:Subject{name: 'basic arithmetic'}), (subject:Subject{name:'differentiation'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-MATCH (title:Subject{name: 'basic arithmetic'}), (subject:Subject{name:'integration'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
-MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'integration by substitution'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'integration by parts'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
-MATCH (title:Subject{name: 'differentiation'}), (subject:Subject{name:'Product Rule'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-MATCH (title:Subject{name: 'differentiation'}), (subject:Subject{name:'Chain Rule'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-MATCH (title:Subject{name: 'differentiation'}), (subject:Subject{name:'L\'Hopital\'s Rule'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
-MATCH (title:Subject{name: 'calculus'}), (subject:Subject{name:'Functions'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
-MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'integration preliminaries'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
-MATCH (title:Subject{name: 'integration preliminaries'}), (subject:Subject{name:'integration by substitution'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
-MATCH (title:Subject{name: 'integration preliminaries'}), (subject:Subject{name:'integration by parts'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
-MATCH (title:Subject{name: 'integration preliminaries'}), (subject:Subject{name:'integration by inspection'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
-MATCH (title:Subject{name: 'integration preliminaries'}), (subject:Subject{name:'integrating a constant'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
-MATCH (title:Subject{name: 'integration preliminaries'}), (subject:Subject{name:'integrating a positive power'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
-MATCH (title:Subject{name: 'integration preliminaries'}), (subject:Subject{name:'integrating a negative power'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
-MATCH (title:Subject{name: 'integration preliminaries'}), (subject:Subject{name:'integrating a fractional power'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
-MATCH (title:Subject{name: 'integration preliminaries'}), (subject:Subject{name:'integrating a denominator variable'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
-MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'Lengths Volumes, and Surfaces'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
-MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'Integration by Polar Coordinates'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-MATCH (title:Subject{name: 'integration preliminaries'}), (subject:Subject{name:'Integration by Polar Coordinates'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
-MATCH (title:Subject{name: 'calculus'}), (subject:Subject{name:'sequences and series'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
-MATCH (title:Subject{name: 'sequences and series'}), (subject:Subject{name:'Fourier Series'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
-MATCH (title:Subject{name: 'differentiation'}), (subject:Subject{name:'Laplace Transformation'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
-MATCH (title:Subject{name: 'differentiation'}), (subject:Subject{name:'Fourier Transform'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
-MATCH (title:Subject{name: 'differential equations'}), (subject:Subject{name:'Ordinary Differential Equations'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
-MATCH (title:Subject{name: 'differentiation'}), (subject:Subject{name:'differential equations'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
-MATCH (title:Subject{name: 'differential equations'}), (subject:Subject{name:'First Order Differential Equations'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
-MATCH (title:Subject{name: 'differential equations'}), (subject:Subject{name:'Second Order Differential Equations'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
-MATCH (title:Subject{name: 'calculus'}), (subject:Subject{name:'Qualitative Analysis'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
-MATCH (title:Subject{name: 'calculus'}), (subject:Subject{name:'Bifurcations'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
-MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'Multivariate Calculus'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-
 // ------------------   Probability here   ------------------ //
 
 CREATE (n:Subject{
@@ -885,25 +779,733 @@ CREATE
 });
 
 
-MATCH (title:Subject{name: 'probability and statistics'}), (subject:Subject{name:'mean'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-MATCH (title:Subject{name: 'probability and statistics'}), (subject:Subject{name:'variance'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-MATCH (title:Subject{name: 'probability and statistics'}), (subject:Subject{name:'skewness'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
 
-MATCH (title:Subject{name: 'variance'}), (subject:Subject{name:'standard deviation'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
+// ------------------  Linear Algebra here   ------------------ //
+CREATE (n:Subject{
+	name: 'linear algebra',
+	type: 'subject',
+	theme: 'Mathematics',
+	mainSubject: True
+});
 
-MATCH (title:Subject{name: 'mean'}), (subject:Subject{name:'moment generating function'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-MATCH (title:Subject{name: 'standard deviation'}), (subject:Subject{name:'moment generating function'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-MATCH (title:Subject{name: 'skewness'}), (subject:Subject{name:'moment generating function'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
-MATCH (title:Subject{name: 'differentiation'}), (subject:Subject{name:'moment generating function'})
-CREATE (title) - [:IS_USED_IN] -> (subject);
+CREATE (n:Subject{
+	name: 'vector spaces',
+	subject: 'linear algebra',
+	type: 'subject',
+	mainSubject: False
+});
+
+CREATE (n:Subject{
+	name: 'linear transformations',
+	subject: 'linear algebra',
+	type: 'subject',
+	mainSubject: False
+});
+
+CREATE (n:Subject{
+	name: 'matrix theory',
+	subject: 'linear algebra',
+	type: 'subject',
+	mainSubject: False
+});
+
+CREATE (n:Subject{
+  name: 'Eigenvalues and Eigenvectors',
+  subject: 'matrix theory',
+  type: 'topic',
+  description: 'Fundamental concepts in matrix theory, critical for understanding many applications of linear algebra.',
+  requires: ['matrix theory'],
+  links: 'www.example.com',
+  approvals: 98,
+  rejections: 10,
+  comments: [
+    'The explanations are clear and the visual aids are very helpful.',
+    'A deeper dive into applications in computer science would be beneficial.',
+    'The step-by-step approach to finding eigenvalues and eigenvectors is very effective.'
+  ],
+  suggestions: [
+    'Include more real-world applications to illustrate their importance.',
+    'Add interactive tools to visualize eigenvectors and eigenvalues.',
+    'Provide a summary sheet for quick reference.'
+  ],
+  resources: [
+    'Interactive eigenvector and eigenvalue calculator',
+    'Problem sets with detailed solutions',
+    'Video tutorials on eigenvalues and eigenvectors'
+  ],
+  learning_objectives: [
+    'Understand the definition and properties of eigenvalues and eigenvectors.',
+    'Learn methods for calculating eigenvalues and eigenvectors of a matrix.',
+    'Explore applications of eigenvalues and eigenvectors in various fields.',
+    'Develop skills to solve practical problems involving eigenvalues and eigenvectors.'
+  ]
+});
+
+CREATE (n:Subject{
+  name: 'Determinants',
+  subject: 'matrix theory',
+  type: 'topic',
+  description: 'A key concept in matrix theory, used to determine the solvability of a system of linear equations.',
+  requires: ['matrix theory'],
+  links: 'www.example.com',
+  approvals: 85,
+  rejections: 15,
+  comments: [
+    'The proof of properties of determinants is very well explained.',
+    'Could use more examples with larger matrices.',
+    'The section on applications in physics is particularly useful.'
+  ],
+  suggestions: [
+    'Add more interactive examples.',
+    'Provide a detailed cheat sheet on properties and applications of determinants.',
+    'Offer a live Q&A session for further clarification.'
+  ],
+  resources: [
+    'Step-by-step guide to calculating determinants',
+    'Practice problems of varying difficulty',
+    'Video explanation of determinant properties and their applications'
+  ],
+  learning_objectives: [
+    'Understand the concept and properties of determinants.',
+    'Apply determinants to solve systems of linear equations.',
+    'Explore the use of determinants in different mathematical and practical contexts.',
+    'Develop proficiency in calculating determinants of matrices.'
+  ]
+});
+
+CREATE (n:Subject{
+  name: 'Inner Product Spaces',
+  subject: 'vector spaces',
+  type: 'topic',
+  description: 'An introduction to inner product spaces, essential for advanced studies in linear algebra and its applications.',
+  requires: ['vector spaces'],
+  links: 'www.example.com',
+  approvals: 78,
+  rejections: 22,
+  comments: [
+    'Great introduction to inner product spaces with clear examples.',
+    'Would appreciate more real-life applications.',
+    'The geometric interpretation section is very helpful.'
+  ],
+  suggestions: [
+    'Include more visual aids to illustrate concepts.',
+    'Add examples related to computer graphics and data science.',
+    'Provide an interactive tool for exploring inner product spaces.'
+  ],
+  resources: [
+    'Interactive visualizations of inner product spaces',
+    'Examples and exercises with detailed solutions',
+    'Video lectures on inner product spaces and their properties'
+  ],
+  learning_objectives: [
+    'Understand the definition and properties of inner product spaces.',
+    'Apply inner product concepts to solve practical problems.',
+    'Explore the geometric interpretation and applications of inner product spaces.',
+    'Develop skills in manipulating and working within inner product spaces.'
+  ]
+});
+
+CREATE (n:Subject{
+	name: 'basis and dimension',
+	subject: 'vector spaces',
+	type: 'topic',
+	description: 'Understanding the basis of a vector space and its dimension, foundational concepts in linear algebra.',
+	requires: ['vector spaces'],
+	links: 'www.example.com',
+	approvals: 90,
+	rejections: 10,
+	comments: [
+    'Excellent coverage of basis and dimension with intuitive examples.',
+    'The applications to various fields are very insightful.'
+  ],
+	suggestions: [
+    'Include more challenging problems to deepen understanding.',
+    'Provide additional resources for further reading.'
+  ],
+	resources: [
+    'Comprehensive guide to basis and dimension',
+    'Practice problems with step-by-step solutions',
+    'Video tutorials on basis and dimension'
+  ],
+	learning_objectives: [
+    'Understand the concepts of basis and dimension in vector spaces.',
+    'Learn methods to find the basis and dimension of a given vector space.',
+    'Explore applications of these concepts in different fields of study.'
+  ]
+});
+
+CREATE (n:Subject{
+  name: 'linear operators',
+  subject: 'linear transformations',
+  type: 'topic',
+  description: 'An in-depth look at linear operators, their properties, and applications in linear algebra.',
+  requires: ['linear transformations'],
+  links: 'www.example.com',
+  approvals: 82,
+  rejections: 18,
+  comments: [
+    "The section on the application of linear operators in quantum mechanics is fascinating.",
+    'Clear and concise explanation of properties and examples.'
+  ],
+  suggestions: [
+    'Provide more examples related to computer science and data analysis.',
+    'Include more visual aids to enhance understanding.'
+  ],
+  resources: [
+    'Detailed explanation and examples of linear operators',
+    'Interactive tools to explore properties of linear operators',
+    'Video lectures on linear operators and their applications'
+  ],
+  learning_objectives: [
+    'Understand the definition and properties of linear operators.',
+    'Apply linear operators to solve practical problems.',
+    'Explore applications of linear operators in various fields, including quantum mechanics and data science.'
+  ]
+});
+
+
+// ------------------  Algebra here   ------------------ //
+CREATE (n:Subject{
+	name: 'algebra',
+	type: 'subject',
+	theme: 'Mathematics',
+	mainSubject: True
+});
+
+CREATE (n:Subject{
+	name: 'basic algebra',
+	subject: 'algebra',
+	type: 'subject',
+	mainSubject: False
+});
+
+CREATE (n:Subject{
+	name: 'abstract algebra',
+	subject: 'algebra',
+	type: 'subject',
+	mainSubject: False
+});
+
+
+CREATE (n:Subject{
+  name: 'polynomial equations',
+  subject: 'basic algebra',
+  type: 'topic',
+  description: 'Study of polynomial equations, including methods for solving and analyzing their properties.',
+  requires: ['basic algebra'],
+  links: 'www.example.com',
+  approvals: 95,
+  rejections: 5,
+  comments: [
+    'Clear and concise explanation of solving polynomial equations.',
+    'Examples provided are very helpful for understanding.'
+  ],
+  suggestions: [
+    'Include more complex examples to challenge advanced students.',
+    'Provide interactive tools for practicing polynomial equation solving.'
+  ],
+  resources: [
+    'Step-by-step guide to solving polynomial equations',
+    'Practice problems with detailed solutions',
+    'Video tutorials on polynomial equations and their properties'
+  ],
+  learning_objectives: [
+    'Understand the properties of polynomial equations.',
+    'Learn methods for solving polynomial equations.',
+    'Explore applications of polynomial equations in various fields.',
+    'Develop problem-solving skills through practice problems.'
+  ]
+});
+
+CREATE (n:Subject{
+  name: 'group theory',
+  subject: 'abstract algebra',
+  type: 'topic',
+  description: 'Introduction to group theory, a fundamental area in abstract algebra.',
+  requires: ['abstract algebra'],
+  links: 'www.example.com',
+  approvals: 88,
+  rejections: 12,
+  comments: [
+    'Excellent introduction to group theory concepts.',
+    'Would benefit from more real-world applications.'
+  ],
+  suggestions: [
+    'Include interactive visualizations of group operations.',
+    'Provide additional examples related to symmetry and physics.'
+  ],
+  resources: [
+    'Interactive group operation explorer',
+    'Examples and exercises with detailed solutions',
+    'Video lectures on group theory and its applications'
+  ],
+  learning_objectives: [
+    'Understand the definition and properties of groups.',
+    'Learn about different types of groups and their applications.',
+    'Explore real-world applications of group theory in various fields.',
+    'Develop skills in working with groups and solving related problems.'
+  ]
+});
+
+CREATE (n:Subject{
+  name: 'ring theory',
+  subject: 'abstract algebra',
+  type: 'topic',
+  description: 'Study of rings, another key concept in abstract algebra, focusing on their properties and applications.',
+  requires: ['abstract algebra'],
+  links: 'www.example.com',
+  approvals: 85,
+  rejections: 15,
+  comments: [
+    'Comprehensive coverage of ring theory.',
+    'Examples provided are very clear and helpful.'
+  ],
+  suggestions: [
+    'Include more complex examples and applications.',
+    'Provide interactive tools for exploring ring properties.'
+  ],
+  resources: [
+    'Detailed explanation and examples of ring theory',
+    'Practice problems with solutions',
+    'Video tutorials on ring theory and its applications'
+  ],
+  learning_objectives: [
+    'Understand the definition and properties of rings.',
+    'Learn methods for working with rings and solving related problems.',
+    'Explore applications of ring theory in different fields.',
+    'Develop proficiency in manipulating and understanding rings.'
+  ]
+});
+
+CREATE (n:Subject{
+	name: 'field theory',
+	subject: 'abstract algebra',
+	type: 'topic',
+	description: 'Introduction to field theory, including the study of fields and their properties.',
+	requires: ['abstract algebra'],
+	links: 'www.example.com',
+	approvals: 90,
+	rejections: 10,
+	comments: [
+    'Great introduction to field theory with clear examples.',
+    'Would love to see more real-world applications discussed.'
+  ],
+	suggestions: [
+    'Include more visual aids to illustrate concepts.',
+    'Provide additional resources for further reading.'
+  ],
+	resources: [
+    'Comprehensive guide to field theory',
+    'Practice problems with step-by-step solutions',
+    'Video tutorials on field theory'
+  ],
+	learning_objectives: [
+    'Understand the definition and properties of fields.',
+    'Learn methods for working with fields and solving related problems.',
+    'Explore applications of field theory in different fields of study.'
+  ]
+});
+
+CREATE (n:Subject{
+  name: 'linear equations',
+  subject: 'linear algebra',
+  type: 'topic',
+  description: 'Study of linear equations, including methods for solving systems of linear equations.',
+  requires: ['linear algebra'],
+  links: 'www.example.com',
+  approvals: 92,
+  rejections: 8,
+  comments: [
+    "The methods for solving linear equations are well explained.",
+    'The section on applications in economics and engineering is very useful.'
+  ],
+  suggestions: [
+    'Include more challenging problems to deepen understanding.',
+    'Provide additional resources for further reading.'
+  ],
+  resources: [
+    'Comprehensive guide to solving linear equations',
+    'Practice problems with step-by-step solutions',
+    'Video tutorials on linear equations and their applications'
+  ],
+  learning_objectives: [
+    'Understand the properties of linear equations.',
+    'Learn methods for solving systems of linear equations.',
+    'Explore applications of linear equations in various fields.'
+  ]
+});
+
+
+// ------------------  Discrete Mathematics here   ------------------ //
+CREATE (n:Subject{
+	name: 'discrete mathematics',
+	type: 'subject',
+	theme: 'Mathematics',
+	mainSubject: True
+});
+
+CREATE (n:Subject{
+	name: 'graph theory',
+	subject: 'discrete mathematics',
+	type: 'subject',
+	mainSubject: False
+});
+
+CREATE (n:Subject{
+	name: 'combinatorics',
+	subject: 'discrete mathematics',
+	type: 'subject',
+	mainSubject: False
+});
+
+CREATE (n:Subject{
+	name: 'logic',
+	subject: 'discrete mathematics',
+	type: 'subject',
+	mainSubject: False
+});
+
+CREATE (n:Subject{
+  name: 'Graph Connectivity',
+  subject: 'graph theory',
+  type: 'topic',
+  description: 'Study of connectivity in graphs, including algorithms for determining connectivity and its applications.',
+  requires: ['graph theory'],
+  links: 'www.example.com',
+  approvals: 94,
+  rejections: 6,
+  comments: [
+    'Clear explanation of graph connectivity algorithms.',
+    'The section on applications in computer networks is very insightful.'
+  ],
+  suggestions: [
+    'Include more visual aids to illustrate concepts.',
+    'Provide additional resources for further exploration.'
+  ],
+  resources: [
+    'Detailed explanation of graph connectivity algorithms',
+    'Practice problems with solutions',
+    'Video tutorials on graph connectivity and its applications'
+  ],
+  learning_objectives: [
+    'Understand the concept of graph connectivity.',
+    'Learn algorithms for determining connectivity in graphs.',
+    'Explore applications of graph connectivity in various fields.'
+  ]
+});
+
+CREATE (n:Subject{
+  name: 'Permutations and Combinations',
+  subject: 'combinatorics',
+  type: 'topic',
+  description: 'Study of permutations and combinations, including methods for counting and generating them.',
+  requires: ['combinatorics'],
+  links: 'www.example.com',
+  approvals: 96,
+  rejections: 4,
+  comments: [
+    'Excellent coverage of permutations and combinations.',
+    'The examples provided are very helpful for understanding.'
+  ],
+  suggestions: [
+    'Include more challenging problems to deepen understanding.',
+    'Provide additional resources for further exploration.'
+  ],
+  resources: [
+    'Comprehensive guide to permutations and combinations',
+    'Practice problems with step-by-step solutions',
+    'Video tutorials on permutations, combinations, and their applications'
+  ],
+  learning_objectives: [
+    'Understand the concept of permutations and combinations.',
+    'Learn methods for counting and generating permutations and combinations.',
+    'Explore applications of permutations and combinations in various fields.'
+  ]
+});
+
+CREATE (n:Subject{
+  name: 'Propositional Logic',
+  subject: 'logic',
+  type: 'topic',
+  description: 'Introduction to propositional logic, including truth tables, logical equivalences, and applications.',
+  requires: ['logic'],
+  links: 'www.example.com',
+  approvals: 92,
+  rejections: 8,
+  comments: [
+    'Clear explanation of propositional logic concepts.',
+    'The section on logical equivalences is very well done.'
+  ],
+  suggestions: [
+    'Include more real-world applications to motivate learning.',
+    'Provide interactive exercises for practice.'
+  ],
+  resources: [
+    'Detailed explanation of propositional logic concepts',
+    'Practice problems with solutions',
+    'Video tutorials on propositional logic and its applications'
+  ],
+  learning_objectives: [
+    'Understand the basic concepts of propositional logic.',
+    'Learn methods for analyzing and simplifying propositional expressions.',
+    'Explore applications of propositional logic in computer science and mathematics.'
+  ]
+});
+
+CREATE (n:Subject{
+	name: 'Set Theory',
+	subject: 'logic',
+	type: 'topic',
+	description: 'Study of sets and their properties, including set operations, relations, and functions.',
+	requires: ['logic'],
+	links: 'www.example.com',
+	approvals: 90,
+	rejections: 10,
+	comments: [
+    'Clear explanation of set theory concepts.',
+    'The section on set operations is particularly helpful.'
+  ],
+	suggestions: [
+    'Include more advanced topics like cardinality and transfinite numbers.',
+    'Provide interactive exercises for practice.'
+  ],
+	resources: [
+    'Comprehensive guide to set theory concepts',
+    'Practice problems with step-by-step solutions',
+    'Video tutorials on set theory and its applications'
+  ],
+	learning_objectives: [
+    'Understand the basic concepts of set theory.',
+    'Learn methods for working with sets, relations, and functions.',
+    'Explore applications of set theory in various fields.'
+  ]
+});
+
+CREATE (n:Subject{
+  name: 'Shortest Path Algorithms',
+  subject: 'graph theory',
+  type: 'topic',
+  description: 'Study of algorithms for finding the shortest paths in graphs, including Dijkstra\'s algorithm and Floyd-Warshall algorithm.',
+  requires: ['graph theory'],
+  links: 'www.example.com',
+  approvals: 88,
+  rejections: 12,
+  comments: [
+    'Clear explanation of shortest path algorithms.',
+    'The examples provided are very helpful for understanding.'
+  ],
+  suggestions: [
+    'Include more real-world applications to motivate learning.',
+    'Provide interactive exercises for practice.'
+  ],
+  resources: [
+    'Detailed explanation of shortest path algorithms',
+    'Practice problems with solutions',
+    'Video tutorials on shortest path algorithms and their applications'
+  ],
+  learning_objectives: [
+    'Understand the concept of shortest paths in graphs.',
+    'Learn algorithms for finding shortest paths, including Dijkstra\'s algorithm and Floyd-Warshall algorithm.',
+    'Explore applications of shortest path algorithms in various fields.'
+  ]
+});
+
+
+// -------------------------------------------------- RELATIONSHIPS HERE -------------------------------------------------- //
+
+
+
+// Grouped these by page
+MATCH (title:Subject{name: 'calculus'}), (subject:Subject{name:'basic arithmetic'})
+CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
+MATCH (title:Subject{name: 'calculus'}), (subject:Subject{name:'Functions'})
+CREATE (title) - [:IS_USED_IN{order: 2}] -> (subject);
+MATCH (title:Subject{name: 'calculus'}), (subject:Subject{name:'Qualitative Analysis'})
+CREATE (title) - [:IS_USED_IN{order: 3}] -> (subject);
+MATCH (title:Subject{name: 'calculus'}), (subject:Subject{name:'Bifurcations'})
+CREATE (title) - [:IS_USED_IN{order: 4}] -> (subject);
+MATCH (title:Subject{name: 'calculus'}), (subject:Subject{name:'sequences and series'})
+CREATE (title) - [:IS_USED_IN{order: 5}] -> (subject);
+MATCH (title:Subject{name: 'basic arithmetic'}), (subject:Subject{name:'proofs'})
+CREATE (title) - [:IS_USED_IN{order: 6}] -> (subject);
+MATCH (title:Subject{name: 'basic arithmetic'}), (subject:Subject{name:'limits'})
+CREATE (title) - [:IS_USED_IN{order: 7}] -> (subject);
+MATCH (title:Subject{name: 'basic arithmetic'}), (subject:Subject{name:'differentiation'})
+CREATE (title) - [:IS_USED_IN{order: 8}] -> (subject);
+MATCH (title:Subject{name: 'basic arithmetic'}), (subject:Subject{name:'integration'})
+CREATE (title) - [:IS_USED_IN{order: 9}] -> (subject);
+
+
+
+MATCH (title:Subject{name: 'limits'}), (subject:Subject{name:'L\'Hopital\'s Rule'})
+CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
+MATCH (title:Subject{name: 'limits'}), (subject:Subject{name:'Limit Ratio Test'})
+CREATE (title) - [:IS_USED_IN{order: 2}] -> (subject);
+
+MATCH (title:Subject{name: 'proofs'}), (subject:Subject{name:"L'Hopitals Rule"})
+CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
+MATCH (title:Subject{name: 'proofs'}), (subject:Subject{name:'Limit Ratio Test'})
+CREATE (title) - [:IS_USED_IN{order: 2}] -> (subject);
+
+
+
+MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'integration by substitution'})
+CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
+MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'integration by parts'})
+CREATE (title) - [:IS_USED_IN{order: 2}] -> (subject);
+MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'integration preliminaries'})
+CREATE (title) - [:IS_USED_IN{order: 3}] -> (subject);
+MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'Lengths Volumes, and Surfaces'})
+CREATE (title) - [:IS_USED_IN{order: 4}] -> (subject);
+MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'Integration by Polar Coordinates'})
+CREATE (title) - [:IS_USED_IN{order: 5}] -> (subject);
+MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'Multivariate Calculus'})
+CREATE (title) - [:IS_USED_IN{order: 6}] -> (subject);
 MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'moment generating function'})
-CREATE (title) - [:IS_USED_IN] -> (subject)
+CREATE (title) - [:IS_USED_IN{order: 7}] -> (subject);
+
+
+
+MATCH (title:Subject{name: 'integration preliminaries'}), (subject:Subject{name:'integrating a constant'})
+CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
+MATCH (title:Subject{name: 'integration preliminaries'}), (subject:Subject{name:'integrating a positive power'})
+CREATE (title) - [:IS_USED_IN{order: 2}] -> (subject);
+MATCH (title:Subject{name: 'integration preliminaries'}), (subject:Subject{name:'integrating a negative power'})
+CREATE (title) - [:IS_USED_IN{order: 3}] -> (subject);
+MATCH (title:Subject{name: 'integration preliminaries'}), (subject:Subject{name:'integrating a fractional power'})
+CREATE (title) - [:IS_USED_IN{order: 4}] -> (subject);
+MATCH (title:Subject{name: 'integration preliminaries'}), (subject:Subject{name:'integrating a denominator variable'})
+CREATE (title) - [:IS_USED_IN{order: 5}] -> (subject);
+
+
+
+
+MATCH (title:Subject{name: 'differentiation'}), (subject:Subject{name:'Product Rule'})
+CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
+MATCH (title:Subject{name: 'differentiation'}), (subject:Subject{name:'Chain Rule'})
+CREATE (title) - [:IS_USED_IN{order: 2}] -> (subject);
+MATCH (title:Subject{name: 'differentiation'}), (subject:Subject{name:'L\'Hopital\'s Rule'})
+CREATE (title) - [:IS_USED_IN{order: 3}] -> (subject);
+MATCH (title:Subject{name: 'differentiation'}), (subject:Subject{name:'Laplace Transformation'})
+CREATE (title) - [:IS_USED_IN{order: 4}] -> (subject);
+MATCH (title:Subject{name: 'differentiation'}), (subject:Subject{name:'Fourier Transform'})
+CREATE (title) - [:IS_USED_IN{order: 5}] -> (subject);
+MATCH (title:Subject{name: 'differentiation'}), (subject:Subject{name:'differential equations'})
+CREATE (title) - [:IS_USED_IN{order: 6}] -> (subject);
+MATCH (title:Subject{name: 'differentiation'}), (subject:Subject{name:'moment generating function'})
+CREATE (title) - [:IS_USED_IN{order: 7}] -> (subject);
+
+
+
+MATCH (title:Subject{name: 'differential equations'}), (subject:Subject{name:'Ordinary Differential Equations'})
+CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
+MATCH (title:Subject{name: 'differential equations'}), (subject:Subject{name:'First Order Differential Equations'})
+CREATE (title) - [:IS_USED_IN{order: 2}] -> (subject);
+MATCH (title:Subject{name: 'differential equations'}), (subject:Subject{name:'Second Order Differential Equations'})
+CREATE (title) - [:IS_USED_IN{order: 3}] -> (subject);
+
+
+
+MATCH (title:Subject{name: 'sequences and series'}), (subject:Subject{name:'Fourier Series'})
+CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
+
+
+
+MATCH (title:Subject{name: 'probability and statistics'}), (subject:Subject{name:'mean'})
+CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
+MATCH (title:Subject{name: 'probability and statistics'}), (subject:Subject{name:'variance'})
+CREATE (title) - [:IS_USED_IN{order: 2}] -> (subject);
+MATCH (title:Subject{name: 'probability and statistics'}), (subject:Subject{name:'skewness'})
+CREATE (title) - [:IS_USED_IN{order: 3}] -> (subject);
+MATCH (title:Subject{name: 'variance'}), (subject:Subject{name:'standard deviation'})
+CREATE (title) - [:IS_USED_IN{order: 4}] -> (subject);
+MATCH (title:Subject{name: 'mean'}), (subject:Subject{name:'moment generating function'})
+CREATE (title) - [:IS_USED_IN{order: 5}] -> (subject);
+MATCH (title:Subject{name: 'standard deviation'}), (subject:Subject{name:'moment generating function'})
+CREATE (title) - [:IS_USED_IN{order: 6}] -> (subject);
+MATCH (title:Subject{name: 'skewness'}), (subject:Subject{name:'moment generating function'})
+CREATE (title) - [:IS_USED_IN{order: 7}] -> (subject);
+
+
+
+
+MATCH (title:Subject{name: 'linear algebra'}), (subject:Subject{name:'vector spaces'})
+CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
+MATCH (title:Subject{name: 'linear algebra'}), (subject:Subject{name:'linear transformations'})
+CREATE (title) - [:IS_USED_IN{order: 2}] -> (subject);
+MATCH (title:Subject{name: 'linear algebra'}), (subject:Subject{name:'matrix theory'})
+CREATE (title) - [:IS_USED_IN{order: 3}] -> (subject);
+MATCH (title:Subject{name: 'linear algebra'}), (subject:Subject{name:'linear equations'})
+CREATE (title) - [:IS_USED_IN{order: 4}] -> (subject);
+
+
+
+MATCH (title:Subject{name: 'vector spaces'}), (subject:Subject{name:'basis and dimension'})
+CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
+MATCH (title:Subject{name: 'vector spaces'}), (subject:Subject{name:'Inner Product Spaces'})
+CREATE (title) - [:IS_USED_IN{order: 2}] -> (subject);
+
+
+
+MATCH (title:Subject{name: 'matrix theory'}), (subject:Subject{name:'Eigenvalues and Eigenvectors'})
+CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
+MATCH (title:Subject{name: 'matrix theory'}), (subject:Subject{name:'Determinants'})
+CREATE (title) - [:IS_USED_IN{order: 2}] -> (subject);
+
+
+
+MATCH (title:Subject{name: 'linear transformations'}), (subject:Subject{name:'linear operators'})
+CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
+
+
+
+MATCH (title:Subject{name: 'algebra'}), (subject:Subject{name:'basic algebra'})
+CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
+MATCH (title:Subject{name: 'algebra'}), (subject:Subject{name:'abstract algebra'})
+CREATE (title) - [:IS_USED_IN{order: 2}] -> (subject);
+MATCH (title:Subject{name: 'algebra'}), (subject:Subject{name:'linear algebra'})
+CREATE (title) - [:IS_USED_IN{order: 3}] -> (subject);
+
+
+
+MATCH (title:Subject{name: 'basic algebra'}), (subject:Subject{name:'polynomial equations'})
+CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
+
+
+
+MATCH (title:Subject{name: 'abstract algebra'}), (subject:Subject{name:'group theory'})
+CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
+MATCH (title:Subject{name: 'abstract algebra'}), (subject:Subject{name:'ring theory'})
+CREATE (title) - [:IS_USED_IN{order: 2}] -> (subject);
+MATCH (title:Subject{name: 'abstract algebra'}), (subject:Subject{name:'field theory'})
+CREATE (title) - [:IS_USED_IN{order: 3}] -> (subject);
+
+
+
+MATCH (title:Subject{name: 'discrete mathematics'}), (subject:Subject{name:'graph theory'})
+CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
+MATCH (title:Subject{name: 'discrete mathematics'}), (subject:Subject{name:'combinatorics'})
+CREATE (title) - [:IS_USED_IN{order: 2}] -> (subject);
+MATCH (title:Subject{name: 'discrete mathematics'}), (subject:Subject{name:'logic'})
+CREATE (title) - [:IS_USED_IN{order: 3}] -> (subject);
+
+
+
+MATCH (title:Subject{name: 'graph theory'}), (subject:Subject{name:'Graph Connectivity'})
+CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
+MATCH (title:Subject{name: 'graph theory'}), (subject:Subject{name:'Shortest Path Algorithms'})
+CREATE (title) - [:IS_USED_IN{order: 2}] -> (subject);
+
+
+
+MATCH (title:Subject{name: 'combinatorics'}), (subject:Subject{name:'Permutations and Combinations'})
+CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
+
+
+
+MATCH (title:Subject{name: 'logic'}), (subject:Subject{name:'Propositional Logic'})
+CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
+MATCH (title:Subject{name: 'logic'}), (subject:Subject{name:'Set Theory'})
+CREATE (title) - [:IS_USED_IN{order: 2}] -> (subject)
 
 

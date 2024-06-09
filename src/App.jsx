@@ -12,13 +12,15 @@ import Graph from "./components/Graph";
 import Navbar from "./components/Navbar";
 import GridMenu from "./pages/GridMenu";
 import { getGraphData, getNode } from "../database/graphData";
-import SubGraph from "./components/SubGraph";
+import { getCurrentUserData, initAuthStateListener } from "../database/firebase";
 import TopicEntry from "./components/TopicEntry";
+import { auth } from "../database/firebase";
 
 function App() {
   const [graphData, setGraphData] = useState({ nodes: [], links: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [userData, setUserData] = useState(null);
 
   let oldData = null;
 
@@ -44,6 +46,22 @@ function App() {
     return () => {
       clearInterval(intervalId);
     };
+  }, []);
+
+  useEffect(() => {
+    initAuthStateListener();
+
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        setUserData(user);
+        console.log("User data:", user);
+      } else {
+        setUserData(null);
+        console.log("No user is signed in");
+      }
+    });
+
+    return () => unsubscribe();
   }, []);
 
   if (loading) {
@@ -80,9 +98,6 @@ function TopicRouteWrapper() {
 
 function GraphRouteWrapper({ graphData }) {
   const { subject } = useParams();
-  console.log("Graph Route wrapper")
-  console.log("nodes", graphData.nodes)
-  console.log("Relationships", graphData.relationships)
   return (
     <Graph
       nodes={graphData.nodes}
@@ -97,7 +112,6 @@ function GraphRouteWrapper({ graphData }) {
 function SubgraphRouteWrapper({ graphData }) {
   const { topicName } = useParams();
   const node = graphData.nodes.find((n) => n.name === topicName)
-  console.log("node", node)
   const subject = node.subject
   return (<Graph
             nodes={graphData.nodes}
