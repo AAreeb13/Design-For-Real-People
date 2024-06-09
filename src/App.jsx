@@ -4,23 +4,22 @@ import {
   BrowserRouter as Router,
   Route,
   Routes,
-  Link,
   useParams,
 } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import Graph from "./components/Graph";
 import Navbar from "./components/Navbar";
 import GridMenu from "./pages/GridMenu";
-import { getGraphData, getNode } from "../database/graphData";
-import { getCurrentUserData, initAuthStateListener } from "../database/firebase";
+import { getGraphData } from "../database/graphData";
+import { initAuthStateListener, auth } from "../database/firebase";
 import TopicEntry from "./components/TopicEntry";
-import { auth } from "../database/firebase";
 
 function App() {
   const [graphData, setGraphData] = useState({ nodes: [], links: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [userData, setUserData] = useState(null);
+  const [key, setKey] = useState(0); // to force re-render
 
   let oldData = null;
 
@@ -52,13 +51,9 @@ function App() {
     initAuthStateListener();
 
     const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (user) {
-        setUserData(user);
-        console.log("User data:", user);
-      } else {
-        setUserData(null);
-        console.log("No user is signed in");
-      }
+      setUserData(user);
+      setKey(prevKey => prevKey + 1); // forced re-render
+      console.log(user ? "User data: " + user : "No user is signed in");
     });
 
     return () => unsubscribe();
@@ -76,28 +71,38 @@ function App() {
     <Router>
       <div>
         <Navbar />
-        <Routes>
+        <Routes key={key}>
           <Route path="/" element={<HomePage graphData={graphData} />} />
           <Route path="/grid-menu" element={<GridMenu />} />
           <Route
             path="/graph/:subject"
-            element={<GraphRouteWrapper graphData={graphData} />}
+            element={<GraphRouteWrapper graphData={graphData} userData={userData} />}
           />
-          <Route path="/topic/:node" element={<TopicRouteWrapper />} />
-          <Route path="/subgraph/:topicName" element={<SubgraphRouteWrapper graphData={graphData}/>}/>
+          <Route path="/topic/:node" element={<TopicRouteWrapper userData={userData} />} />
+          <Route path="/subgraph/:topicName" element={<SubgraphRouteWrapper graphData={graphData} userData={userData} />} />
         </Routes>
       </div>
     </Router>
   );
 }
 
-function TopicRouteWrapper() {
+function TopicRouteWrapper({ userData }) {
   const { node } = useParams();
-  return <TopicEntry node={node} />;
+
+  useEffect(() => {
+    console.log("TopicRouteWrapper userData changed:", userData);
+  }, [userData]);
+
+  return <TopicEntry node={node} userData={userData} />;
 }
 
-function GraphRouteWrapper({ graphData }) {
+function GraphRouteWrapper({ graphData, userData }) {
   const { subject } = useParams();
+
+  useEffect(() => {
+    console.log("GraphRouteWrapper userData changed:", userData);
+  }, [userData]);
+
   return (
     <Graph
       nodes={graphData.nodes}
@@ -109,17 +114,24 @@ function GraphRouteWrapper({ graphData }) {
   );
 }
 
-function SubgraphRouteWrapper({ graphData }) {
+function SubgraphRouteWrapper({ graphData, userData }) {
   const { topicName } = useParams();
-  const node = graphData.nodes.find((n) => n.name === topicName)
-  const subject = node.subject
-  return (<Graph
-            nodes={graphData.nodes}
-            links={graphData.relationships}
-            subject={subject}
-            width={1500}
-            height={600}
-          />)
+  const node = graphData.nodes.find((n) => n.name === topicName);
+  const subject = node.subject;
+
+  useEffect(() => {
+    console.log("SubgraphRouteWrapper userData changed:", userData);
+  }, [userData]);
+
+  return (
+    <Graph
+      nodes={graphData.nodes}
+      links={graphData.relationships}
+      subject={subject}
+      width={1500}
+      height={600}
+    />
+  );
 }
 
 function isEqualData(oldData, data) {
