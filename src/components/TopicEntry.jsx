@@ -15,11 +15,13 @@ const TopicEntry = ({ node }) => {
           setTopicNode(fetchedTopic[0]);
           const userData = await getCurrentUserData()
           const userDoc = await getCurrentUserDocData(userData.email)
-          if (fetchedTopic[0].name in userDoc) {
-            setCompleted(userDoc[fetchedTopic[0].name])
+
+          if (userDoc.subjectProgress[fetchedTopic[0].name]) {
+            setCompleted(userDoc.subjectProgress[fetchedTopic[0].name])
           } else {
             setCompleted(false)
           }
+
         } else {
           setError("Topic not found.");
         }
