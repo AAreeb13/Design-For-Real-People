@@ -4,6 +4,7 @@ import NavbarDropdown from "./NavbarDropdown";
 import AuthFormOverlay from "./FormOverlay"; 
 import SearchBar from "./SearchBar";
 import { auth, getCurrentUserData } from "../../database/firebase";
+import "../styles/Navbar.css"
 
 const MyNavbar = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -34,43 +35,12 @@ const MyNavbar = () => {
     setIsFormOpen(false);
   };
 
-  const ourLogo = {
-    padding: "5px 5px 5px 5px",
-    width: "150px",
-  };
-
-  const navStyle = {
-    backgroundColor: "#2c3e50",
-    color: "white",
-    padding: "1rem 2rem",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-    position: "fixed",
-    width: "100%",
-    top: "0",
-  };
-
-  const loginStyle = {
-    marginLeft: "20%",
-    marginRight: "2%",
-  };
-
-  const addTopicStyle = {
-    marginRight: "20px",
-  };
-
-  const logoutStyle = {
-    marginLeft: "27%",
-  };
-
 
   return (
     <div>
-      <nav className="navbar navbar-expand-lg bg-body-tertiary" style={navStyle}>
+      <nav className="navbar navbar-expand-lg bg-body-tertiary our-navbar">
         <div className="container-fluid">
-          <Link className="navbar-brand" to="/" style={ourLogo}>
+          <Link className="navbar-brand our-logo" to="/">
             StudyChain
           </Link>
 
@@ -87,7 +57,7 @@ const MyNavbar = () => {
           <div className="collapse navbar-collapse">
             <ul className="navbar-nav mr-auto">
               <li className="nav-item">
-                <button className="btn btn-success" onClick={() => handleOpenForm("add")} style={addTopicStyle}>
+                <button className="btn btn-success add-topic-style" onClick={() => handleOpenForm("add")}>
                   Add a Topic
                 </button>
               </li>
@@ -98,7 +68,7 @@ const MyNavbar = () => {
 
           {!isLoggedIn ? (
             <>
-              <button className="btn btn-outline-success" style={loginStyle} onClick={() => handleOpenForm("login")}>
+              <button className="btn btn-outline-success login-style" onClick={() => handleOpenForm("login")}>
                 Login
               </button>
               <button className="btn btn-outline-success" onClick={() => handleOpenForm("signup")}>
@@ -106,7 +76,7 @@ const MyNavbar = () => {
               </button>
             </>
           ) : (
-            <button className="btn btn-outline-danger" style={logoutStyle} onClick={handleLogout}>
+            <button className="btn btn-outline-danger logout-style" onClick={handleLogout}>
               Logout
             </button>
           )}

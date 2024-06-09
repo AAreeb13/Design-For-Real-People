@@ -1,6 +1,7 @@
 import React from "react";
+import "../styles/FormOverlay.css"
 
-const LoginForm = ({ formData, handleChange, handleSubmit, submitButtonStyle }) => (
+const LoginForm = ({ formData, handleChange, handleSubmit }) => (
   <form onSubmit={handleSubmit}>
     <div className="form-group">
       <label htmlFor="email">Email</label>
@@ -26,7 +27,7 @@ const LoginForm = ({ formData, handleChange, handleSubmit, submitButtonStyle }) 
         required
       />
     </div>
-    <button type="submit" className="btn btn-success" style={submitButtonStyle}>
+    <button type="submit" className="btn btn-success submit-button-style">
       Submit
     </button>
   </form>
