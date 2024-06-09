@@ -1,8 +1,6 @@
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-import { getAuth } from "firebase/auth";
-import { onAuthStateChanged } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCtai3PnZayNSzA4_5nm4guJpagIB37yTU",
@@ -15,23 +13,37 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-// const analytics = getAnalytics(app);  dont think we need this
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 
 let currentUser = null;
 
-
 export const getCurrentUserData = () => {
   return currentUser;
 };
 
+export const getCurrentUserDocData = async (email) => {
+  try {
+    const userQuery = query(collection(db, "Users"), where("email", "==", email));
+    const userQuerySnapshot = await getDocs(userQuery);
+
+    if (userQuerySnapshot.empty) {
+      console.log("No user document found with the email:", email);
+      return null;
+    }
+
+    // asm: Only ever one that matches, will not work if 2 docs with same email
+    const userData = userQuerySnapshot.docs[0].data();
+    return userData;
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    return null;
+  }
+};
 
 export const initAuthStateListener = () => {
-
   onAuthStateChanged(auth, (user) => {
     if (user) {
-
       console.log("User is signed in:", user);
       currentUser = user;
     } else {

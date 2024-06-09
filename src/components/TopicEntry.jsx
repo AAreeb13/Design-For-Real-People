@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getGraphData } from "../../database/graphData";
+import { getCurrentUserData, getCurrentUserDocData } from "../../database/firebase";
 
 const TopicEntry = ({ node }) => {
   const [topicNode, setTopicNode] = useState(null);
@@ -12,6 +13,13 @@ const TopicEntry = ({ node }) => {
         const fetchedTopic = await getTopic(node);
         if (fetchedTopic.length > 0) {
           setTopicNode(fetchedTopic[0]);
+          const userData = await getCurrentUserData()
+          const userDoc = await getCurrentUserDocData(userData.email)
+          if (fetchedTopic[0].name in userDoc) {
+            setCompleted(userDoc[fetchedTopic[0].name])
+          } else {
+            setCompleted(false)
+          }
         } else {
           setError("Topic not found.");
         }
