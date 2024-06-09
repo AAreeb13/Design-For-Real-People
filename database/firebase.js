@@ -1,13 +1,9 @@
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
-import { getDatabase } from "firebase/database";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import { onAuthStateChanged } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyCtai3PnZayNSzA4_5nm4guJpagIB37yTU",
   authDomain: "studychain-2b33a.firebaseapp.com",
@@ -18,8 +14,29 @@ const firebaseConfig = {
   measurementId: "G-ZZ9K1L4TN5"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+// const analytics = getAnalytics(app);  dont think we need this
 export const auth = getAuth(app);
-export const db = getDatabase(app)
+export const db = getFirestore(app);
+
+let currentUser = null;
+
+
+export const getCurrentUserData = () => {
+  return currentUser;
+};
+
+
+export const initAuthStateListener = () => {
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+
+      console.log("User is signed in:", user);
+      currentUser = user;
+    } else {
+      console.log("No user is signed in");
+      currentUser = null; // if no user is signed in, should set null to be safe
+    }
+  });
+};

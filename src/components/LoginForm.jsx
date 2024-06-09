@@ -3,13 +3,13 @@ import React from "react";
 const LoginForm = ({ formData, handleChange, handleSubmit, submitButtonStyle }) => (
   <form onSubmit={handleSubmit}>
     <div className="form-group">
-      <label htmlFor="username">Username</label>
+      <label htmlFor="email">Email</label>
       <input
-        type="text"
-        name="username"
+        type="email"
+        name="email"
         className="form-control"
-        placeholder="Enter username"
-        value={formData.username}
+        placeholder="Enter email"
+        value={formData.email}
         onChange={handleChange}
         required
       />

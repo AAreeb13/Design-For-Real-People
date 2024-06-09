@@ -1,25 +1,37 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import NavbarDropdown from "./NavbarDropdown";
 import AuthFormOverlay from "./FormOverlay"; 
 import SearchBar from "./SearchBar";
+import { auth, getCurrentUserData } from "../../database/firebase";
 
 const MyNavbar = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [formType, setFormType] = useState(""); 
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      setIsLoggedIn(user);
+    });
+    return unsubscribe;
+  }, []);
+
+  const handleLogout = () => {
+    auth.signOut().then(() => {
+      console.log("User logged out");
+    }).catch((error) => {
+      console.error("Error signing out:", error);
+    });
+  };
 
   const handleOpenForm = (type) => { 
     setIsFormOpen(true);
-    setFormType(type); 
+    setFormType(type);
   };
 
   const handleCloseForm = () => {
     setIsFormOpen(false);
-  };
-
-  const handleLogout = () => {
-    setIsLoggedIn(false);
   };
 
   const ourLogo = {
@@ -52,6 +64,7 @@ const MyNavbar = () => {
   const logoutStyle = {
     marginLeft: "27%",
   };
+
 
   return (
     <div>

@@ -5,28 +5,14 @@ import SignupForm from "./SignupForm";
 import TopicAdderForm from "./TopicAdderForm.jsx";
 import { addMainSubjectToGraph, addMiniSubjectToGraph, addTopicToGraph, mainSubjectExists, subjectExists, nodeExists } from "../../database/graphData";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-import { auth, db } from "../../database/firebase.js";
+import { auth, getCurrentUserData } from "../../database/firebase.js";
+import { addDoc } from "firebase/firestore";
 import { collection, getDocs } from "firebase/firestore";
-
-const usersCollectionRef = collection(db, "Users");
-const [usersData, setUsersData] = useState([]);
-export const [userEmail, setUserEmail] = useState("guest");
-
-const getUsersData = async () => {
-
-  try{
-    const data = await getDocs(usersCollectionRef);
-    const filteredData = data.docs.map((doc) => ({...doc.data(), id: doc.id, }));
-    console.log(filteredData);
-    setUsersData(filteredData);
-  } catch (err) {
-    console.error(err);
-  }
-
-}
-
+import { db } from "../../database/firebase.js";
 
 const FormOverlay = ({ onClose, formType }) => {
+  const usersCollectionRef = collection(db, "Users");
+
   const overlayStyle = {
     position: "fixed",
     top: 0,
@@ -61,7 +47,7 @@ const FormOverlay = ({ onClose, formType }) => {
   };
 
   const submitButtonStyle = {
-    marginTop: "30px"
+    marginTop: "30px",
   };
 
   const [selectedType, setSelectedType] = useState("");
@@ -71,10 +57,12 @@ const FormOverlay = ({ onClose, formType }) => {
     theme: "",
     subject: "",
     prerequisites: "",
-    username: "",
+    email: "",
     password: "",
     confirmPassword: "",
   });
+
+  const [userEmail, setUserEmail] = useState("");
 
   const handleTypeChange = (event) => {
     const newType = event.target.value;
@@ -93,69 +81,93 @@ const FormOverlay = ({ onClose, formType }) => {
     }));
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    console.log("formdata", formData);
-    let isValid = false;
+const handleSubmit = async (event) => {
+  event.preventDefault();
+  console.log("formdata", formData);
+  let isValid = false;
+  let errorMessage = "";
 
+  
+  if (formType == "signup" && formData.password !== formData.confirmPassword) {
+    errorMessage = "Password and confirm password must match."; 
+  } else {
     const signingUp = async () => {
       try {
-        await createUserWithEmailAndPassword(auth, formData.username, formData.password);
-        setUserEmail(formData.username);
-      } catch (error) {
-        console.error(error)
-      }
-    }
-
-    const loggingIn = async () => {
-      try {
-        await signInWithEmailAndPassword(auth, formData.username, formData.password);
-        setUserEmail(formData.username);
+        await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+        console.log("formdata.email", formData.email)
+        setUserEmail(formData.email);
+        await addDoc(usersCollectionRef, { email: formData.email, privilege: "member" });
+        isValid = true;
       } catch (error) {
         console.error(error);
+        errorMessage = "Signup failed. Please try again."; 
       }
-    }
-
+    };
+  
+    const loggingIn = async () => {
+      try {
+        await signInWithEmailAndPassword(auth, formData.email, formData.password);
+        setUserEmail(formData.email);
+        isValid = true;
+      } catch (error) {
+        console.error(error);
+        errorMessage = "Login failed. Please try again."; 
+      }
+    };
+  
     if (formType === "login") {
-      loggingIn();
-      isValid = true // todo backend for
+      await loggingIn();
     } else if (formType === "signup") {
-      signingUp();
-      isValid = true // todo backend for
+      await signingUp();
     } else {
       isValid = await handleTopicAdderSubmit(formData, isValid, validateMainSubject, validateMiniSubject, validateTopic);
     }
+  }
 
-    if (isValid) {
-      onClose();
-    }
-  };
+  if (isValid) {
+    onClose();
+  } else {
+    setFormData((prevData) => ({
+      ...prevData,
+      password: "", 
+      confirmPassword: "", 
+    }));
+    alert(errorMessage);
+  }
+};
 
+  
 
   const renderForm = () => {
     if (formType === "login") {
-      return <LoginForm 
-                formData={formData} 
-                handleChange={handleChange} 
-                handleSubmit={handleSubmit} 
-                submitButtonStyle={submitButtonStyle} 
-              />;
+      return (
+        <LoginForm
+          formData={formData}
+          handleChange={handleChange}
+          handleSubmit={handleSubmit}
+          submitButtonStyle={submitButtonStyle}
+        />
+      );
     } else if (formType === "signup") {
-      return <SignupForm 
-                formData={formData} 
-                handleChange={handleChange} 
-                handleSubmit={handleSubmit} 
-                submitButtonStyle={submitButtonStyle}
-              />;
+      return (
+        <SignupForm
+          formData={formData}
+          handleChange={handleChange}
+          handleSubmit={handleSubmit}
+          submitButtonStyle={submitButtonStyle}
+        />
+      );
     } else {
-      return <TopicAdderForm 
-                formData={formData} 
-                selectedType={selectedType} 
-                handleChange={handleChange} 
-                handleTypeChange={handleTypeChange} 
-                handleSubmit={handleSubmit} 
-                submitButtonStyle={submitButtonStyle} 
-              />
+      return (
+        <TopicAdderForm
+          formData={formData}
+          selectedType={selectedType}
+          handleChange={handleChange}
+          handleTypeChange={handleTypeChange}
+          handleSubmit={handleSubmit}
+          submitButtonStyle={submitButtonStyle}
+        />
+      );
     }
   };
 
@@ -172,8 +184,6 @@ const FormOverlay = ({ onClose, formType }) => {
     document.body
   );
 };
-
-
 
 async function handleTopicAdderSubmit(formData, isValid, validateMainSubject, validateMiniSubject, validateTopic) {
   if (formData.type === "main-subject") {
@@ -203,8 +213,8 @@ async function handleTopicAdderSubmit(formData, isValid, validateMainSubject, va
 
 const validateMainSubject = async (data) => {
   const nonEmpty = data.name.trim() !== "" && data.theme.trim() !== "";
-  const subjectExists = await mainSubjectExists("Subject", data)
-  return nonEmpty && !subjectExists
+  const subjectExists = await mainSubjectExists("Subject", data);
+  return nonEmpty && !subjectExists;
 };
 
 const validateMiniSubject = async (data) => {
@@ -212,29 +222,28 @@ const validateMiniSubject = async (data) => {
   const mainSubExst = await mainSubjectExists("Subject", data);
   const minSubExst = await subjectExists("Subject", data);
 
-  const prerequisitesArray = data.prerequisites.split(',').map(prereq => prereq.trim());
+  const prerequisitesArray = data.prerequisites.split(",").map((prereq) => prereq.trim());
 
   for (const prerequisite of prerequisitesArray) {
-    const exists = await nodeExists("Subject", {name: prerequisite});
+    const exists = await nodeExists("Subject", { name: prerequisite });
     if (!exists) return false;
   }
-  
-  return nonEmpty && mainSubExst && !minSubExst
+
+  return nonEmpty && mainSubExst && !minSubExst;
 };
 
 const validateTopic = async (data) => {
   const nonEmpty = data.name.trim() !== "" && data.subject.trim() !== "" && data.prerequisites.trim() !== "";
   const mainSubExst = await mainSubjectExists("Subject", data, false);
   const topicExst = await nodeExists("Subject", data);
- 
-  const prerequisitesArray = data.prerequisites.split(',').map(prereq => prereq.trim());
+
+  const prerequisitesArray = data.prerequisites.split(",").map((prereq) => prereq.trim());
   for (const prerequisite of prerequisitesArray) {
-    const exists = await nodeExists("Subject", {name: prerequisite});
+    const exists = await nodeExists("Subject", { name: prerequisite });
     if (!exists) return false;
   }
 
-  return nonEmpty && mainSubExst && !topicExst    
+  return nonEmpty && mainSubExst && !topicExst;
 };
-
 
 export default FormOverlay;

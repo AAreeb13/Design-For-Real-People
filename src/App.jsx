@@ -12,12 +12,15 @@ import Graph from "./components/Graph";
 import Navbar from "./components/Navbar";
 import GridMenu from "./pages/GridMenu";
 import { getGraphData, getNode } from "../database/graphData";
+import { getCurrentUserData, initAuthStateListener } from "../database/firebase";
 import TopicEntry from "./components/TopicEntry";
+import { auth } from "../database/firebase";
 
 function App() {
   const [graphData, setGraphData] = useState({ nodes: [], links: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [userData, setUserData] = useState(null);
 
   let oldData = null;
 
@@ -43,6 +46,22 @@ function App() {
     return () => {
       clearInterval(intervalId);
     };
+  }, []);
+
+  useEffect(() => {
+    initAuthStateListener();
+
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        setUserData(user);
+        console.log("User data:", user);
+      } else {
+        setUserData(null);
+        console.log("No user is signed in");
+      }
+    });
+
+    return () => unsubscribe();
   }, []);
 
   if (loading) {

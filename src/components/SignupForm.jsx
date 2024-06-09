@@ -3,13 +3,13 @@ import React from "react";
 const SignupForm = ({ formData, handleChange, handleSubmit, submitButtonStyle }) => (
   <form onSubmit={handleSubmit}>
     <div className="form-group">
-      <label htmlFor="username">Username</label>
+      <label htmlFor="email">Email</label>
       <input
-        type="text"
-        name="username"
-        placeholder="Enter username"
+        type="email"
+        name="email"
+        placeholder="Enter email"
         className="form-control"
-        value={formData.username}
+        value={formData.email}
         onChange={handleChange}
         required
       />
@@ -32,7 +32,7 @@ const SignupForm = ({ formData, handleChange, handleSubmit, submitButtonStyle })
         type="password"
         name="confirmPassword"
         className="form-control"
-        placeholder="Confirm Password"
+        placeholder="Confirm password"
         value={formData.confirmPassword}
         onChange={handleChange}
         required
