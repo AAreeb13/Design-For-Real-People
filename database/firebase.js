@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
+import { getFirestore, collection, query, where, getDocs, doc, updateDoc, getDoc } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCtai3PnZayNSzA4_5nm4guJpagIB37yTU",
@@ -51,4 +51,44 @@ export const initAuthStateListener = () => {
       currentUser = null; // if no user is signed in, should set null to be safe
     }
   });
+};
+
+export const updateCompletionStatus = async (userEmail, topicKey, newStatus) => {
+  try {
+    const docId = await getUserDocumentById(userEmail); // Get the document ID
+    const userDocData = await getCurrentUserDocData(userEmail);
+
+    if (docId && userDocData) {
+      const updatedSubjectProgress = { ...userDocData.subjectProgress, [topicKey]: newStatus };
+
+      const userDocRef = doc(db, "Users", docId); // Use the retrieved document ID
+      await updateDoc(userDocRef, {
+        subjectProgress: updatedSubjectProgress
+      });
+      console.log("Completion status updated successfully.");
+    } else {
+      console.error("User document not found.");
+    }
+  } catch (error) {
+    console.error("Error updating completion status:", error);
+  }
+};
+
+
+
+const getUserDocumentById = async (email) => {
+  try {
+    const userQuery = query(collection(db, "Users"), where("email", "==", email));
+    const userQuerySnapshot = await getDocs(userQuery);
+
+    if (!userQuerySnapshot.empty) {
+      return userQuerySnapshot.docs[0].id; // Return the document ID
+    } else {
+      console.error("User document not found.");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching user document:", error);
+    return null;
+  }
 };

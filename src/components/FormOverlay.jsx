@@ -5,10 +5,9 @@ import SignupForm from "./SignupForm";
 import TopicAdderForm, { handleTopicAdderSubmit } from "./TopicAdderForm.jsx";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../database/firebase.js";
-import { addDoc } from "firebase/firestore";
-import { collection } from "firebase/firestore";
+import { addDoc, collection } from "firebase/firestore";
 import { db } from "../../database/firebase.js";
-import "../styles/FormOverlay.css"
+import "../styles/FormOverlay.css";
 
 const FormOverlay = ({ onClose, formType }) => {
   const usersCollectionRef = collection(db, "Users");
@@ -46,42 +45,46 @@ const FormOverlay = ({ onClose, formType }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log("formdata", formData);
     let isValid = false;
     let errorMessage = "";
 
-    
-    if (formType == "signup" && formData.password !== formData.confirmPassword) {
-      errorMessage = "Password and confirm password must match."; 
+    if (formType === "signup" && formData.password !== formData.confirmPassword) {
+      errorMessage = "Password and confirm password must match.";
     } else {
       const signingUp = async () => {
         try {
-          await createUserWithEmailAndPassword(auth, formData.email, formData.password);
-          console.log("formdata.email", formData.email)
+          const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
           setUserEmail(formData.email);
-          await addDoc(usersCollectionRef, { email: formData.email, privilege: "member" });
           isValid = true;
+          return userCredential.user.uid; // Return the userId
         } catch (error) {
           console.error(error);
-          errorMessage = "Signup failed. Please try again."; 
+          errorMessage = "Signup failed. Please try again.";
         }
       };
-    
+
       const loggingIn = async () => {
         try {
-          await signInWithEmailAndPassword(auth, formData.email, formData.password);
+          const userCredential = await signInWithEmailAndPassword(auth, formData.email, formData.password);
           setUserEmail(formData.email);
           isValid = true;
+          return userCredential.user.uid; // Return the userId
         } catch (error) {
           console.error(error);
-          errorMessage = "Login failed. Please try again."; 
+          errorMessage = "Login failed. Please try again.";
         }
       };
-    
+
       if (formType === "login") {
-        await loggingIn();
+        const userId = await loggingIn();
+        if (userId) {
+          handleSubmitWithUserId(event, userId);
+        }
       } else if (formType === "signup") {
-        await signingUp();
+        const userId = await signingUp();
+        if (userId) {
+          handleSubmitWithUserId(event, userId);
+        }
       } else {
         isValid = await handleTopicAdderSubmit(formData, isValid);
       }
@@ -92,14 +95,29 @@ const FormOverlay = ({ onClose, formType }) => {
     } else {
       setFormData((prevData) => ({
         ...prevData,
-        password: "", 
-        confirmPassword: "", 
+        password: "",
+        confirmPassword: "",
       }));
       alert(errorMessage);
     }
   };
 
-  
+  const handleSubmitWithUserId = async (event, userId) => {
+    const documentData = {
+      email: formData.email,
+      userId: userId,
+      privledge: "member",
+      subjectProgress: {}
+    }
+
+    try {
+      await addDoc(usersCollectionRef, documentData);
+      onClose();
+    } catch (error) {
+      console.error("Error adding document:", error);
+    }
+  };
+
   const renderForm = () => {
     if (formType === "login") {
       return (
@@ -143,6 +161,5 @@ const FormOverlay = ({ onClose, formType }) => {
     document.body
   );
 };
-
 
 export default FormOverlay;
