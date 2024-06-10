@@ -10,10 +10,16 @@ const MyNavbar = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [formType, setFormType] = useState(""); 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [privilegeLevel, setPrivilegeLevel] = useState("guest")
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
       setIsLoggedIn(user);
+      if (user) {
+        setPrivilegeLevel("moderator");
+      } else {
+        setPrivilegeLevel("guest");
+      }
     });
     return unsubscribe;
   }, []);
@@ -42,7 +48,18 @@ const MyNavbar = () => {
 
           <LogoAndDropdown />
 
-          <TopicAdder handleOpenForm={handleOpenForm} />
+          {privilegeLevel === "guest" ? (
+            <DisabledTopicAdder />
+          ) : privilegeLevel === "member" ? (
+            <TopicSuggester handleOpenForm={handleOpenForm} />
+          ) : privilegeLevel === "moderator" ? (
+            <>
+              <SeeSuggestedTopics />
+              <TopicAdder handleOpenForm={handleOpenForm} />
+            </>
+          ) : (
+            <h1>ERROR: Not guest, member or moderator</h1>
+          )}
 
           <SearchBar />
 
@@ -51,7 +68,7 @@ const MyNavbar = () => {
           ) : (
             <LoggedInButtons handleLogout={handleLogout} />
           )}
-          
+
         </div>
       </nav>
       {isFormOpen && <AuthFormOverlay onClose={handleCloseForm} formType={formType} />}
@@ -73,6 +90,42 @@ const LogoAndDropdown = () => (
     </button>
     <NavbarDropdown />
   </>
+);
+
+const DisabledTopicAdder = () => (
+  <div className="collapse navbar-collapse">
+    <ul className="navbar-nav mr-auto">
+      <li className="nav-item">
+        <button className="btn btn-success disabled-button-style" disabled>
+          Login to add a topic
+        </button>
+      </li>
+    </ul>
+  </div>
+);
+
+const TopicSuggester = ({ handleOpenForm }) => (
+  <div className="collapse navbar-collapse">
+    <ul className="navbar-nav mr-auto">
+      <li className="nav-item">
+        <button className="btn btn-success suggest-topic-style" onClick={() => handleOpenForm("suggest")}>
+          Suggest a Topic
+        </button>
+      </li>
+    </ul>
+  </div>
+);
+
+const SeeSuggestedTopics = () => (
+  <div className="collapse navbar-collapse">
+    <ul className="navbar-nav mr-auto">
+      <li className="nav-item">
+        <button className="btn btn-warning see-suggested-topics-style">
+          See Suggested Topics
+        </button>
+      </li>
+    </ul>
+  </div>
 );
 
 const TopicAdder = ({ handleOpenForm }) => (
