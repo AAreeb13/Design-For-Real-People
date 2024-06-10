@@ -21,6 +21,8 @@ function HomePage({ graphData }) {
         alignItems: "center",
         justifyContent: "space-between",
         padding: "10px",
+        width: "80%",
+        height: "80%"
       }}
     >
       <div style={{ flex: 1, margin: "10px" }}>

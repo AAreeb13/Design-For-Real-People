@@ -328,7 +328,9 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
     return <div>Loading...</div>;
   }
 
-  return <svg ref={svgRef} width={width} height={height} style={style}></svg>;
+  return (    
+      <svg ref={svgRef} width="100%" height="100%" style={{ width: "100%", height: "100%", minHeight:"590px", ...style}}></svg>
+    );
 };
 
 const getTotalNodesForSubject = (subject, links, nodes) => {
