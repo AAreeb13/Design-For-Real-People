@@ -7,7 +7,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import { auth } from "../../database/firebase.js";
+import { addUserSuggestion, auth } from "../../database/firebase.js";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../../database/firebase.js";
 import "../styles/FormOverlay.css";
@@ -66,7 +66,7 @@ const FormOverlay = ({ onClose, formType }) => {
           );
           setUserEmail(formData.email);
           isValid = true;
-          return userCredential.user.uid; // Return the userId
+          return userCredential.user.uid;
         } catch (error) {
           console.error(error);
           errorMessage = "Signup failed. Please try again.";
@@ -82,7 +82,7 @@ const FormOverlay = ({ onClose, formType }) => {
           );
           setUserEmail(formData.email);
           isValid = true;
-          return userCredential.user.uid; // Return the userId
+          return userCredential.user.uid;
         } catch (error) {
           console.error(error);
           errorMessage = "Login failed. Please try again.";
@@ -99,8 +99,20 @@ const FormOverlay = ({ onClose, formType }) => {
         if (userId) {
           handleSubmitWithUserId(event, userId);
         }
-      } else {
+      } else if (formType === "add") {
         isValid = await handleTopicAdderSubmit(formData, isValid);
+      } else if (formType === "suggest") {
+        const suggestion = {
+          email: userEmail,
+          name: formData.name,
+          prerequisites: formData.prerequisites.split(","),
+          subject: formData.subject,
+          theme: formData.theme,
+          type: formData.type
+        }
+        isValid = addUserSuggestion(suggestion);
+      } else {
+        console.error("unknown formtype: " + formType)
       }
     }
 
@@ -181,7 +193,7 @@ const FormOverlay = ({ onClose, formType }) => {
             ? "Sign Up"
             : "Add a New Entry"}
         </h2>
-        {renderForm()}
+        <div className="form-content">{renderForm()}</div>
       </div>
     </div>,
     document.body

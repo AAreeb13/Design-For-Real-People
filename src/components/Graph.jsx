@@ -334,7 +334,6 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
 const getTotalNodesForSubject = (subject, links, nodes) => {
   const totalTopics = getTopicsFromSubject(subject, links, nodes);
   const totalMiniSubjects = getMiniSubjectFromSubject(subject, links, nodes);
-  console.log("tms", totalMiniSubjects);
   return totalTopics.length + totalMiniSubjects.length;
 };
 

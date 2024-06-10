@@ -8,7 +8,8 @@ import {
   getDocs,
   doc,
   updateDoc,
-  getDoc,
+  addDoc,
+  deleteDoc,
 } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -51,6 +52,29 @@ export const getCurrentUserDocData = async (email) => {
     return null;
   }
 };
+
+export const getSuggestionData = async () => {
+  try {
+    const suggestionQuery = collection(db, "Suggestions");
+    const suggestionQuerySnapshot = await getDocs(suggestionQuery);
+
+    if (suggestionQuerySnapshot.empty) {
+      console.log("No suggestions found from database");
+      return [];
+    }
+
+    const suggestions = [];
+    suggestionQuerySnapshot.forEach((doc) => {
+      suggestions.push(doc.data());
+    });
+    console.log("suggestions", suggestions)
+    return suggestions;
+  } catch (error) {
+    console.error("Error fetching suggestions:", error);
+    return [];
+  }
+};
+
 
 export const initAuthStateListener = () => {
   onAuthStateChanged(auth, (user) => {
@@ -120,4 +144,42 @@ export const getUserPrivledge = async (email) => {
 export const getUserSubjectProgress = async (email) => {
   const userDoc = await getCurrentUserDocData(email);
   return userDoc.subjectProgress;
+};
+
+export const addUserSuggestion = async (suggestion) => {
+  try {
+    const suggestionData = {
+      ...suggestion,
+      timestamp: new Date().toISOString(),
+    };
+
+    const docRef = await addDoc(collection(db, "Suggestions"), suggestionData);
+    const suggestionId = docRef.id;
+    console.log("Suggestion added successfully with ID: ", suggestionId);
+
+    // Update the suggestion data with the generated ID
+    const updatedSuggestionData = {
+      ...suggestionData,
+      id: suggestionId,
+    };
+
+    // Update the document with the generated ID included
+    await updateDoc(docRef, updatedSuggestionData);
+
+    return suggestionId; // Return the ID of the added suggestion
+  } catch (error) {
+    console.error("Error adding suggestion:", error);
+    throw error; // Re-throw the error to handle it outside
+  }
+};
+
+export const deleteUserSuggestion = async (suggestionId) => {
+  try {
+    console.log("suggestionID", suggestionId)
+    const suggestionDocRef = doc(db, "Suggestions", suggestionId);
+    await deleteDoc(suggestionDocRef);
+    console.log("Suggestion deleted successfully.");
+  } catch (error) {
+    console.error("Error deleting suggestion:", error);
+  }
 };
