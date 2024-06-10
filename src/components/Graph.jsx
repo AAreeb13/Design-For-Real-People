@@ -254,15 +254,15 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
     if (userLoggedIn) {
       const progressBar = svg
         .append("rect")
-        .attr("width", 150)
+        .attr("width", 250)
         .attr("height", 20)
         .attr("fill", "#ddd")
         .attr("stroke", "#444")
         .attr("stroke-width", 1)
         .attr("rx", 10)
         .attr("ry", 10)
-        .attr("x", width - 180)
-        .attr("y", 20);
+        .attr("x", (width - 250) / 2) 
+        .attr("y", 10);
 
       const progressBarIndicator = svg
         .append("rect")
@@ -273,8 +273,8 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
         .attr("stroke-width", 1)
         .attr("rx", 10)
         .attr("ry", 10)
-        .attr("y", 20)
-        .attr("x", width - 180);
+        .attr("x", (width - 250) / 2)
+        .attr("y", 10);
 
       const updateProgressBar = (completionPercentage) => {
         const width = 150 * (completionPercentage / 100);
@@ -285,8 +285,8 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
 
       const completionText = svg
         .append("text")
-        .attr("x", width - 180)
-        .attr("y", 60)
+        .attr("x", (width - 130) / 2)
+        .attr("y", 50)
         .attr("font-family", "Arial, sans-serif")
         .attr("font-size", "16px")
         .attr("fill", "#333")
