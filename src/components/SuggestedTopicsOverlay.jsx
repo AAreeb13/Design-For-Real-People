@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
-import { RiDeleteBin6Line } from "react-icons/ri"; // Import the delete bin icon
+import { RiDeleteBin6Line } from "react-icons/ri";
 import "../styles/SuggestedTopicsOverlay.css";
-import { getSuggestionData } from "../../database/firebase";
+import { getSuggestionData, deleteUserSuggestion } from "../../database/firebase";
 
 const SuggestedTopicsOverlay = ({ open, onClose }) => {
   const [suggestedTopics, setSuggestedTopics] = useState([]);
@@ -25,10 +25,14 @@ const SuggestedTopicsOverlay = ({ open, onClose }) => {
 
   if (!open) return null;
 
-  const handleDeleteTopic = (index) => {
-    // Implement delete functionality here
-    console.log("Delete topic with index:", index);
-    // You can call an API to delete the topic from the database
+  const handleDeleteTopic = async (suggestionId) => {
+    try {
+      await deleteUserSuggestion(suggestionId);
+      // Remove the deleted topic from the state
+      setSuggestedTopics(prevTopics => prevTopics.filter(topic => topic.id !== suggestionId));
+    } catch (error) {
+      console.error("Error deleting topic:", error);
+    }
   };
 
   return ReactDOM.createPortal(
@@ -80,10 +84,9 @@ const SuggestedTopicsOverlay = ({ open, onClose }) => {
                   )}
                 </div>
                 <div className="delete-icon-container">
-                  {/* Bin icon for deleting the topic */}
                   <button
                     className="btn btn-danger delete-button"
-                    onClick={() => handleDeleteTopic(index)}
+                    onClick={() => handleDeleteTopic(topic.id)}
                   >
                     <RiDeleteBin6Line className="delete-icon" />
                     Delete

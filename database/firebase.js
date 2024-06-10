@@ -9,6 +9,7 @@ import {
   doc,
   updateDoc,
   addDoc,
+  deleteDoc,
 } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -152,9 +153,33 @@ export const addUserSuggestion = async (suggestion) => {
       timestamp: new Date().toISOString(),
     };
 
-    await addDoc(collection(db, "Suggestions"), suggestionData);
-    console.log("Suggestion added successfully.");
+    const docRef = await addDoc(collection(db, "Suggestions"), suggestionData);
+    const suggestionId = docRef.id;
+    console.log("Suggestion added successfully with ID: ", suggestionId);
+
+    // Update the suggestion data with the generated ID
+    const updatedSuggestionData = {
+      ...suggestionData,
+      id: suggestionId,
+    };
+
+    // Update the document with the generated ID included
+    await updateDoc(docRef, updatedSuggestionData);
+
+    return suggestionId; // Return the ID of the added suggestion
   } catch (error) {
     console.error("Error adding suggestion:", error);
+    throw error; // Re-throw the error to handle it outside
+  }
+};
+
+export const deleteUserSuggestion = async (suggestionId) => {
+  try {
+    console.log("suggestionID", suggestionId)
+    const suggestionDocRef = doc(db, "Suggestions", suggestionId);
+    await deleteDoc(suggestionDocRef);
+    console.log("Suggestion deleted successfully.");
+  } catch (error) {
+    console.error("Error deleting suggestion:", error);
   }
 };
