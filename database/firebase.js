@@ -1,6 +1,16 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { getFirestore, collection, query, where, getDocs, doc, updateDoc, getDoc } from "firebase/firestore";
+import {
+  getFirestore,
+  collection,
+  query,
+  where,
+  getDocs,
+  doc,
+  updateDoc,
+  addDoc,
+  deleteDoc,
+} from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCtai3PnZayNSzA4_5nm4guJpagIB37yTU",
@@ -9,7 +19,7 @@ const firebaseConfig = {
   storageBucket: "studychain-2b33a.appspot.com",
   messagingSenderId: "203870817975",
   appId: "1:203870817975:web:c8f7074854b22ba43d8732",
-  measurementId: "G-ZZ9K1L4TN5"
+  measurementId: "G-ZZ9K1L4TN5",
 };
 
 const app = initializeApp(firebaseConfig);
@@ -24,7 +34,10 @@ export const getCurrentUserData = () => {
 
 export const getCurrentUserDocData = async (email) => {
   try {
-    const userQuery = query(collection(db, "Users"), where("email", "==", email));
+    const userQuery = query(
+      collection(db, "Users"),
+      where("email", "==", email)
+    );
     const userQuerySnapshot = await getDocs(userQuery);
     if (userQuerySnapshot.empty) {
       console.log("No user document found with the email:", email);
@@ -40,6 +53,29 @@ export const getCurrentUserDocData = async (email) => {
   }
 };
 
+export const getSuggestionData = async () => {
+  try {
+    const suggestionQuery = collection(db, "Suggestions");
+    const suggestionQuerySnapshot = await getDocs(suggestionQuery);
+
+    if (suggestionQuerySnapshot.empty) {
+      console.log("No suggestions found from database");
+      return [];
+    }
+
+    const suggestions = [];
+    suggestionQuerySnapshot.forEach((doc) => {
+      suggestions.push(doc.data());
+    });
+    console.log("suggestions", suggestions)
+    return suggestions;
+  } catch (error) {
+    console.error("Error fetching suggestions:", error);
+    return [];
+  }
+};
+
+
 export const initAuthStateListener = () => {
   onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -52,17 +88,24 @@ export const initAuthStateListener = () => {
   });
 };
 
-export const updateCompletionStatus = async (userEmail, topicKey, newStatus) => {
+export const updateCompletionStatus = async (
+  userEmail,
+  topicKey,
+  newStatus
+) => {
   try {
     const docId = await getUserDocumentByUserEmail(userEmail); // Get the document ID
     const userDocData = await getCurrentUserDocData(userEmail);
 
     if (docId && userDocData) {
-      const updatedSubjectProgress = { ...userDocData.subjectProgress, [topicKey]: newStatus };
+      const updatedSubjectProgress = {
+        ...userDocData.subjectProgress,
+        [topicKey]: newStatus,
+      };
 
       const userDocRef = doc(db, "Users", docId); // Use the retrieved document ID
       await updateDoc(userDocRef, {
-        subjectProgress: updatedSubjectProgress
+        subjectProgress: updatedSubjectProgress,
       });
       console.log("Completion status updated successfully.");
     } else {
@@ -73,11 +116,12 @@ export const updateCompletionStatus = async (userEmail, topicKey, newStatus) => 
   }
 };
 
-
-
 const getUserDocumentByUserEmail = async (email) => {
   try {
-    const userQuery = query(collection(db, "Users"), where("email", "==", email));
+    const userQuery = query(
+      collection(db, "Users"),
+      where("email", "==", email)
+    );
     const userQuerySnapshot = await getDocs(userQuery);
 
     if (!userQuerySnapshot.empty) {
@@ -94,10 +138,48 @@ const getUserDocumentByUserEmail = async (email) => {
 
 export const getUserPrivledge = async (email) => {
   const userDoc = await getCurrentUserDocData(email);
-  return userDoc.privledge
-}
+  return userDoc.privledge;
+};
 
 export const getUserSubjectProgress = async (email) => {
   const userDoc = await getCurrentUserDocData(email);
-  return userDoc.subjectProgress
-}
+  return userDoc.subjectProgress;
+};
+
+export const addUserSuggestion = async (suggestion) => {
+  try {
+    const suggestionData = {
+      ...suggestion,
+      timestamp: new Date().toISOString(),
+    };
+
+    const docRef = await addDoc(collection(db, "Suggestions"), suggestionData);
+    const suggestionId = docRef.id;
+    console.log("Suggestion added successfully with ID: ", suggestionId);
+
+    // Update the suggestion data with the generated ID
+    const updatedSuggestionData = {
+      ...suggestionData,
+      id: suggestionId,
+    };
+
+    // Update the document with the generated ID included
+    await updateDoc(docRef, updatedSuggestionData);
+
+    return suggestionId; // Return the ID of the added suggestion
+  } catch (error) {
+    console.error("Error adding suggestion:", error);
+    throw error; // Re-throw the error to handle it outside
+  }
+};
+
+export const deleteUserSuggestion = async (suggestionId) => {
+  try {
+    console.log("suggestionID", suggestionId)
+    const suggestionDocRef = doc(db, "Suggestions", suggestionId);
+    await deleteDoc(suggestionDocRef);
+    console.log("Suggestion deleted successfully.");
+  } catch (error) {
+    console.error("Error deleting suggestion:", error);
+  }
+};

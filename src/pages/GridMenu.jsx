@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { getMainSubjects } from "../../database/graphData";
-import "../styles/GridMenu.css"
+import "../styles/GridMenu.css";
 
 const GridMenu = () => {
   const [subjects, setSubjects] = useState(null);
@@ -32,9 +32,7 @@ const GridMenu = () => {
             .filter((subject) => subject.theme === theme)
             .map((subject, index) => (
               <Link to={`/graph/${subject.name}`} key={index}>
-                <button
-                  className="btn btn-light btn-outline-success grid-button"
-                >
+                <button className="btn btn-light btn-outline-success grid-button">
                   {subject.name}
                 </button>
               </Link>

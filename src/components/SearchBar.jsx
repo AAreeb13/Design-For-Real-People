@@ -23,9 +23,10 @@ const SearchBar = () => {
 
   useEffect(() => {
     if (searchTerm) {
-      const filteredNodes = nodes.filter((node) =>
-        node.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        (node.type === "topic" || !node.mainSubject)
+      const filteredNodes = nodes.filter(
+        (node) =>
+          node.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+          (node.type === "topic" || !node.mainSubject)
       );
       setSuggestions(filteredNodes.slice(0, 5));
     } else {
@@ -46,10 +47,13 @@ const SearchBar = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (searchTerm) {
-      const matchingNode = nodes.find((node) =>
-        node.name.toLowerCase() === searchTerm.toLowerCase()
+      const matchingNode = nodes.find(
+        (node) => node.name.toLowerCase() === searchTerm.toLowerCase()
       );
-      if (matchingNode && (matchingNode.type === "topic" || !matchingNode.mainSubject)) {
+      if (
+        matchingNode &&
+        (matchingNode.type === "topic" || !matchingNode.mainSubject)
+      ) {
         navigate(`/subgraph/${matchingNode.name}`);
       } else {
         alert("Topic or mini subject not found");

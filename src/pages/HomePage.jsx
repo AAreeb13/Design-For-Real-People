@@ -1,17 +1,11 @@
 import { Link } from "react-router-dom";
-import Graph from "../components/Graph";
+import studyChainLogo from "../assets/StudyChain.jpg";
 
-function HomePage({ graphData }) {
+function HomePage() {
   const ourExploreButton = {
-    width: "275px",
-  };
-
-  const graphStyle = {
-    marginLeft: "17%",
-    border: "1px solid black",
-    boxShadow:
-      "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
-    borderRadius: "10px",
+    width: "200px", 
+    padding: "10px 20px",
+    fontSize: "1.2rem",
   };
 
   return (
@@ -20,34 +14,34 @@ function HomePage({ graphData }) {
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        padding: "10px",
+        margin: "auto",
+        marginTop: "50px",
+        width: "90%", 
+        padding: "20px",
+        height: "80%",
+        background: "#f8f9fa", // Changed background color to a nicer shade
+        borderRadius: "20px", 
+        boxShadow: "0px 0px 20px rgba(0, 0, 0, 0.1)", // Added box shadow for depth
       }}
     >
-    <div style={{ flex: 1, margin: "10px" }}>
-      <h1>StudyChain</h1>
-      <h3>Studying Made Simple</h3>
-      <Link to="/grid-menu">
-        <button
-          type="button"
-          className="btn btn-dark"
-          style={ourExploreButton}
-        >
-          Explore Our Topics
-        </button>
-      </Link>
-    </div>
+      <div style={{ flex: 2, margin: "10px" }}>
+        <h1 style={{ fontSize: "3.5rem", marginBottom: "20px", color: "#333" }}>StudyChain</h1> 
+        <h3 style={{ fontSize: "1.8rem", color: "#666", marginBottom: "30px" }}>Studying Made Simple</h3> 
+        <Link to="/grid-menu">
+          <button
+            type="button"
+            className="btn btn-dark"
+            style={ourExploreButton}
+          >
+            Explore Our Topics
+          </button>
+        </Link>
+      </div>
 
-    <div style={{ flex: 2, margin: "10px" }}>
-      <Graph
-        nodes={graphData.nodes}
-        links={graphData.relationships}
-        subject={"calculus"}
-        width={1000}
-        height={800}
-        style={graphStyle}
-      />
+      <div style={{ flex: 1, margin: "10px", marginLeft: "auto", marginRight: "20px" }}> 
+        <img src={studyChainLogo} alt="StudyChain Logo" style={{ maxWidth: "100%", height: "auto", borderRadius: "10px" }} /> 
+      </div>
     </div>
-  </div>
   );
 }
 
