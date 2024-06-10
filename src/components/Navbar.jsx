@@ -139,7 +139,7 @@ const SeeSuggestedTopics = () => (
     <ul className="navbar-nav mr-auto">
       <li className="nav-item">
         <button className="btn btn-warning see-suggested-topics-style">
-          See Suggested Topics
+          View Suggested Topics
         </button>
       </li>
     </ul>
