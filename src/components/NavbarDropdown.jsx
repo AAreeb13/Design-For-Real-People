@@ -4,8 +4,7 @@ import { getMainSubjects } from "../../database/graphData";
 
 const NavbarDropdown = () => {
   const dropDownMenuStyle = {
-    maxWidth: "200px",
-    marginRight: "100px"
+    maxWidth: "200px"
   };
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
