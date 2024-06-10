@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { getGraphData } from "../../database/graphData";
-import { getCurrentUserData, getCurrentUserDocData, updateCompletionStatus } from "../../database/firebase"; // Import updateCompletionStatus function
+import {
+  getCurrentUserData,
+  getCurrentUserDocData,
+  updateCompletionStatus,
+} from "../../database/firebase"; // Import updateCompletionStatus function
 
 const TopicEntry = ({ node }) => {
   const [topicNode, setTopicNode] = useState(null);
@@ -22,10 +26,12 @@ const TopicEntry = ({ node }) => {
             const userDoc = await getCurrentUserDocData(userData.email);
 
             if (userDoc && userDoc.subjectProgress) {
-              setCompleted(userDoc.subjectProgress[fetchedTopic[0].name] || false);
+              setCompleted(
+                userDoc.subjectProgress[fetchedTopic[0].name] || false
+              );
             } else {
               setCompleted(false);
-            }            
+            }
           }
         } else {
           setError("Topic not found.");
@@ -65,7 +71,7 @@ const TopicEntry = ({ node }) => {
             top: "10px",
             right: "10px",
             zIndex: "9999",
-            marginTop: "80px"
+            marginTop: "80px",
           }}
           onClick={toggleCompletion}
         >
@@ -107,7 +113,7 @@ const TopicEntry = ({ node }) => {
 const getTopic = async (name) => {
   console.log("we got here");
   const { nodes, relationships } = await getGraphData();
-  
+
   return nodes.filter((n) => n.name === name);
 };
 

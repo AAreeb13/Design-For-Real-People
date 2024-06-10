@@ -20,15 +20,23 @@ const SubGraph = ({ topicName }) => {
       try {
         const { nodes, relationships } = await getDependencyGraph(topicName);
         setNodes(nodes);
-        console.log("nodes", nodes)
+        console.log("nodes", nodes);
 
         let newRelationships = relationships.map((rel, index) => {
-          const sourceNode = nodes.find((n) => n.id === rel.source)
-          const targetNode = nodes.find((n) => n.id === rel.target)
+          const sourceNode = nodes.find((n) => n.id === rel.source);
+          const targetNode = nodes.find((n) => n.id === rel.target);
 
           return {
-            source: {name: sourceNode.name, type: sourceNode.type, index: index},
-            target: {name: targetNode.name, type: targetNode.type, index: index},
+            source: {
+              name: sourceNode.name,
+              type: sourceNode.type,
+              index: index,
+            },
+            target: {
+              name: targetNode.name,
+              type: targetNode.type,
+              index: index,
+            },
           };
         });
         setRelationships(newRelationships);

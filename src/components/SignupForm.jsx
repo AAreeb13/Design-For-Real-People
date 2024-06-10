@@ -1,5 +1,5 @@
 import React from "react";
-import "../styles/FormOverlay.css"
+import "../styles/FormOverlay.css";
 
 const SignupForm = ({ formData, handleChange, handleSubmit }) => (
   <form onSubmit={handleSubmit}>

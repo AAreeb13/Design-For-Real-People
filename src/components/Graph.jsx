@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import { useNavigate } from "react-router-dom";
-import { getCurrentUserData, getUserSubjectProgress } from "../../database/firebase";
+import {
+  getCurrentUserData,
+  getUserSubjectProgress,
+} from "../../database/firebase";
 import { getOrder } from "../../database/graphData";
 
 const Graph = ({ nodes, links, subject = null, width, height, style }) => {
@@ -12,9 +15,10 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
   const [loading, setLoading] = useState(true);
   const [userLoggedIn, setUserLoggedIn] = useState(false);
 
-  const validNodes = subject == null
-    ? nodes
-    : nodes.filter((n) => n.name === subject || n.subject === subject);
+  const validNodes =
+    subject == null
+      ? nodes
+      : nodes.filter((n) => n.name === subject || n.subject === subject);
 
   const nodesToUse = validNodes.map((n) => {
     return { name: n.name, type: n.type };
@@ -28,14 +32,15 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
   });
 
   const nodeNameList = nodesToUse.map((n) => n.name);
-  linksToUse = subject == null
-    ? linksToUse
-    : linksToUse.filter((link) => {
-        return (
-          nodeNameList.includes(link.source) &&
-          nodeNameList.includes(link.target)
-        );
-      });
+  linksToUse =
+    subject == null
+      ? linksToUse
+      : linksToUse.filter((link) => {
+          return (
+            nodeNameList.includes(link.source) &&
+            nodeNameList.includes(link.target)
+          );
+        });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -44,7 +49,12 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
         setUserLoggedIn(true);
         const subjectProgress = await getUserSubjectProgress(user.email);
         const totalTopicsCount = getTotalNodesForSubject(subject, links, nodes);
-        const ourTopicsCount = getNodesCompleteForSubject(subject, links, nodes, subjectProgress);
+        const ourTopicsCount = getNodesCompleteForSubject(
+          subject,
+          links,
+          nodes,
+          subjectProgress
+        );
         setTotalTopicCount(totalTopicsCount);
         setOurTopicCount(ourTopicsCount);
         setLoading(false);
@@ -198,7 +208,7 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .on("mouseover", function (event, d) {
         d3.select(this)
           .transition()
-          .duration(50) 
+          .duration(50)
           .attr("fill", "#ff9999")
           .attr("stroke", "#666");
 
@@ -241,49 +251,48 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .style("stroke-width", "3px")
       .style("pointer-events", "none");
 
-      if (userLoggedIn) {
-        const progressBar = svg
-          .append("rect")
-          .attr("width", 150) 
-          .attr("height", 20)
-          .attr("fill", "#ddd") 
-          .attr("stroke", "#444")
-          .attr("stroke-width", 1)
-          .attr("rx", 10) 
-          .attr("ry", 10) 
-          .attr("x", width - 180)
-          .attr("y", 20); 
-      
-        const progressBarIndicator = svg
-          .append("rect")
-          .attr("width", 0)
-          .attr("height", 20)
-          .attr("fill", "green") 
-          .attr("stroke", "#444")
-          .attr("stroke-width", 1)
-          .attr("rx", 10) 
-          .attr("ry", 10) 
-          .attr("y", 20) 
-          .attr("x", width - 180); 
-      
-        const updateProgressBar = (completionPercentage) => {
-          const width = 150 * (completionPercentage / 100);
-          progressBarIndicator.attr("width", width);
-        };
-      
-        updateProgressBar((ourTopicCount / totalTopicCount) * 100);
-      
-        const completionText = svg
-          .append("text")
-          .attr("x", width - 180) 
-          .attr("y", 60) 
-          .attr("font-family", "Arial, sans-serif") 
-          .attr("font-size", "16px")
-          .attr("fill", "#333") 
-          .attr("text-anchor", "start") 
-          .text(ourTopicCount + " out of " + totalTopicCount + " complete");
-      }
-      
+    if (userLoggedIn) {
+      const progressBar = svg
+        .append("rect")
+        .attr("width", 150)
+        .attr("height", 20)
+        .attr("fill", "#ddd")
+        .attr("stroke", "#444")
+        .attr("stroke-width", 1)
+        .attr("rx", 10)
+        .attr("ry", 10)
+        .attr("x", width - 180)
+        .attr("y", 20);
+
+      const progressBarIndicator = svg
+        .append("rect")
+        .attr("width", 0)
+        .attr("height", 20)
+        .attr("fill", "green")
+        .attr("stroke", "#444")
+        .attr("stroke-width", 1)
+        .attr("rx", 10)
+        .attr("ry", 10)
+        .attr("y", 20)
+        .attr("x", width - 180);
+
+      const updateProgressBar = (completionPercentage) => {
+        const width = 150 * (completionPercentage / 100);
+        progressBarIndicator.attr("width", width);
+      };
+
+      updateProgressBar((ourTopicCount / totalTopicCount) * 100);
+
+      const completionText = svg
+        .append("text")
+        .attr("x", width - 180)
+        .attr("y", 60)
+        .attr("font-family", "Arial, sans-serif")
+        .attr("font-size", "16px")
+        .attr("fill", "#333")
+        .attr("text-anchor", "start")
+        .text(ourTopicCount + " out of " + totalTopicCount + " complete");
+    }
 
     simulation.on("tick", () => {
       link
@@ -301,9 +310,8 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
 
     const initialTransform = d3.zoomIdentity
       .translate(width / 2, height / 2)
-      .scale(0.20);
+      .scale(0.2);
     svg.call(zoom.transform, initialTransform);
-
 
     const updateText = async () => {
       const promises = linksToUse.map((d) => getOrder(d));
@@ -326,7 +334,7 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
 const getTotalNodesForSubject = (subject, links, nodes) => {
   const totalTopics = getTopicsFromSubject(subject, links, nodes);
   const totalMiniSubjects = getMiniSubjectFromSubject(subject, links, nodes);
-  console.log("tms", totalMiniSubjects)
+  console.log("tms", totalMiniSubjects);
   return totalTopics.length + totalMiniSubjects.length;
 };
 
@@ -341,22 +349,36 @@ const getNodesCompleteForSubject = (subject, links, nodes, subjectProgress) => {
   });
 
   totalMiniSubjects.map((miniSubject) => {
-    const miniSubjectNodeCount =  getTotalNodesForSubject(miniSubject.name, links, nodes);
-    const ourMiniSubjectCount =  getNodesCompleteForSubject(miniSubject.name, links, nodes, subjectProgress);
-    progCount = progCount + ((miniSubjectNodeCount === ourMiniSubjectCount) ? 1 : 0);
+    const miniSubjectNodeCount = getTotalNodesForSubject(
+      miniSubject.name,
+      links,
+      nodes
+    );
+    const ourMiniSubjectCount = getNodesCompleteForSubject(
+      miniSubject.name,
+      links,
+      nodes,
+      subjectProgress
+    );
+    progCount =
+      progCount + (miniSubjectNodeCount === ourMiniSubjectCount ? 1 : 0);
   });
 
   return progCount;
 };
 
 const getTopicsFromSubject = (subject, links, nodes) => {
-  return nodes.filter(node => (node.subject === subject && node.type === "topic"))
-}
+  return nodes.filter(
+    (node) => node.subject === subject && node.type === "topic"
+  );
+};
 
 const getMiniSubjectFromSubject = (subject, links, nodes) => {
-  return nodes.filter(node => (node.subject === subject & node.type === "subject" && !node.mainSubject))
-}
-
+  return nodes.filter(
+    (node) =>
+      (node.subject === subject) & (node.type === "subject") &&
+      !node.mainSubject
+  );
+};
 
 export default Graph;
-
