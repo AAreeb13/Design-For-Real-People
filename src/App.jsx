@@ -29,7 +29,7 @@ function App() {
       if (oldData === null || !isEqualData(oldData, data)) {
         oldData = data;
         setGraphData(data);
-        console.log("data is now", data)
+        console.log("data is now", data);
       }
     } catch (err) {
       setError(err);
@@ -53,7 +53,7 @@ function App() {
 
     const unsubscribe = auth.onAuthStateChanged((user) => {
       setUserData(user);
-      setKey(prevKey => prevKey + 1); // forced re-render
+      setKey((prevKey) => prevKey + 1); // forced re-render
       console.log(user ? "User data: " + user : "No user is signed in");
     });
 
@@ -77,10 +77,20 @@ function App() {
           <Route path="/grid-menu" element={<GridMenu />} />
           <Route
             path="/graph/:subject"
-            element={<GraphRouteWrapper graphData={graphData} userData={userData} />}
+            element={
+              <GraphRouteWrapper graphData={graphData} userData={userData} />
+            }
           />
-          <Route path="/topic/:node" element={<TopicRouteWrapper userData={userData} />} />
-          <Route path="/subgraph/:topicName" element={<SubgraphRouteWrapper graphData={graphData} userData={userData} />} />
+          <Route
+            path="/topic/:node"
+            element={<TopicRouteWrapper userData={userData} />}
+          />
+          <Route
+            path="/subgraph/:topicName"
+            element={
+              <SubgraphRouteWrapper graphData={graphData} userData={userData} />
+            }
+          />
         </Routes>
       </div>
     </Router>
@@ -144,7 +154,7 @@ function isEqualData(oldData, data) {
       } else {
         return { source: n.source, target: n.target };
       }
-    })
+    }),
   };
 
   if (
@@ -158,15 +168,16 @@ function isEqualData(oldData, data) {
     (node, index) => node.name === data.nodes[index].name
   );
 
-  const relationshipsEqual = transformedOldData.relationships.every((rel, index) => {
-    return (
-      rel.source === data.relationships[index].source &&
-      rel.target === data.relationships[index].target
-    );
-  });
+  const relationshipsEqual = transformedOldData.relationships.every(
+    (rel, index) => {
+      return (
+        rel.source === data.relationships[index].source &&
+        rel.target === data.relationships[index].target
+      );
+    }
+  );
 
   return nodesEqual && relationshipsEqual;
 }
-
 
 export default App;
