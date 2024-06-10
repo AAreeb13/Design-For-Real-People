@@ -19,9 +19,9 @@ function HomePage() {
         width: "90%", 
         padding: "20px",
         height: "80%",
-        background: "#f8f9fa", // Changed background color to a nicer shade
+        background: "#f8f9fa", 
         borderRadius: "20px", 
-        boxShadow: "0px 0px 20px rgba(0, 0, 0, 0.1)", // Added box shadow for depth
+        boxShadow: "0px 0px 20px rgba(0, 0, 0, 0.1)", 
       }}
     >
       <div style={{ flex: 2, margin: "10px" }}>
