@@ -5,12 +5,14 @@ import AuthFormOverlay from "./FormOverlay";
 import SearchBar from "./SearchBar";
 import { auth, getUserPrivledge } from "../../database/firebase";
 import "../styles/Navbar.css";
+import SuggestedTopicsOverlay from './SuggestedTopicsOverlay';
 
 const MyNavbar = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [formType, setFormType] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [privilegeLevel, setPrivilegeLevel] = useState("guest");
+  const [showSuggestedTopics, setShowSuggestedTopics] = useState(false);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
@@ -49,6 +51,15 @@ const MyNavbar = () => {
     setIsFormOpen(false);
   };
 
+  const handleShowSuggestedTopics = () => {
+    setShowSuggestedTopics(true);
+  };
+
+  const handleCloseSuggestedTopics = () => {
+    setShowSuggestedTopics(false);
+  };
+
+
   return (
     <div>
       <nav className="navbar navbar-expand-lg bg-body-tertiary our-navbar">
@@ -61,11 +72,11 @@ const MyNavbar = () => {
             <TopicSuggester handleOpenForm={handleOpenForm} />
           ) : privilegeLevel === "moderator" ? (
             <>
-              <SeeSuggestedTopics />
+              <SeeSuggestedTopics handleShowSuggestedTopics={handleShowSuggestedTopics} />
               <TopicAdder handleOpenForm={handleOpenForm} />
             </>
           ) : (
-            <h1>ERROR: Not guest, member or moderator</h1>
+            <h1>ERROR: Not guest, member, or moderator</h1>
           )}
 
           <SearchBar />
@@ -79,6 +90,13 @@ const MyNavbar = () => {
       </nav>
       {isFormOpen && (
         <AuthFormOverlay onClose={handleCloseForm} formType={formType} />
+      )}
+      {showSuggestedTopics && ( 
+        <SuggestedTopicsOverlay 
+          open={showSuggestedTopics} 
+          onClose={handleCloseSuggestedTopics} 
+          suggestedTopics={[]} // todo backend
+        />
       )}
     </div>
   );
@@ -134,13 +152,11 @@ const TopicSuggester = ({ handleOpenForm }) => (
   </div>
 );
 
-const SeeSuggestedTopics = () => (
+const SeeSuggestedTopics = ({ handleShowSuggestedTopics }) => (
   <div className="collapse navbar-collapse">
     <ul className="navbar-nav mr-auto">
       <li className="nav-item">
-        <button className="btn btn-warning see-suggested-topics-style">
-          View Suggested Topics
-        </button>
+        <button className="btn btn-warning see-suggested-topics-style" onClick={handleShowSuggestedTopics}>View Suggested Topics</button>
       </li>
     </ul>
   </div>
