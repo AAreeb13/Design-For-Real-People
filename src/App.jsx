@@ -73,7 +73,7 @@ function App() {
       <div>
         <Navbar />
         <Routes key={key}>
-          <Route path="/" element={<HomePage graphData={graphData} />} />
+          <Route path="/" element={<HomePage />} />
           <Route path="/grid-menu" element={<GridMenu />} />
           <Route
             path="/graph/:subject"

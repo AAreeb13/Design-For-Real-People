@@ -107,7 +107,7 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
         "charge",
         subject == null
           ? d3.forceManyBody().strength(-5000)
-          : d3.forceManyBody().strength(-500000)
+          : d3.forceManyBody().strength(-250000)
       )
       .force("center", d3.forceCenter(width / 2, height / 2));
 
@@ -151,9 +151,9 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .filter((d) => d.type === "topic")
       .attr("rx", 300) // ellipse width
       .attr("ry", 100) // ellipse height
-      .attr("fill", "#69b3a2")
-      .attr("stroke", "#fff")
-      .attr("stroke-width", 1.5)
+      .attr("fill", "#69b3a2") // Light green
+      .attr("stroke", "#333") // Dark gray
+      .attr("stroke-width", 2)
       .on("click", (event, d) => {
         navigate("/topic/" + d.name);
       })
@@ -161,19 +161,16 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
         d3.select(this)
           .transition()
           .duration(200)
-          .attr("fill", "#508a7c")
-          .attr("stroke", "#666");
-
-        // Highlight connected links recursively
-        highlightLinks(d);
+          .attr("fill", "#508a7c"); // Dark green
+        // Highlight connected links
+          // Highlight connected links recursively
+          highlightLinks(d);
       })
       .on("mouseout", function (event, d) {
         d3.select(this)
           .transition()
           .duration(200)
-          .attr("fill", "#69b3a2")
-          .attr("stroke", "#fff");
-
+          .attr("fill", "#69b3a2"); // Light green
         // Reset all links
         link.attr("stroke", "#999").attr("stroke-width", 15);
       });
@@ -183,9 +180,9 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .filter((d) => d.type === "subject" && d.name === subject)
       .attr("width", 800) // rectangle width (2x larger)
       .attr("height", 200) // rectangle height (2x larger)
-      .attr("fill", "#f86d6d")
-      .attr("stroke", "#fff")
-      .attr("stroke-width", 1.5)
+      .attr("fill", "#f86d6d") // Light red
+      .attr("stroke", "#333") // Dark gray
+      .attr("stroke-width", 2)
       .attr("x", -400) // to center rectangle
       .attr("y", -100); // to center rectangle
 
@@ -196,9 +193,9 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       )
       .attr("width", 500) // rectangle width
       .attr("height", 200) // rectangle height
-      .attr("fill", "#86e399")
-      .attr("stroke", "#fff")
-      .attr("stroke-width", 1.5)
+      .attr("fill", "#86e399") // Light green
+      .attr("stroke", "#333") // Dark gray
+      .attr("stroke-width", 2)
       .attr("x", -250)
       .attr("y", -100)
       .style("cursor", "pointer") // Change cursor to pointer for clickable rectangles
@@ -209,9 +206,7 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
         d3.select(this)
           .transition()
           .duration(50)
-          .attr("fill", "#ff9999")
-          .attr("stroke", "#666");
-
+          .attr("fill", "#ff9999"); // Light red
         // Highlight connected links recursively
         highlightLinks(d);
       })
@@ -219,9 +214,7 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
         d3.select(this)
           .transition()
           .duration(50)
-          .attr("fill", "#86e399")
-          .attr("stroke", "#fff");
-
+          .attr("fill", "#86e399"); // Light green
         link.attr("stroke", "#999").attr("stroke-width", 15);
       });
 
@@ -232,11 +225,14 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .attr("dy", ".35em")
       .attr("text-anchor", "middle")
       .attr("font-size", (d) =>
-        subject == null ? "40" : d.name === subject ? "60px" : "40px"
+        subject == null ? "40px" : d.name === subject ? "65px" : "45px"
       )
-      .attr("fill", "#000")
+      .attr("fill", "#333") // Dark gray
+      .attr("font-family", "Arial, sans-serif") // Specify font family
+      .style("font-weight", "bold") // Make the font bold
       .style("pointer-events", "none")
       .text((d) => d.name);
+
 
     const text = svgGroup
       .selectAll("text.link-order")
@@ -244,37 +240,37 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .enter()
       .append("text")
       .attr("class", "link-order")
-      .attr("font-size", "150px")
-      .attr("fill", "red")
+      .attr("font-size", "140px")
+      .attr("fill", "#ff0000") // Red
       .style("font-weight", "bold")
-      .style("stroke", "black")
-      .style("stroke-width", "3px")
+      .style("stroke", "#000000") // Black
+      .style("stroke-width", "2px")
       .style("pointer-events", "none");
 
     if (userLoggedIn) {
       const progressBar = svg
         .append("rect")
-        .attr("width", 150)
+        .attr("width", 250)
         .attr("height", 20)
-        .attr("fill", "#ddd")
-        .attr("stroke", "#444")
+        .attr("fill", "#ddd") // Light gray
+        .attr("stroke", "#333") // Dark gray
         .attr("stroke-width", 1)
         .attr("rx", 10)
         .attr("ry", 10)
-        .attr("x", width - 180)
-        .attr("y", 20);
+        .attr("x", (width - 250) / 2)
+        .attr("y", 10);
 
       const progressBarIndicator = svg
         .append("rect")
         .attr("width", 0)
         .attr("height", 20)
-        .attr("fill", "green")
-        .attr("stroke", "#444")
+        .attr("fill", "#4caf50") // Green
+        .attr("stroke", "#333") // Dark gray
         .attr("stroke-width", 1)
         .attr("rx", 10)
         .attr("ry", 10)
-        .attr("y", 20)
-        .attr("x", width - 180);
+        .attr("x", (width - 250) / 2)
+        .attr("y", 10);
 
       const updateProgressBar = (completionPercentage) => {
         const width = 150 * (completionPercentage / 100);
@@ -285,11 +281,11 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
 
       const completionText = svg
         .append("text")
-        .attr("x", width - 180)
-        .attr("y", 60)
+        .attr("x", (width - 130) / 2)
+        .attr("y", 50)
         .attr("font-family", "Arial, sans-serif")
         .attr("font-size", "16px")
-        .attr("fill", "#333")
+        .attr("fill", "#333") // Dark gray
         .attr("text-anchor", "start")
         .text(ourTopicCount + " out of " + totalTopicCount + " complete");
     }
@@ -309,8 +305,8 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
     });
 
     const initialTransform = d3.zoomIdentity
-      .translate(width / 2, height / 2)
-      .scale(0.2);
+      .translate(width / 3, height / 3)
+      .scale(0.3);
     svg.call(zoom.transform, initialTransform);
 
     const updateText = async () => {
@@ -328,7 +324,14 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
     return <div>Loading...</div>;
   }
 
-  return <svg ref={svgRef} width={width} height={height} style={style}></svg>;
+  return (
+    <svg
+      ref={svgRef}
+      width="100%"
+      height="100%"
+      style={{ width: "100%", height: "100%", minHeight: "590px", ...style }}
+    ></svg>
+  );
 };
 
 const getTotalNodesForSubject = (subject, links, nodes) => {
@@ -375,7 +378,8 @@ const getTopicsFromSubject = (subject, links, nodes) => {
 const getMiniSubjectFromSubject = (subject, links, nodes) => {
   return nodes.filter(
     (node) =>
-      (node.subject === subject) & (node.type === "subject") &&
+      node.subject === subject &&
+      node.type === "subject" &&
       !node.mainSubject
   );
 };
