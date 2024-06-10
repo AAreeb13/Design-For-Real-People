@@ -52,6 +52,29 @@ export const getCurrentUserDocData = async (email) => {
   }
 };
 
+export const getSuggestionData = async () => {
+  try {
+    const suggestionQuery = collection(db, "Suggestions");
+    const suggestionQuerySnapshot = await getDocs(suggestionQuery);
+
+    if (suggestionQuerySnapshot.empty) {
+      console.log("No suggestions found from database");
+      return [];
+    }
+
+    const suggestions = [];
+    suggestionQuerySnapshot.forEach((doc) => {
+      suggestions.push(doc.data());
+    });
+    console.log("suggestions", suggestions)
+    return suggestions;
+  } catch (error) {
+    console.error("Error fetching suggestions:", error);
+    return [];
+  }
+};
+
+
 export const initAuthStateListener = () => {
   onAuthStateChanged(auth, (user) => {
     if (user) {

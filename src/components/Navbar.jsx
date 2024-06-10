@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import NavbarDropdown from "./NavbarDropdown";
 import AuthFormOverlay from "./FormOverlay";
 import SearchBar from "./SearchBar";
-import { auth, getUserPrivledge } from "../../database/firebase";
+import { auth, getSuggestionData, getUserPrivledge } from "../../database/firebase";
 import "../styles/Navbar.css";
 import SuggestedTopicsOverlay from './SuggestedTopicsOverlay';
 
@@ -58,6 +58,10 @@ const MyNavbar = () => {
   const handleCloseSuggestedTopics = () => {
     setShowSuggestedTopics(false);
   };
+  
+  const getSuggestedTopics = async () => {
+    return await getSuggestionData();
+  }
 
 
   return (
@@ -95,7 +99,7 @@ const MyNavbar = () => {
         <SuggestedTopicsOverlay 
           open={showSuggestedTopics} 
           onClose={handleCloseSuggestedTopics} 
-          suggestedTopics={[]} // todo backend
+          suggestedTopics={getSuggestedTopics}
         />
       )}
     </div>

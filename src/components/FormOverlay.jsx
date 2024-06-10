@@ -66,7 +66,7 @@ const FormOverlay = ({ onClose, formType }) => {
           );
           setUserEmail(formData.email);
           isValid = true;
-          return userCredential.user.uid; // Return the userId
+          return userCredential.user.uid;
         } catch (error) {
           console.error(error);
           errorMessage = "Signup failed. Please try again.";
@@ -82,7 +82,7 @@ const FormOverlay = ({ onClose, formType }) => {
           );
           setUserEmail(formData.email);
           isValid = true;
-          return userCredential.user.uid; // Return the userId
+          return userCredential.user.uid;
         } catch (error) {
           console.error(error);
           errorMessage = "Login failed. Please try again.";
@@ -105,7 +105,7 @@ const FormOverlay = ({ onClose, formType }) => {
         const suggestion = {
           email: userEmail,
           name: formData.name,
-          prerequisites: formData.prerequisites,
+          prerequisites: formData.prerequisites.split(","),
           subject: formData.subject,
           theme: formData.theme,
           type: formData.type
@@ -193,7 +193,7 @@ const FormOverlay = ({ onClose, formType }) => {
             ? "Sign Up"
             : "Add a New Entry"}
         </h2>
-        {renderForm()}
+        <div className="form-content">{renderForm()}</div>
       </div>
     </div>,
     document.body

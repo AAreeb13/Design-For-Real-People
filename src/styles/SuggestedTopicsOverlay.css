@@ -1,4 +1,4 @@
-.overlay-container {
+.auth-form-overlay.overlay-container {
     position: fixed;
     top: 0;
     left: 0;
@@ -10,13 +10,17 @@
     align-items: center;
   }
   
-  .overlay-content {
+  .form-container.overlay-content {
     position: relative;
     background-color: white;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    max-width: 80%;
+    width: 50%;
+    max-height: 60%;
+    font-family: Arial, sans-serif;
+    overflow-y: auto;
+    position: relative;
   }
   
   .overlay-header {
@@ -27,16 +31,40 @@
   }
   
   .close-button {
+    position: absolute;
+    top: 20px; 
+    right: 20px;
     background: none;
     border: none;
-    font-size: 24px;
+    font-size: 25px;
     color: #999;
     cursor: pointer;
-    padding-right: 0;
-    padding-top: 0;
+    padding: 0;
   }
   
   .close-button:hover {
     color: #333;
+  }
+  
+  .suggested-topic {
+    background-color: #f5f5f5;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .suggested-topic div {
+    margin-bottom: 5px;
+  }
+  
+  .suggested-topic-name {
+    font-size: 20px;
+    color: #333;
+  }
+  
+  .suggested-topics-title {
+    font-size: 30px;
+    color: rgb(36, 24, 24);
   }
   
