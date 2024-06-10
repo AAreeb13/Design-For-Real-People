@@ -26,7 +26,6 @@ export const getCurrentUserDocData = async (email) => {
   try {
     const userQuery = query(collection(db, "Users"), where("email", "==", email));
     const userQuerySnapshot = await getDocs(userQuery);
-
     if (userQuerySnapshot.empty) {
       console.log("No user document found with the email:", email);
       return null;
@@ -55,7 +54,7 @@ export const initAuthStateListener = () => {
 
 export const updateCompletionStatus = async (userEmail, topicKey, newStatus) => {
   try {
-    const docId = await getUserDocumentById(userEmail); // Get the document ID
+    const docId = await getUserDocumentByUserEmail(userEmail); // Get the document ID
     const userDocData = await getCurrentUserDocData(userEmail);
 
     if (docId && userDocData) {
@@ -76,7 +75,7 @@ export const updateCompletionStatus = async (userEmail, topicKey, newStatus) => 
 
 
 
-const getUserDocumentById = async (email) => {
+const getUserDocumentByUserEmail = async (email) => {
   try {
     const userQuery = query(collection(db, "Users"), where("email", "==", email));
     const userQuerySnapshot = await getDocs(userQuery);
@@ -92,3 +91,8 @@ const getUserDocumentById = async (email) => {
     return null;
   }
 };
+
+export const getUserPrivledge = async (email) => {
+  const userDoc = await getCurrentUserDocData(email);
+  return userDoc.privledge
+}
