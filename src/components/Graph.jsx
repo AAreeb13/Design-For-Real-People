@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import { useNavigate } from "react-router-dom";
 import { getCurrentUserData, getUserSubjectProgress } from "../../database/firebase";
-import { getMiniSubjectInSubject, getOrder, getTopicsInSubject } from "../../database/graphData";
+import { getOrder } from "../../database/graphData";
 
 const Graph = ({ nodes, links, subject = null, width, height, style }) => {
   const svgRef = useRef();
