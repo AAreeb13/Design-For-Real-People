@@ -10,31 +10,20 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
   const [totalTopicCount, setTotalTopicCount] = useState(0);
   const [ourTopicCount, setOurTopicCount] = useState(0);
   const [loading, setLoading] = useState(true); // loading status
+  const [userLoggedIn, setUserLoggedIn] = useState(false); // user login status
 
-  const validNodes = subject == null
-    ? nodes
-    : nodes.filter((n) => n.name === subject || n.subject === subject);
+  const [nodesToUse, setNodesToUse] = useState([]);
+  const [linksToUse, setLinksToUse] = useState([]);
 
-  const nodesToUse = validNodes.map((n) => {
-    return { name: n.name, type: n.type };
-  });
+  useEffect(() => {
 
-  let linksToUse = links.map((link) => {
-    if (link.source == null) {
-      return { source: link.source.source, target: link.source.target };
-    }
-    return { source: link.source, target: link.target };
-  });
+    const checkUserLoginStatus = async () => {
+      const userIsLoggedIn = getCurrentUserData(); 
+      setUserLoggedIn(userIsLoggedIn);
+    };
 
-  const nodeNameList = nodesToUse.map((n) => n.name);
-  linksToUse = subject == null
-    ? linksToUse
-    : linksToUse.filter((link) => {
-        return (
-          nodeNameList.includes(link.source) &&
-          nodeNameList.includes(link.target)
-        );
-      });
+    checkUserLoginStatus();
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -46,6 +35,33 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       setOurTopicCount(ourTopicsCount);
       setLoading(false); //  once data is fetched
     };
+
+    const validNodes = subject == null
+      ? nodes
+      : nodes.filter((n) => n.name === subject || n.subject === subject);
+
+    const nodesToUse = validNodes.map((n) => {
+      return { name: n.name, type: n.type };
+    });
+    setNodesToUse(nodesToUse);
+
+    let linksToUse = links.map((link) => {
+      if (link.source == null) {
+        return { source: link.source.source, target: link.source.target };
+      }
+      return { source: link.source, target: link.target };
+    });
+
+    const nodeNameList = nodesToUse.map((n) => n.name);
+    linksToUse = subject == null
+      ? linksToUse
+      : linksToUse.filter((link) => {
+          return (
+            nodeNameList.includes(link.source) &&
+            nodeNameList.includes(link.target)
+          );
+        });
+    setLinksToUse(linksToUse);
 
     const svg = d3.select(svgRef.current);
 
@@ -165,7 +181,7 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .append("rect")
       .filter((d) => d.type === "subject" && d.name === subject)
       .attr("width", 800) // rectangle width (2x larger)
-      .attr("height", 200) // rectangle height (2x larger)
+      .attr("height", 200) // rectangle height (2x larger
       .attr("fill", "#f86d6d")
       .attr("stroke", "#fff")
       .attr("stroke-width", 1.5)
@@ -234,7 +250,8 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .style("stroke-width", "3px")
       .style("pointer-events", "none");
 
-    const progressBar = svg
+    if (userLoggedIn) {
+      const progressBar = svg
       .append("rect")
       .attr("width", 150) 
       .attr("height", 20)
@@ -274,6 +291,9 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .attr("fill", "#333") 
       .attr("text-anchor", "start") 
       .text(ourTopicCount + " out of " + totalTopicCount + " complete");
+    }
+
+
 
     simulation.on("tick", () => {
       link
@@ -294,7 +314,6 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .scale(0.20);
     svg.call(zoom.transform, initialTransform);
 
-
     const updateText = async () => {
       const promises = linksToUse.map((d) => getOrder(d));
       const orders = await Promise.all(promises);
@@ -304,7 +323,7 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
 
     updateText();
     fetchData();
-  }, [nodesToUse, linksToUse, ourTopicCount, totalTopicCount, subject]);
+  }, [nodes, links, ourTopicCount, totalTopicCount, subject, userLoggedIn]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -321,6 +340,11 @@ const getTotalNodesForSubject = async (subject) => {
 
 const getNodesCompleteForSubject = async (subject) => {
   const user = await getCurrentUserData();
+  if (!user || !user.email) {
+    // Handle case where user or user.email is null
+    console.error("User data or user email is null.");
+    return 0; // Return a default value or handle the error as needed
+  }
   const subjectProgress = await getUserSubjectProgress(user.email);
   let progCount = 0;
 
@@ -340,5 +364,5 @@ const getNodesCompleteForSubject = async (subject) => {
   return progCount;
 };
 
-
 export default Graph;
+
