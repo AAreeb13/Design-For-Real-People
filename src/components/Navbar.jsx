@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import NavbarDropdown from "./NavbarDropdown";
 import AuthFormOverlay from "./FormOverlay"; 
 import SearchBar from "./SearchBar";
-import { auth, getCurrentUserData } from "../../database/firebase";
-import "../styles/Navbar.css"
+import { auth } from "../../database/firebase";
+import "../styles/Navbar.css";
 
 const MyNavbar = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -26,7 +26,7 @@ const MyNavbar = () => {
     });
   };
 
-  const handleOpenForm = (type) => { 
+  const handleOpenForm = (type) => {
     setIsFormOpen(true);
     setFormType(type);
   };
@@ -35,56 +35,73 @@ const MyNavbar = () => {
     setIsFormOpen(false);
   };
 
-
   return (
     <div>
       <nav className="navbar navbar-expand-lg bg-body-tertiary our-navbar">
         <div className="container-fluid">
-          <Link className="navbar-brand our-logo" to="/">
-            StudyChain
-          </Link>
 
-          <button
-            className="navbar-toggler"
-            type="button"
-            aria-label="Toggle navigation"
-          >
-            <span className="navbar-toggler-icon"></span>
-          </button>
+          <LogoAndDropdown />
 
-          <NavbarDropdown />
-
-          <div className="collapse navbar-collapse">
-            <ul className="navbar-nav mr-auto">
-              <li className="nav-item">
-                <button className="btn btn-success add-topic-style" onClick={() => handleOpenForm("add")}>
-                  Add a Topic
-                </button>
-              </li>
-            </ul>
-          </div>
+          <TopicAdder handleOpenForm={handleOpenForm} />
 
           <SearchBar />
 
           {!isLoggedIn ? (
-            <>
-              <button className="btn btn-outline-success login-style" onClick={() => handleOpenForm("login")}>
-                Login
-              </button>
-              <button className="btn btn-outline-success" onClick={() => handleOpenForm("signup")}>
-                Sign Up
-              </button>
-            </>
+            <LoggedOutButtons handleOpenForm={handleOpenForm} />
           ) : (
-            <button className="btn btn-outline-danger logout-style" onClick={handleLogout}>
-              Logout
-            </button>
+            <LoggedInButtons handleLogout={handleLogout} />
           )}
+          
         </div>
       </nav>
       {isFormOpen && <AuthFormOverlay onClose={handleCloseForm} formType={formType} />}
     </div>
   );
 };
+
+const LogoAndDropdown = () => (
+  <>
+    <Link className="navbar-brand our-logo" to="/">
+      StudyChain
+    </Link>
+    <button
+      className="navbar-toggler"
+      type="button"
+      aria-label="Toggle navigation"
+    >
+      <span className="navbar-toggler-icon"></span>
+    </button>
+    <NavbarDropdown />
+  </>
+);
+
+const TopicAdder = ({ handleOpenForm }) => (
+  <div className="collapse navbar-collapse">
+    <ul className="navbar-nav mr-auto">
+      <li className="nav-item">
+        <button className="btn btn-success add-topic-style" onClick={() => handleOpenForm("add")}>
+          Add a Topic
+        </button>
+      </li>
+    </ul>
+  </div>
+);
+
+const LoggedOutButtons = ({ handleOpenForm }) => (
+  <>
+    <button className="btn btn-outline-success login-style" onClick={() => handleOpenForm("login")}>
+      Login
+    </button>
+    <button className="btn btn-outline-success" onClick={() => handleOpenForm("signup")}>
+      Sign Up
+    </button>
+  </>
+);
+
+const LoggedInButtons = ({ handleLogout }) => (
+  <button className="btn btn-outline-danger logout-style" onClick={handleLogout}>
+    Logout
+  </button>
+);
 
 export default MyNavbar;
