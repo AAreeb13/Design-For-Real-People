@@ -96,3 +96,8 @@ export const getUserPrivledge = async (email) => {
   const userDoc = await getCurrentUserDocData(email);
   return userDoc.privledge
 }
+
+export const getUserSubjectProgress = async (email) => {
+  const userDoc = await getCurrentUserDocData(email);
+  return userDoc.subjectProgress
+}

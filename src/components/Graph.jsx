@@ -1,11 +1,16 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import { useNavigate } from "react-router-dom";
+import { getCurrentUserData, getUserSubjectProgress } from "../../database/firebase";
 import { getOrder } from "../../database/graphData";
 
 const Graph = ({ nodes, links, subject = null, width, height, style }) => {
   const svgRef = useRef();
   const navigate = useNavigate();
+  const [totalTopicCount, setTotalTopicCount] = useState(0);
+  const [ourTopicCount, setOurTopicCount] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [userLoggedIn, setUserLoggedIn] = useState(false);
 
   const validNodes = subject == null
     ? nodes
@@ -33,6 +38,22 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       });
 
   useEffect(() => {
+    const fetchData = async () => {
+      const user = await getCurrentUserData();
+      if (user) {
+        setUserLoggedIn(true);
+        const subjectProgress = await getUserSubjectProgress(user.email);
+        const totalTopicsCount = getTotalNodesForSubject(subject, links, nodes);
+        const ourTopicsCount = getNodesCompleteForSubject(subject, links, nodes, subjectProgress);
+        setTotalTopicCount(totalTopicsCount);
+        setOurTopicCount(ourTopicsCount);
+        setLoading(false);
+      } else {
+        setUserLoggedIn(false);
+        setLoading(false);
+      }
+    };
+
     const svg = d3.select(svgRef.current);
 
     const zoom = d3
@@ -70,8 +91,8 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
         d3
           .forceLink(linksToUse)
           .id((d) => d.name)
-          .distance(90)
-      ) // distance = link length
+          .distance(90) // distance = link length
+      )
       .force(
         "charge",
         subject == null
@@ -168,7 +189,7 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .attr("fill", "#86e399")
       .attr("stroke", "#fff")
       .attr("stroke-width", 1.5)
-      .attr("x", -250) // to center rectangle
+      .attr("x", -250)
       .attr("y", -100)
       .style("cursor", "pointer") // Change cursor to pointer for clickable rectangles
       .on("click", (event, d) => {
@@ -177,7 +198,7 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .on("mouseover", function (event, d) {
         d3.select(this)
           .transition()
-          .duration(50) // Quicker transition duration
+          .duration(50) 
           .attr("fill", "#ff9999")
           .attr("stroke", "#666");
 
@@ -187,11 +208,10 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .on("mouseout", function (event, d) {
         d3.select(this)
           .transition()
-          .duration(50) // Quicker transition duration
+          .duration(50)
           .attr("fill", "#86e399")
           .attr("stroke", "#fff");
 
-        // Reset all links
         link.attr("stroke", "#999").attr("stroke-width", 15);
       });
 
@@ -208,7 +228,6 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .style("pointer-events", "none")
       .text((d) => d.name);
 
-    // Define text elements for link orders
     const text = svgGroup
       .selectAll("text.link-order")
       .data(linksToUse)
@@ -221,6 +240,50 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .style("stroke", "black")
       .style("stroke-width", "3px")
       .style("pointer-events", "none");
+
+      if (userLoggedIn) {
+        const progressBar = svg
+          .append("rect")
+          .attr("width", 150) 
+          .attr("height", 20)
+          .attr("fill", "#ddd") 
+          .attr("stroke", "#444")
+          .attr("stroke-width", 1)
+          .attr("rx", 10) 
+          .attr("ry", 10) 
+          .attr("x", width - 180)
+          .attr("y", 20); 
+      
+        const progressBarIndicator = svg
+          .append("rect")
+          .attr("width", 0)
+          .attr("height", 20)
+          .attr("fill", "green") 
+          .attr("stroke", "#444")
+          .attr("stroke-width", 1)
+          .attr("rx", 10) 
+          .attr("ry", 10) 
+          .attr("y", 20) 
+          .attr("x", width - 180); 
+      
+        const updateProgressBar = (completionPercentage) => {
+          const width = 150 * (completionPercentage / 100);
+          progressBarIndicator.attr("width", width);
+        };
+      
+        updateProgressBar((ourTopicCount / totalTopicCount) * 100);
+      
+        const completionText = svg
+          .append("text")
+          .attr("x", width - 180) 
+          .attr("y", 60) 
+          .attr("font-family", "Arial, sans-serif") 
+          .attr("font-size", "16px")
+          .attr("fill", "#333") 
+          .attr("text-anchor", "start") 
+          .text(ourTopicCount + " out of " + totalTopicCount + " complete");
+      }
+      
 
     simulation.on("tick", () => {
       link
@@ -241,7 +304,7 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .scale(0.20);
     svg.call(zoom.transform, initialTransform);
 
-    // Function to update text elements with fetched orders
+
     const updateText = async () => {
       const promises = linksToUse.map((d) => getOrder(d));
       const orders = await Promise.all(promises);
@@ -250,9 +313,50 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
     };
 
     updateText();
-  }, [nodesToUse, linksToUse]);
+    fetchData();
+  }, [nodesToUse, linksToUse, ourTopicCount, totalTopicCount, subject]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return <svg ref={svgRef} width={width} height={height} style={style}></svg>;
 };
 
+const getTotalNodesForSubject = (subject, links, nodes) => {
+  const totalTopics = getTopicsFromSubject(subject, links, nodes);
+  const totalMiniSubjects = getMiniSubjectFromSubject(subject, links, nodes);
+  console.log("tms", totalMiniSubjects)
+  return totalTopics.length + totalMiniSubjects.length;
+};
+
+const getNodesCompleteForSubject = (subject, links, nodes, subjectProgress) => {
+  let progCount = 0;
+
+  const totalTopics = getTopicsFromSubject(subject, links, nodes);
+  const totalMiniSubjects = getMiniSubjectFromSubject(subject, links, nodes);
+
+  totalTopics.forEach((topic) => {
+    progCount = progCount + (subjectProgress[topic.name] ? 1 : 0);
+  });
+
+  totalMiniSubjects.map((miniSubject) => {
+    const miniSubjectNodeCount =  getTotalNodesForSubject(miniSubject.name, links, nodes);
+    const ourMiniSubjectCount =  getNodesCompleteForSubject(miniSubject.name, links, nodes, subjectProgress);
+    progCount = progCount + ((miniSubjectNodeCount === ourMiniSubjectCount) ? 1 : 0);
+  });
+
+  return progCount;
+};
+
+const getTopicsFromSubject = (subject, links, nodes) => {
+  return nodes.filter(node => (node.subject === subject && node.type === "topic"))
+}
+
+const getMiniSubjectFromSubject = (subject, links, nodes) => {
+  return nodes.filter(node => (node.subject === subject & node.type === "subject" && !node.mainSubject))
+}
+
+
 export default Graph;
+

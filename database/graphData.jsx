@@ -45,7 +45,11 @@ const getGraphData = async () => {
     relationships = results.relationships;
 
     relationships = relationships.map(function (r) {
-      return { source: nodes[r.start.low].name, target: nodes[r.end.low].name };
+      if (r.properties && r.properties.order) {
+        return { source: nodes[r.start.low].name, target: nodes[r.end.low].name, order: r.properties.order.low};
+      } else {
+        return { source: nodes[r.start.low].name, target: nodes[r.end.low].name };
+      }
     });
 
     nodes = Object.entries(nodes)
@@ -56,6 +60,7 @@ const getGraphData = async () => {
   }
   return { nodes, relationships };
 };
+
 
 const nodeExists = async (label, properties) => {
   const session = driver.session();
@@ -279,6 +284,36 @@ const getOrder = async (linkToUse) => {
   return relationships[0].properties.order !== undefined ? relationships[0].properties.order : -1
 }
 
+const getTopicsInSubject = async (subject) => {
+  const session = driver.session();
+  const query = "MATCH (n:Subject{type: 'topic', subject: $subject}) RETURN n";
+  const params = { subject };
+  try {
+    const result = await session.run(query, params);
+    return result.records.map(record => record.get("n").properties);
+  } catch (error) {
+    console.error("Error fetching topics in subject:", error);
+    return [];
+  } finally {
+    await session.close();
+  }
+};
+
+const getMiniSubjectInSubject = async (subject) => {
+  const session = driver.session();
+  const query = "MATCH (n:Subject{type: 'subject', subject: $subject, mainSubject: false}) RETURN n";
+  const params = { subject };
+  try {
+    const result = await session.run(query, params);
+    return result.records.map(record => record.get("n").properties);
+  } catch (error) {
+    console.error("Error fetching mini subjects in subject:", error);
+    return [];
+  } finally {
+    await session.close();
+  }
+};
+
 export { 
   getGraphData, 
   mainSubjectExists,
@@ -290,6 +325,7 @@ export {
   addTopicToGraph,
   getDependencyGraph,
   getNode,
-  getOrder
+  getOrder,
+  getTopicsInSubject,
+  getMiniSubjectInSubject
 };
-
