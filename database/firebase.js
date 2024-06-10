@@ -1,6 +1,15 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { getFirestore, collection, query, where, getDocs, doc, updateDoc, getDoc } from "firebase/firestore";
+import {
+  getFirestore,
+  collection,
+  query,
+  where,
+  getDocs,
+  doc,
+  updateDoc,
+  getDoc,
+} from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCtai3PnZayNSzA4_5nm4guJpagIB37yTU",
@@ -9,7 +18,7 @@ const firebaseConfig = {
   storageBucket: "studychain-2b33a.appspot.com",
   messagingSenderId: "203870817975",
   appId: "1:203870817975:web:c8f7074854b22ba43d8732",
-  measurementId: "G-ZZ9K1L4TN5"
+  measurementId: "G-ZZ9K1L4TN5",
 };
 
 const app = initializeApp(firebaseConfig);
@@ -24,7 +33,10 @@ export const getCurrentUserData = () => {
 
 export const getCurrentUserDocData = async (email) => {
   try {
-    const userQuery = query(collection(db, "Users"), where("email", "==", email));
+    const userQuery = query(
+      collection(db, "Users"),
+      where("email", "==", email)
+    );
     const userQuerySnapshot = await getDocs(userQuery);
     if (userQuerySnapshot.empty) {
       console.log("No user document found with the email:", email);
@@ -52,17 +64,24 @@ export const initAuthStateListener = () => {
   });
 };
 
-export const updateCompletionStatus = async (userEmail, topicKey, newStatus) => {
+export const updateCompletionStatus = async (
+  userEmail,
+  topicKey,
+  newStatus
+) => {
   try {
     const docId = await getUserDocumentByUserEmail(userEmail); // Get the document ID
     const userDocData = await getCurrentUserDocData(userEmail);
 
     if (docId && userDocData) {
-      const updatedSubjectProgress = { ...userDocData.subjectProgress, [topicKey]: newStatus };
+      const updatedSubjectProgress = {
+        ...userDocData.subjectProgress,
+        [topicKey]: newStatus,
+      };
 
       const userDocRef = doc(db, "Users", docId); // Use the retrieved document ID
       await updateDoc(userDocRef, {
-        subjectProgress: updatedSubjectProgress
+        subjectProgress: updatedSubjectProgress,
       });
       console.log("Completion status updated successfully.");
     } else {
@@ -73,11 +92,12 @@ export const updateCompletionStatus = async (userEmail, topicKey, newStatus) => 
   }
 };
 
-
-
 const getUserDocumentByUserEmail = async (email) => {
   try {
-    const userQuery = query(collection(db, "Users"), where("email", "==", email));
+    const userQuery = query(
+      collection(db, "Users"),
+      where("email", "==", email)
+    );
     const userQuerySnapshot = await getDocs(userQuery);
 
     if (!userQuerySnapshot.empty) {
@@ -94,5 +114,10 @@ const getUserDocumentByUserEmail = async (email) => {
 
 export const getUserPrivledge = async (email) => {
   const userDoc = await getCurrentUserDocData(email);
-  return userDoc.privledge
-}
+  return userDoc.privledge;
+};
+
+export const getUserSubjectProgress = async (email) => {
+  const userDoc = await getCurrentUserDocData(email);
+  return userDoc.subjectProgress;
+};

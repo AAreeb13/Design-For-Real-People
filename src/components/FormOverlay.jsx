@@ -3,7 +3,10 @@ import ReactDOM from "react-dom";
 import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
 import TopicAdderForm, { handleTopicAdderSubmit } from "./TopicAdderForm.jsx";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import { auth } from "../../database/firebase.js";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../../database/firebase.js";
@@ -48,12 +51,19 @@ const FormOverlay = ({ onClose, formType }) => {
     let isValid = false;
     let errorMessage = "";
 
-    if (formType === "signup" && formData.password !== formData.confirmPassword) {
+    if (
+      formType === "signup" &&
+      formData.password !== formData.confirmPassword
+    ) {
       errorMessage = "Password and confirm password must match.";
     } else {
       const signingUp = async () => {
         try {
-          const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+          const userCredential = await createUserWithEmailAndPassword(
+            auth,
+            formData.email,
+            formData.password
+          );
           setUserEmail(formData.email);
           isValid = true;
           return userCredential.user.uid; // Return the userId
@@ -65,7 +75,11 @@ const FormOverlay = ({ onClose, formType }) => {
 
       const loggingIn = async () => {
         try {
-          const userCredential = await signInWithEmailAndPassword(auth, formData.email, formData.password);
+          const userCredential = await signInWithEmailAndPassword(
+            auth,
+            formData.email,
+            formData.password
+          );
           setUserEmail(formData.email);
           isValid = true;
           return userCredential.user.uid; // Return the userId
@@ -107,8 +121,8 @@ const FormOverlay = ({ onClose, formType }) => {
       email: formData.email,
       userId: userId,
       privledge: "member",
-      subjectProgress: {}
-    }
+      subjectProgress: {},
+    };
 
     try {
       if (formType === "signup") {
@@ -153,10 +167,20 @@ const FormOverlay = ({ onClose, formType }) => {
   return ReactDOM.createPortal(
     <div className="auth-form-overlay auth-form-overlay">
       <div className="form-container form-container-2">
-        <button className="close-button close-button-2" onClick={onClose} aria-label="Close form">
+        <button
+          className="close-button close-button-2"
+          onClick={onClose}
+          aria-label="Close form"
+        >
           &times;
         </button>
-        <h2>{formType === 'login' ? 'Login' : formType === 'signup' ? 'Sign Up' : 'Add a New Entry'}</h2>
+        <h2>
+          {formType === "login"
+            ? "Login"
+            : formType === "signup"
+            ? "Sign Up"
+            : "Add a New Entry"}
+        </h2>
         {renderForm()}
       </div>
     </div>,

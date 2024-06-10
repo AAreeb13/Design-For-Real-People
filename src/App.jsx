@@ -29,6 +29,7 @@ function App() {
       if (oldData === null || !isEqualData(oldData, data)) {
         oldData = data;
         setGraphData(data);
+        console.log("data is now", data);
       }
     } catch (err) {
       setError(err);
@@ -52,7 +53,7 @@ function App() {
 
     const unsubscribe = auth.onAuthStateChanged((user) => {
       setUserData(user);
-      setKey(prevKey => prevKey + 1); // forced re-render
+      setKey((prevKey) => prevKey + 1); // forced re-render
       console.log(user ? "User data: " + user : "No user is signed in");
     });
 
@@ -76,10 +77,20 @@ function App() {
           <Route path="/grid-menu" element={<GridMenu />} />
           <Route
             path="/graph/:subject"
-            element={<GraphRouteWrapper graphData={graphData} userData={userData} />}
+            element={
+              <GraphRouteWrapper graphData={graphData} userData={userData} />
+            }
           />
-          <Route path="/topic/:node" element={<TopicRouteWrapper userData={userData} />} />
-          <Route path="/subgraph/:topicName" element={<SubgraphRouteWrapper graphData={graphData} userData={userData} />} />
+          <Route
+            path="/topic/:node"
+            element={<TopicRouteWrapper userData={userData} />}
+          />
+          <Route
+            path="/subgraph/:topicName"
+            element={
+              <SubgraphRouteWrapper graphData={graphData} userData={userData} />
+            }
+          />
         </Routes>
       </div>
     </Router>
@@ -135,31 +146,36 @@ function SubgraphRouteWrapper({ graphData, userData }) {
 }
 
 function isEqualData(oldData, data) {
-  oldData.relationships = oldData.relationships.map((n) => {
-    if (n.source.name != null) {
-      return { source: n.source.name, target: n.target.name };
-    } else {
-      return { source: n.source, target: n.target };
-    }
-  });
+  const transformedOldData = {
+    nodes: oldData.nodes,
+    relationships: oldData.relationships.map((n) => {
+      if (n.source.name != null) {
+        return { source: n.source.name, target: n.target.name };
+      } else {
+        return { source: n.source, target: n.target };
+      }
+    }),
+  };
 
   if (
-    oldData.nodes.length !== data.nodes.length ||
-    oldData.relationships.length !== data.relationships.length
+    transformedOldData.nodes.length !== data.nodes.length ||
+    transformedOldData.relationships.length !== data.relationships.length
   ) {
     return false;
   }
 
-  const nodesEqual = oldData.nodes.every(
+  const nodesEqual = transformedOldData.nodes.every(
     (node, index) => node.name === data.nodes[index].name
   );
 
-  const relationshipsEqual = oldData.relationships.every((rel, index) => {
-    return (
-      rel.source === data.relationships[index].source &&
-      rel.target === data.relationships[index].target
-    );
-  });
+  const relationshipsEqual = transformedOldData.relationships.every(
+    (rel, index) => {
+      return (
+        rel.source === data.relationships[index].source &&
+        rel.target === data.relationships[index].target
+      );
+    }
+  );
 
   return nodesEqual && relationshipsEqual;
 }
