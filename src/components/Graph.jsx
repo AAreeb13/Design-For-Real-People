@@ -38,10 +38,12 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const [totalTopicsCount, ourTopicsCount] = await Promise.all([
-        getTotalNodesForSubject(subject),
-        getNodesCompleteForSubject(subject)
-      ]);
+      const user = await getCurrentUserData();
+      const subjectProgress = await getUserSubjectProgress(user.email);
+
+      const totalTopicsCount = getTotalNodesForSubject(subject, links, nodes)
+      const ourTopicsCount = getNodesCompleteForSubject(subject, links, nodes, subjectProgress)
+
       setTotalTopicCount(totalTopicsCount);
       setOurTopicCount(ourTopicsCount);
       setLoading(false); //  once data is fetched
@@ -313,32 +315,38 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
   return <svg ref={svgRef} width={width} height={height} style={style}></svg>;
 };
 
-const getTotalNodesForSubject = async (subject) => {
-  const totalTopics = await getTopicsInSubject(subject);
-  const totalMiniSubjects = await getMiniSubjectInSubject(subject);
+const getTotalNodesForSubject = (subject, links, nodes) => {
+  const totalTopics = getTopicsFromSubject(subject, links, nodes);
+  const totalMiniSubjects = getMiniSubjectFromSubject(subject, links, nodes);
   return totalTopics.length + totalMiniSubjects.length;
 };
 
-const getNodesCompleteForSubject = async (subject) => {
-  const user = await getCurrentUserData();
-  const subjectProgress = await getUserSubjectProgress(user.email);
+const getNodesCompleteForSubject = (subject, links, nodes, subjectProgress) => {
   let progCount = 0;
 
-  const totalTopics = await getTopicsInSubject(subject);
-  const totalMiniSubjects = await getMiniSubjectInSubject(subject);
+  const totalTopics = getTopicsFromSubject(subject, links, nodes);
+  const totalMiniSubjects = getMiniSubjectFromSubject(subject, links, nodes);
 
   totalTopics.forEach((topic) => {
     progCount = progCount + (subjectProgress[topic.name] ? 1 : 0);
   });
 
-  await Promise.all(totalMiniSubjects.map(async (miniSubject) => {
-    const miniSubjectNodeCount = await getTotalNodesForSubject(miniSubject.name);
-    const ourMiniSubjectCount = await getNodesCompleteForSubject(miniSubject.name);
+  totalMiniSubjects.map((miniSubject) => {
+    const miniSubjectNodeCount =  getTotalNodesForSubject(miniSubject.name, links, nodes);
+    const ourMiniSubjectCount =  getNodesCompleteForSubject(miniSubject.name, links, nodes, subjectProgress);
     progCount = progCount + ((miniSubjectNodeCount === ourMiniSubjectCount) ? 1 : 0);
-  }));
+  });
 
   return progCount;
 };
+
+const getTopicsFromSubject = (subject, links, nodes) => {
+  return nodes.filter(node => (node.subject === subject && node.type === "topic"))
+}
+
+const getMiniSubjectFromSubject = (subject, links, nodes) => {
+  return links.filter(node => (node.subject === subject & node.type === "subject" && !node.mainSubject))
+}
 
 
 export default Graph;

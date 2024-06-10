@@ -45,7 +45,11 @@ const getGraphData = async () => {
     relationships = results.relationships;
 
     relationships = relationships.map(function (r) {
-      return { source: nodes[r.start.low].name, target: nodes[r.end.low].name };
+      if (r.properties && r.properties.order) {
+        return { source: nodes[r.start.low].name, target: nodes[r.end.low].name, order: r.properties.order.low};
+      } else {
+        return { source: nodes[r.start.low].name, target: nodes[r.end.low].name };
+      }
     });
 
     nodes = Object.entries(nodes)
@@ -56,6 +60,7 @@ const getGraphData = async () => {
   }
   return { nodes, relationships };
 };
+
 
 const nodeExists = async (label, properties) => {
   const session = driver.session();
