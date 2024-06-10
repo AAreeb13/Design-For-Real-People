@@ -225,11 +225,14 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .attr("dy", ".35em")
       .attr("text-anchor", "middle")
       .attr("font-size", (d) =>
-        subject == null ? "40" : d.name === subject ? "60px" : "40px"
+        subject == null ? "40px" : d.name === subject ? "65px" : "45px"
       )
       .attr("fill", "#333") // Dark gray
+      .attr("font-family", "Arial, sans-serif") // Specify font family
+      .style("font-weight", "bold") // Make the font bold
       .style("pointer-events", "none")
       .text((d) => d.name);
+
 
     const text = svgGroup
       .selectAll("text.link-order")
