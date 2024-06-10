@@ -1,15 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import { useNavigate } from "react-router-dom";
-import { getMiniSubjectInSubject, getOrder, getTopicsInSubject } from "../../database/graphData";
 import { getCurrentUserData, getUserSubjectProgress } from "../../database/firebase";
+import { getMiniSubjectInSubject, getOrder, getTopicsInSubject } from "../../database/graphData";
 
 const Graph = ({ nodes, links, subject = null, width, height, style }) => {
   const svgRef = useRef();
   const navigate = useNavigate();
   const [totalTopicCount, setTotalTopicCount] = useState(0);
   const [ourTopicCount, setOurTopicCount] = useState(0);
-  const [loading, setLoading] = useState(true); // loading status
+  const [loading, setLoading] = useState(true);
+  const [userLoggedIn, setUserLoggedIn] = useState(false);
 
   const validNodes = subject == null
     ? nodes
@@ -39,14 +40,18 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
   useEffect(() => {
     const fetchData = async () => {
       const user = await getCurrentUserData();
-      const subjectProgress = await getUserSubjectProgress(user.email);
-
-      const totalTopicsCount = getTotalNodesForSubject(subject, links, nodes)
-      const ourTopicsCount = getNodesCompleteForSubject(subject, links, nodes, subjectProgress)
-
-      setTotalTopicCount(totalTopicsCount);
-      setOurTopicCount(ourTopicsCount);
-      setLoading(false); //  once data is fetched
+      if (user) {
+        setUserLoggedIn(true);
+        const subjectProgress = await getUserSubjectProgress(user.email);
+        const totalTopicsCount = getTotalNodesForSubject(subject, links, nodes);
+        const ourTopicsCount = getNodesCompleteForSubject(subject, links, nodes, subjectProgress);
+        setTotalTopicCount(totalTopicsCount);
+        setOurTopicCount(ourTopicsCount);
+        setLoading(false);
+      } else {
+        setUserLoggedIn(false);
+        setLoading(false);
+      }
     };
 
     const svg = d3.select(svgRef.current);
@@ -184,7 +189,7 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .attr("fill", "#86e399")
       .attr("stroke", "#fff")
       .attr("stroke-width", 1.5)
-      .attr("x", -250) // to center rectangle
+      .attr("x", -250)
       .attr("y", -100)
       .style("cursor", "pointer") // Change cursor to pointer for clickable rectangles
       .on("click", (event, d) => {
@@ -236,46 +241,49 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .style("stroke-width", "3px")
       .style("pointer-events", "none");
 
-    const progressBar = svg
-      .append("rect")
-      .attr("width", 150) 
-      .attr("height", 20)
-      .attr("fill", "#ddd") 
-      .attr("stroke", "#444")
-      .attr("stroke-width", 1)
-      .attr("rx", 10) 
-      .attr("ry", 10) 
-      .attr("x", width - 180)
-      .attr("y", 20); 
-
-    const progressBarIndicator = svg
-      .append("rect")
-      .attr("width", 0)
-      .attr("height", 20)
-      .attr("fill", "green") 
-      .attr("stroke", "#444")
-      .attr("stroke-width", 1)
-      .attr("rx", 10) 
-      .attr("ry", 10) 
-      .attr("y", 20) 
-      .attr("x", width - 180); 
-
-    const updateProgressBar = (completionPercentage) => {
-      const width = 150 * (completionPercentage / 100);
-      progressBarIndicator.attr("width", width);
-    };
-
-    updateProgressBar((ourTopicCount / totalTopicCount) * 100);
-
-    const completionText = svg
-      .append("text")
-      .attr("x", width - 180) 
-      .attr("y", 60) 
-      .attr("font-family", "Arial, sans-serif") 
-      .attr("font-size", "16px")
-      .attr("fill", "#333") 
-      .attr("text-anchor", "start") 
-      .text(ourTopicCount + " out of " + totalTopicCount + " complete");
+      if (userLoggedIn) {
+        const progressBar = svg
+          .append("rect")
+          .attr("width", 150) 
+          .attr("height", 20)
+          .attr("fill", "#ddd") 
+          .attr("stroke", "#444")
+          .attr("stroke-width", 1)
+          .attr("rx", 10) 
+          .attr("ry", 10) 
+          .attr("x", width - 180)
+          .attr("y", 20); 
+      
+        const progressBarIndicator = svg
+          .append("rect")
+          .attr("width", 0)
+          .attr("height", 20)
+          .attr("fill", "green") 
+          .attr("stroke", "#444")
+          .attr("stroke-width", 1)
+          .attr("rx", 10) 
+          .attr("ry", 10) 
+          .attr("y", 20) 
+          .attr("x", width - 180); 
+      
+        const updateProgressBar = (completionPercentage) => {
+          const width = 150 * (completionPercentage / 100);
+          progressBarIndicator.attr("width", width);
+        };
+      
+        updateProgressBar((ourTopicCount / totalTopicCount) * 100);
+      
+        const completionText = svg
+          .append("text")
+          .attr("x", width - 180) 
+          .attr("y", 60) 
+          .attr("font-family", "Arial, sans-serif") 
+          .attr("font-size", "16px")
+          .attr("fill", "#333") 
+          .attr("text-anchor", "start") 
+          .text(ourTopicCount + " out of " + totalTopicCount + " complete");
+      }
+      
 
     simulation.on("tick", () => {
       link
@@ -350,3 +358,4 @@ const getMiniSubjectFromSubject = (subject, links, nodes) => {
 
 
 export default Graph;
+
