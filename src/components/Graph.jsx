@@ -70,8 +70,8 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
         d3
           .forceLink(linksToUse)
           .id((d) => d.name)
-          .distance(90)
-      ) // distance = link length
+          .distance(90) // distance = link length
+      )
       .force(
         "charge",
         subject == null
@@ -177,7 +177,7 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .on("mouseover", function (event, d) {
         d3.select(this)
           .transition()
-          .duration(50) // Quicker transition duration
+          .duration(50) 
           .attr("fill", "#ff9999")
           .attr("stroke", "#666");
 
@@ -187,11 +187,10 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .on("mouseout", function (event, d) {
         d3.select(this)
           .transition()
-          .duration(50) // Quicker transition duration
+          .duration(50)
           .attr("fill", "#86e399")
           .attr("stroke", "#fff");
 
-        // Reset all links
         link.attr("stroke", "#999").attr("stroke-width", 15);
       });
 
@@ -208,7 +207,7 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .style("pointer-events", "none")
       .text((d) => d.name);
 
-    // Define text elements for link orders
+
     const text = svgGroup
       .selectAll("text.link-order")
       .data(linksToUse)
@@ -221,6 +220,52 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .style("stroke", "black")
       .style("stroke-width", "3px")
       .style("pointer-events", "none");
+
+
+  const progressBar = svg
+    .append("rect")
+    .attr("width", 150) 
+    .attr("height", 20)
+    .attr("fill", "#ddd") 
+    .attr("stroke", "#444")
+    .attr("stroke-width", 1)
+    .attr("rx", 10) 
+    .attr("ry", 10) 
+    .attr("x", width - 180)
+    .attr("y", 20); 
+
+
+  const progressBarIndicator = svg
+    .append("rect")
+    .attr("width", 0)
+    .attr("height", 20)
+    .attr("fill", "green") 
+    .attr("stroke", "#444")
+    .attr("stroke-width", 1)
+    .attr("rx", 10) 
+    .attr("ry", 10) 
+    .attr("y", 20) 
+    .attr("x", width - 180); 
+
+  
+  const updateProgressBar = (completionPercentage) => {
+    const width = 150 * (completionPercentage / 100);
+    progressBarIndicator.attr("width", width);
+  };
+
+  updateProgressBar(50); // todo backend
+
+
+  const completionText = svg
+    .append("text")
+    .attr("x", width - 180) 
+    .attr("y", 60) 
+    .attr("font-family", "Arial, sans-serif") 
+    .attr("font-size", "16px")
+    .attr("fill", "#333") 
+    .attr("text-anchor", "start") 
+    .text("7 out of 14 complete"); // todo backend
+
 
     simulation.on("tick", () => {
       link
