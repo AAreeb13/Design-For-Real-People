@@ -7,7 +7,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import { auth } from "../../database/firebase.js";
+import { addUserSuggestion, auth } from "../../database/firebase.js";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../../database/firebase.js";
 import "../styles/FormOverlay.css";
@@ -99,8 +99,20 @@ const FormOverlay = ({ onClose, formType }) => {
         if (userId) {
           handleSubmitWithUserId(event, userId);
         }
-      } else {
+      } else if (formType === "add") {
         isValid = await handleTopicAdderSubmit(formData, isValid);
+      } else if (formType === "suggest") {
+        const suggestion = {
+          email: userEmail,
+          name: formData.name,
+          prerequisites: formData.prerequisites,
+          subject: formData.subject,
+          theme: formData.theme,
+          type: formData.type
+        }
+        isValid = addUserSuggestion(suggestion);
+      } else {
+        console.error("unknown formtype: " + formType)
       }
     }
 

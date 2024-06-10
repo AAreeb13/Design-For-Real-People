@@ -104,13 +104,16 @@ const DisabledTopicAdder = () => (
   <div className="collapse navbar-collapse">
     <ul className="navbar-nav mr-auto">
       <li className="nav-item">
-        <button
-          className="btn btn-success disabled-button-style"
-          disabled
-          style={{ fontSize: "12px" }}
-        >
-          Login to add a topic
-        </button>
+        <div className="tooltip-wrapper">
+          <button
+            className="btn btn-success disabled-button-style"
+            disabled
+            style={{ fontSize: "12px" }}
+          >
+            Login to add a topic
+          </button>
+          <span className="tooltip-text">Please login to add a topic</span>
+        </div>
       </li>
     </ul>
   </div>

@@ -8,7 +8,7 @@ import {
   getDocs,
   doc,
   updateDoc,
-  getDoc,
+  addDoc,
 } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -120,4 +120,18 @@ export const getUserPrivledge = async (email) => {
 export const getUserSubjectProgress = async (email) => {
   const userDoc = await getCurrentUserDocData(email);
   return userDoc.subjectProgress;
+};
+
+export const addUserSuggestion = async (suggestion) => {
+  try {
+    const suggestionData = {
+      ...suggestion,
+      timestamp: new Date().toISOString(),
+    };
+
+    await addDoc(collection(db, "Suggestions"), suggestionData);
+    console.log("Suggestion added successfully.");
+  } catch (error) {
+    console.error("Error adding suggestion:", error);
+  }
 };
