@@ -2,6 +2,7 @@
 
 
 // ------------------  Calculus here   ------------------ //
+/*
 CREATE (n:Subject{
 	name:'calculus',
 	type: 'subject',

@@ -1,82 +1,210 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import NavbarDropdown from "./NavbarDropdown";
-import FormOverlay from "./FormOverlay";
+import AuthFormOverlay from "./FormOverlay";
 import SearchBar from "./SearchBar";
+import { auth, getSuggestionData, getUserPrivledge } from "../../database/firebase";
+import "../styles/Navbar.css";
+import SuggestedTopicsOverlay from './SuggestedTopicsOverlay';
 
 const MyNavbar = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [formType, setFormType] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [privilegeLevel, setPrivilegeLevel] = useState("guest");
+  const [showSuggestedTopics, setShowSuggestedTopics] = useState(false);
 
-  const handleOpenForm = () => {
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      setIsLoggedIn(!!user);
+      if (user) {
+        try {
+          const privilege = await getUserPrivledge(user.email);
+          setPrivilegeLevel(privilege);
+        } catch (error) {
+          console.error("Error fetching user privilege:", error);
+        }
+      } else {
+        setPrivilegeLevel("guest");
+      }
+    });
+    return unsubscribe;
+  }, []);
+
+  const handleLogout = () => {
+    auth
+      .signOut()
+      .then(() => {
+        console.log("User logged out");
+      })
+      .catch((error) => {
+        console.error("Error signing out:", error);
+      });
+  };
+
+  const handleOpenForm = (type) => {
     setIsFormOpen(true);
+    setFormType(type);
   };
 
   const handleCloseForm = () => {
     setIsFormOpen(false);
   };
 
-  const ourLogo = {
-    padding: "5px 5px 5px 5px",
-    width: "150px",
+  const handleShowSuggestedTopics = () => {
+    setShowSuggestedTopics(true);
   };
 
-  const navStyle = {
-    backgroundColor: "#2c3e50",
-    color: "white",
-    padding: "1rem 2rem",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-    position: "fixed",
-    width: "100%",
-    top: "0",
+  const handleCloseSuggestedTopics = () => {
+    setShowSuggestedTopics(false);
   };
+  
+  const getSuggestedTopics = async () => {
+    return await getSuggestionData();
+  }
 
-  const loginStyle = {
-    marginLeft: "20%",
-    marginRight: "2%",
-  };
 
   return (
     <div>
-      <nav className="navbar navbar-expand-lg bg-body-tertiary" style={navStyle}>
+      <nav className="navbar navbar-expand-lg bg-body-tertiary our-navbar">
         <div className="container-fluid">
-          <Link className="navbar-brand" to="/" style={ourLogo}>
-            StudyChain
-          </Link>
+          <LogoAndDropdown />
 
-          <button
-            className="navbar-toggler"
-            type="button"
-            aria-label="Toggle navigation"
-          >
-            <span className="navbar-toggler-icon"></span>
-          </button>
-
-          <NavbarDropdown />
-
-          <div className="collapse navbar-collapse">
-            <ul className="navbar-nav mr-auto">
-              <li className="nav-item">
-                <button className="btn btn-success" onClick={handleOpenForm}>
-                  Add a Topic
-                </button>
-              </li>
-            </ul>
-          </div>
+          {privilegeLevel === "guest" ? (
+            <DisabledTopicAdder />
+          ) : privilegeLevel === "member" ? (
+            <TopicSuggester handleOpenForm={handleOpenForm} />
+          ) : privilegeLevel === "moderator" ? (
+            <>
+              <SeeSuggestedTopics handleShowSuggestedTopics={handleShowSuggestedTopics} />
+              <TopicAdder handleOpenForm={handleOpenForm} />
+            </>
+          ) : (
+            <h1>ERROR: Not guest, member, or moderator</h1>
+          )}
 
           <SearchBar />
 
-          {/* <button className="btn btn-outline-success" style={loginStyle}>
-            Login
-          </button>
-          <button className="btn btn-outline-success">Sign Up</button> */}
+          {!isLoggedIn ? (
+            <LoggedOutButtons handleOpenForm={handleOpenForm} />
+          ) : (
+            <LoggedInButtons handleLogout={handleLogout} />
+          )}
         </div>
       </nav>
-      {isFormOpen && <FormOverlay onClose={handleCloseForm} />}
+      {isFormOpen && (
+        <AuthFormOverlay onClose={handleCloseForm} formType={formType} />
+      )}
+      {showSuggestedTopics && ( 
+        <SuggestedTopicsOverlay 
+          open={showSuggestedTopics} 
+          onClose={handleCloseSuggestedTopics} 
+          suggestedTopics={getSuggestedTopics}
+        />
+      )}
     </div>
   );
 };
+
+const LogoAndDropdown = () => (
+  <>
+    <Link className="navbar-brand our-logo" to="/">
+      StudyChain
+    </Link>
+    <button
+      className="navbar-toggler"
+      type="button"
+      aria-label="Toggle navigation"
+    >
+      <span className="navbar-toggler-icon"></span>
+    </button>
+    <NavbarDropdown />
+  </>
+);
+
+const DisabledTopicAdder = () => (
+  <div className="collapse navbar-collapse">
+    <ul className="navbar-nav mr-auto">
+      <li className="nav-item">
+        <div className="tooltip-wrapper">
+          <button
+            className="btn btn-success disabled-button-style"
+            disabled
+            style={{ fontSize: "12px" }}
+          >
+            Login to add a topic
+          </button>
+          <span className="tooltip-text">Please login to add a topic</span>
+        </div>
+      </li>
+    </ul>
+  </div>
+);
+
+const TopicSuggester = ({ handleOpenForm }) => (
+  <div className="collapse navbar-collapse">
+    <ul className="navbar-nav mr-auto">
+      <li className="nav-item">
+        <button
+          className="btn btn-success suggest-topic-style"
+          onClick={() => handleOpenForm("suggest")}
+        >
+          Suggest a Topic
+        </button>
+      </li>
+    </ul>
+  </div>
+);
+
+const SeeSuggestedTopics = ({ handleShowSuggestedTopics }) => (
+  <div className="collapse navbar-collapse">
+    <ul className="navbar-nav mr-auto">
+      <li className="nav-item">
+        <button className="btn btn-warning see-suggested-topics-style" onClick={handleShowSuggestedTopics}>View Suggested Topics</button>
+      </li>
+    </ul>
+  </div>
+);
+
+const TopicAdder = ({ handleOpenForm }) => (
+  <div className="collapse navbar-collapse">
+    <ul className="navbar-nav mr-auto">
+      <li className="nav-item">
+        <button
+          className="btn btn-success add-topic-style"
+          onClick={() => handleOpenForm("add")}
+        >
+          Add a Topic
+        </button>
+      </li>
+    </ul>
+  </div>
+);
+
+const LoggedOutButtons = ({ handleOpenForm }) => (
+  <>
+    <button
+      className="btn btn-outline-success login-style"
+      onClick={() => handleOpenForm("login")}
+    >
+      Login
+    </button>
+    <button
+      className="btn btn-outline-success"
+      onClick={() => handleOpenForm("signup")}
+    >
+      Sign Up
+    </button>
+  </>
+);
+
+const LoggedInButtons = ({ handleLogout }) => (
+  <button
+    className="btn btn-outline-danger logout-style"
+    onClick={handleLogout}
+  >
+    Logout
+  </button>
+);
 
 export default MyNavbar;

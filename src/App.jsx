@@ -4,21 +4,22 @@ import {
   BrowserRouter as Router,
   Route,
   Routes,
-  Link,
   useParams,
 } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import Graph from "./components/Graph";
 import Navbar from "./components/Navbar";
 import GridMenu from "./pages/GridMenu";
-import { getGraphData, getNode } from "../database/graphData";
-import SubGraph from "./components/SubGraph";
+import { getGraphData } from "../database/graphData";
+import { initAuthStateListener, auth } from "../database/firebase";
 import TopicEntry from "./components/TopicEntry";
 
 function App() {
   const [graphData, setGraphData] = useState({ nodes: [], links: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [userData, setUserData] = useState(null);
+  const [key, setKey] = useState(0); // to force re-render
 
   let oldData = null;
 
@@ -28,6 +29,7 @@ function App() {
       if (oldData === null || !isEqualData(oldData, data)) {
         oldData = data;
         setGraphData(data);
+        console.log("data is now", data);
       }
     } catch (err) {
       setError(err);
@@ -46,6 +48,18 @@ function App() {
     };
   }, []);
 
+  useEffect(() => {
+    initAuthStateListener();
+
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      setUserData(user);
+      setKey((prevKey) => prevKey + 1); // forced re-render
+      console.log(user ? "User data: " + user : "No user is signed in");
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -58,31 +72,48 @@ function App() {
     <Router>
       <div>
         <Navbar />
-        <Routes>
+        <Routes key={key}>
           <Route path="/" element={<HomePage graphData={graphData} />} />
           <Route path="/grid-menu" element={<GridMenu />} />
           <Route
             path="/graph/:subject"
-            element={<GraphRouteWrapper graphData={graphData} />}
+            element={
+              <GraphRouteWrapper graphData={graphData} userData={userData} />
+            }
           />
-          <Route path="/topic/:node" element={<TopicRouteWrapper />} />
-          <Route path="/subgraph/:topicName" element={<SubgraphRouteWrapper graphData={graphData}/>}/>
+          <Route
+            path="/topic/:node"
+            element={<TopicRouteWrapper userData={userData} />}
+          />
+          <Route
+            path="/subgraph/:topicName"
+            element={
+              <SubgraphRouteWrapper graphData={graphData} userData={userData} />
+            }
+          />
         </Routes>
       </div>
     </Router>
   );
 }
 
-function TopicRouteWrapper() {
+function TopicRouteWrapper({ userData }) {
   const { node } = useParams();
-  return <TopicEntry node={node} />;
+
+  useEffect(() => {
+    console.log("TopicRouteWrapper userData changed:", userData);
+  }, [userData]);
+
+  return <TopicEntry node={node} userData={userData} />;
 }
 
-function GraphRouteWrapper({ graphData }) {
+function GraphRouteWrapper({ graphData, userData }) {
   const { subject } = useParams();
-  console.log("Graph Route wrapper")
-  console.log("nodes", graphData.nodes)
-  console.log("Relationships", graphData.relationships)
+
+  useEffect(() => {
+    console.log("GraphRouteWrapper userData changed:", userData);
+  }, [userData]);
+
   return (
     <Graph
       nodes={graphData.nodes}
@@ -94,46 +125,57 @@ function GraphRouteWrapper({ graphData }) {
   );
 }
 
-function SubgraphRouteWrapper({ graphData }) {
+function SubgraphRouteWrapper({ graphData, userData }) {
   const { topicName } = useParams();
-  const node = graphData.nodes.find((n) => n.name === topicName)
-  console.log("node", node)
-  const subject = node.subject
-  return (<Graph
-            nodes={graphData.nodes}
-            links={graphData.relationships}
-            subject={subject}
-            width={1500}
-            height={600}
-          />)
+  const node = graphData.nodes.find((n) => n.name === topicName);
+  const subject = node.subject;
+
+  useEffect(() => {
+    console.log("SubgraphRouteWrapper userData changed:", userData);
+  }, [userData]);
+
+  return (
+    <Graph
+      nodes={graphData.nodes}
+      links={graphData.relationships}
+      subject={subject}
+      width={1500}
+      height={600}
+    />
+  );
 }
 
 function isEqualData(oldData, data) {
-  oldData.relationships = oldData.relationships.map((n) => {
-    if (n.source.name != null) {
-      return { source: n.source.name, target: n.target.name };
-    } else {
-      return { source: n.source, target: n.target };
-    }
-  });
+  const transformedOldData = {
+    nodes: oldData.nodes,
+    relationships: oldData.relationships.map((n) => {
+      if (n.source.name != null) {
+        return { source: n.source.name, target: n.target.name };
+      } else {
+        return { source: n.source, target: n.target };
+      }
+    }),
+  };
 
   if (
-    oldData.nodes.length !== data.nodes.length ||
-    oldData.relationships.length !== data.relationships.length
+    transformedOldData.nodes.length !== data.nodes.length ||
+    transformedOldData.relationships.length !== data.relationships.length
   ) {
     return false;
   }
 
-  const nodesEqual = oldData.nodes.every(
+  const nodesEqual = transformedOldData.nodes.every(
     (node, index) => node.name === data.nodes[index].name
   );
 
-  const relationshipsEqual = oldData.relationships.every((rel, index) => {
-    return (
-      rel.source === data.relationships[index].source &&
-      rel.target === data.relationships[index].target
-    );
-  });
+  const relationshipsEqual = transformedOldData.relationships.every(
+    (rel, index) => {
+      return (
+        rel.source === data.relationships[index].source &&
+        rel.target === data.relationships[index].target
+      );
+    }
+  );
 
   return nodesEqual && relationshipsEqual;
 }

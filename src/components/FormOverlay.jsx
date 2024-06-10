@@ -1,15 +1,33 @@
 import React, { useState } from "react";
-import { addMainSubjectToGraph, addMiniSubjectToGraph, addTopicToGraph, mainSubjectExists, subjectExists, nodeExists } from "../../database/graphData";
+import ReactDOM from "react-dom";
+import LoginForm from "./LoginForm";
+import SignupForm from "./SignupForm";
+import TopicAdderForm, { handleTopicAdderSubmit } from "./TopicAdderForm.jsx";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { addUserSuggestion, auth } from "../../database/firebase.js";
+import { addDoc, collection } from "firebase/firestore";
+import { db } from "../../database/firebase.js";
+import "../styles/FormOverlay.css";
 
-const FormOverlay = ({ onClose }) => {
+const FormOverlay = ({ onClose, formType }) => {
+  const usersCollectionRef = collection(db, "Users");
+
   const [selectedType, setSelectedType] = useState("");
   const [formData, setFormData] = useState({
     type: "",
     name: "",
-    subject: "",
     theme: "",
+    subject: "",
     prerequisites: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
   });
+
+  const [userEmail, setUserEmail] = useState("");
 
   const handleTypeChange = (event) => {
     const newType = event.target.value;
@@ -28,235 +46,157 @@ const FormOverlay = ({ onClose }) => {
     }));
   };
 
-  const validateMainSubject = async (data) => {
-    const nonEmpty = data.name.trim() !== "" && data.theme.trim() !== "";
-    const subjectExists = await mainSubjectExists("Subject", data)
-    return nonEmpty && !subjectExists
-  };
-
-  const validateMiniSubject = async (data) => {
-    const nonEmpty = data.name.trim() !== "" && data.subject.trim() !== "" && data.prerequisites.trim() !== "";
-    const mainSubExst = await mainSubjectExists("Subject", data);
-    const minSubExst = await subjectExists("Subject", data);
-
-    const prerequisitesArray = data.prerequisites.split(',').map(prereq => prereq.trim());
-
-    for (const prerequisite of prerequisitesArray) {
-      const exists = await nodeExists("Subject", {name: prerequisite});
-      if (!exists) return false;
-    }
-    
-    return nonEmpty && mainSubExst && !minSubExst
-  };
-
-  const validateTopic = async (data) => {
-    const nonEmpty = data.name.trim() !== "" && data.subject.trim() !== "" && data.prerequisites.trim() !== "";
-    const mainSubExst = await mainSubjectExists("Subject", data, false);
-    const topicExst = await nodeExists("Subject", data);
-
-    const prerequisitesArray = data.prerequisites.split(',').map(prereq => prereq.trim());
-
-    for (const prerequisite of prerequisitesArray) {
-      const exists = await nodeExists("Subject", {name: prerequisite});
-      if (!exists) return false;
-    }
-
-    return nonEmpty && mainSubExst && !topicExst    
-  };
-
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log("formdata", formData);
-
     let isValid = false;
+    let errorMessage = "";
 
-    if (formData.type === "main-subject") {
-      isValid = await validateMainSubject(formData);
-      if (isValid) {
-        addMainSubjectToGraph(formData.name, formData.theme);
+    if (
+      formType === "signup" &&
+      formData.password !== formData.confirmPassword
+    ) {
+      errorMessage = "Password and confirm password must match.";
+    } else {
+      const signingUp = async () => {
+        try {
+          const userCredential = await createUserWithEmailAndPassword(
+            auth,
+            formData.email,
+            formData.password
+          );
+          setUserEmail(formData.email);
+          isValid = true;
+          return userCredential.user.uid;
+        } catch (error) {
+          console.error(error);
+          errorMessage = "Signup failed. Please try again.";
+        }
+      };
+
+      const loggingIn = async () => {
+        try {
+          const userCredential = await signInWithEmailAndPassword(
+            auth,
+            formData.email,
+            formData.password
+          );
+          setUserEmail(formData.email);
+          isValid = true;
+          return userCredential.user.uid;
+        } catch (error) {
+          console.error(error);
+          errorMessage = "Login failed. Please try again.";
+        }
+      };
+
+      if (formType === "login") {
+        const userId = await loggingIn();
+        if (userId) {
+          handleSubmitWithUserId(event, userId);
+        }
+      } else if (formType === "signup") {
+        const userId = await signingUp();
+        if (userId) {
+          handleSubmitWithUserId(event, userId);
+        }
+      } else if (formType === "add") {
+        isValid = await handleTopicAdderSubmit(formData, isValid);
+      } else if (formType === "suggest") {
+        const suggestion = {
+          email: userEmail,
+          name: formData.name,
+          prerequisites: formData.prerequisites.split(","),
+          subject: formData.subject,
+          theme: formData.theme,
+          type: formData.type
+        }
+        isValid = addUserSuggestion(suggestion);
       } else {
-        alert("Please ensure all fields are filled, and that the subject doesn't currently exist")
-      }
-    } else if (formData.type === "mini-subject") {
-      isValid = await validateMiniSubject(formData);
-      if (isValid) {
-        addMiniSubjectToGraph(formData.name, formData.subject, formData.prerequisites);
-      } else {
-        alert("Please ensure that all fields are filled, the name doesn't exist, the subject does exist and that the prerequisites are correctly spelled")
-      }
-    } else if (formData.type === "topic") {
-      isValid = await validateTopic(formData);
-      if (isValid) {
-        addTopicToGraph(formData.name, formData.subject, formData.prerequisites);
-      } else {
-        alert("Please ensure that all fields are filled, the name doesn't exist, the subject does exist and that the prerequisites are correctly spelled")
+        console.error("unknown formtype: " + formType)
       }
     }
 
     if (isValid) {
       onClose();
+    } else {
+      setFormData((prevData) => ({
+        ...prevData,
+        password: "",
+        confirmPassword: "",
+      }));
+      alert(errorMessage);
     }
   };
 
-  const overlayStyle = {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 1000,
+  const handleSubmitWithUserId = async (event, userId) => {
+    const documentData = {
+      email: formData.email,
+      userId: userId,
+      privledge: "member",
+      subjectProgress: {},
+    };
+
+    try {
+      if (formType === "signup") {
+        await addDoc(usersCollectionRef, documentData);
+      }
+      onClose();
+    } catch (error) {
+      console.error("Error adding document:", error);
+    }
   };
 
-  const formContainerStyle = {
-    backgroundColor: "white",
-    padding: "20px",
-    borderRadius: "8px",
-    position: "relative",
-    boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
-    width: "600px",
+  const renderForm = () => {
+    if (formType === "login") {
+      return (
+        <LoginForm
+          formData={formData}
+          handleChange={handleChange}
+          handleSubmit={handleSubmit}
+        />
+      );
+    } else if (formType === "signup") {
+      return (
+        <SignupForm
+          formData={formData}
+          handleChange={handleChange}
+          handleSubmit={handleSubmit}
+        />
+      );
+    } else {
+      return (
+        <TopicAdderForm
+          formData={formData}
+          selectedType={selectedType}
+          handleChange={handleChange}
+          handleTypeChange={handleTypeChange}
+          handleSubmit={handleSubmit}
+        />
+      );
+    }
   };
 
-  const closeButtonStyle = {
-    position: "absolute",
-    top: "10px",
-    right: "10px",
-    background: "none",
-    border: "none",
-    fontSize: "24px",
-    cursor: "pointer",
-    color: "#333",
-  };
-
-  const submitButtonStyle = {
-    marginTop: "30px"
-  };
-
-  return (
-    <div style={overlayStyle}>
-      <div style={formContainerStyle}>
-        <button style={closeButtonStyle} onClick={onClose} aria-label="Close form">
+  return ReactDOM.createPortal(
+    <div className="auth-form-overlay auth-form-overlay">
+      <div className="form-container form-container-2">
+        <button
+          className="close-button close-button-2"
+          onClick={onClose}
+          aria-label="Close form"
+        >
           &times;
         </button>
-        <h2>Add a New Entry</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="type">Type</label>
-            <select
-              id="type"
-              name="type"
-              className="form-control"
-              value={selectedType}
-              onChange={handleTypeChange}
-            >
-              <option value="">Select Type</option>
-              <option value="main-subject">Main Subject</option>
-              <option value="mini-subject">Mini Subject</option>
-              <option value="topic">Topic</option>
-            </select>
-          </div>
-          {selectedType && (
-            <>
-              <div className="form-group">
-                <label htmlFor="name">Name</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="name"
-                  name="name"
-                  placeholder="Enter name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              {selectedType === "topic" && (
-                <>
-                  <div className="form-group">
-                    <label htmlFor="subject">Subject</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="subject"
-                      name="subject"
-                      placeholder="Enter the subject that this topic will belong to"
-                      value={formData.subject}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="prerequisites">Prerequisites</label>
-                    <textarea
-                      className="form-control"
-                      id="prerequisites"
-                      name="prerequisites"
-                      placeholder="Enter prerequisites, separated by a ',' and ensure that it the prerequisite spelled correctly"
-                      value={formData.prerequisites}
-                      onChange={handleChange}
-                      required
-                    ></textarea>
-                  </div>
-                </>
-              )}
-
-              {selectedType === "main-subject" && (
-                <div className="form-group">
-                  <label htmlFor="theme">Theme</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="theme"
-                    name="theme"
-                    placeholder="Enter the theme of this topic, for example 'mathematics'"
-                    value={formData.theme}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-              )}
-
-              {selectedType === "mini-subject" && (
-                <>
-                  <div className="form-group">
-                    <label htmlFor="subject">Subject</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="subject"
-                      name="subject"
-                      placeholder="Enter the name of the subject this mini-subject belongs to"
-                      value={formData.subject}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="prerequisites">Prerequisites</label>
-                    <textarea
-                      className="form-control"
-                      id="prerequisites"
-                      name="prerequisites"
-                      placeholder="Enter prerequisites, separated by a ',' and ensure that it the prerequisite spelled correctly"
-                      value={formData.prerequisites}
-                      onChange={handleChange}
-                      required
-                    ></textarea>
-                  </div>
-                </>
-              )}
-            </>
-          )}
-          <button type="submit" className="btn btn-success" style={submitButtonStyle}>
-            Submit
-          </button>
-        </form>
+        <h2>
+          {formType === "login"
+            ? "Login"
+            : formType === "signup"
+            ? "Sign Up"
+            : "Add a New Entry"}
+        </h2>
+        <div className="form-content">{renderForm()}</div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

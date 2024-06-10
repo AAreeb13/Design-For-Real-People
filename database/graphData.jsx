@@ -45,7 +45,18 @@ const getGraphData = async () => {
     relationships = results.relationships;
 
     relationships = relationships.map(function (r) {
-      return { source: nodes[r.start.low].name, target: nodes[r.end.low].name };
+      if (r.properties && r.properties.order) {
+        return {
+          source: nodes[r.start.low].name,
+          target: nodes[r.end.low].name,
+          order: r.properties.order.low,
+        };
+      } else {
+        return {
+          source: nodes[r.start.low].name,
+          target: nodes[r.end.low].name,
+        };
+      }
     });
 
     nodes = Object.entries(nodes)
@@ -60,7 +71,7 @@ const getGraphData = async () => {
 const nodeExists = async (label, properties) => {
   const session = driver.session();
   const name = properties.name;
-  const params = { name }
+  const params = { name };
   try {
     const query = `MATCH (n:${label} {name: $name}) RETURN n LIMIT 1`;
     const result = await session.run(query, params);
@@ -70,9 +81,9 @@ const nodeExists = async (label, properties) => {
   }
 };
 
-const subjectExists = async (label, properties, isMainSubject=true) => {
+const subjectExists = async (label, properties, isMainSubject = true) => {
   const session = driver.session();
-  const name = isMainSubject ? properties.name : properties.subject
+  const name = isMainSubject ? properties.name : properties.subject;
   const params = { name };
   try {
     const query = `MATCH (n:${label} {name: $name, type: 'subject'}) RETURN n`;
@@ -81,7 +92,7 @@ const subjectExists = async (label, properties, isMainSubject=true) => {
   } finally {
     await session.close();
   }
-}
+};
 
 const mainSubjectExists = async (label, properties) => {
   const session = driver.session();
@@ -91,21 +102,21 @@ const mainSubjectExists = async (label, properties) => {
     const query = `MATCH (n:${label} {name: $name, type: 'subject'}) RETURN n`;
     let result = await session.run(query, params);
     if (result.records.length == 0) {
-      name = properties.subject
+      name = properties.subject;
       params = { name };
       const query = `MATCH (n:${label} {name: $name, type: 'subject'}) RETURN n`;
       result = await session.run(query, params);
     }
-    return result.records.length > 0
+    return result.records.length > 0;
   } finally {
     await session.close();
   }
-}
-
-
+};
 
 const getMainSubjects = async () => {
-  let nodes = await getAllNodes("MATCH (n:Subject{type: 'subject', mainSubject: True}) RETURN (n)");
+  let nodes = await getAllNodes(
+    "MATCH (n:Subject{type: 'subject', mainSubject: True}) RETURN (n)"
+  );
   nodes = nodes.filter((n) => n.type === "subject" && n.mainSubject);
   return nodes;
 };
@@ -132,7 +143,7 @@ const addMiniSubjectToGraph = async (name, subject, prerequisites) => {
         mainSubject: False
       });
   `;
-  
+
   let params = { name, subject };
   let results = await runQuery(query, params);
 
@@ -140,13 +151,14 @@ const addMiniSubjectToGraph = async (name, subject, prerequisites) => {
     return false;
   }
 
-  const prereqAsList = prerequisites.split(',').map(item => item.trim())
+  const prereqAsList = prerequisites.split(",").map((item) => item.trim());
 
   return addRelationshipsToGraph(prereqAsList, name);
 };
 
 const addTopicToGraph = async (name, subject, prerequisites) => {
-  const formattedPrerequisites = `[${prerequisites.split(',').map(item => `'${item.trim()}'`).join(', ')}]`;
+  // Convert prerequisites to an array of strings
+  const prereqAsList = prerequisites.split(",").map((item) => item.trim());
 
   let query = `
     CREATE (n:Subject{
@@ -154,7 +166,7 @@ const addTopicToGraph = async (name, subject, prerequisites) => {
       subject: $subject,
       type: 'topic',
       description: 'to add later',
-      requires: $formattedPrerequisites,
+      requires: $prereqAsList,
       links: '',
       approvals: 0,
       rejections: 0,
@@ -165,19 +177,18 @@ const addTopicToGraph = async (name, subject, prerequisites) => {
     });
   `;
 
-  const params = { name, subject, formattedPrerequisites };
+  const params = { name, subject, prereqAsList };
   const results = await runQuery(query, params);
-  const prereqAsList = prerequisites.split(',').map(item => item.trim())
 
-
-  return !results ? 
-    results : (prereqAsList.length <= 0) ?  
-      addRelationshipsToGraph([subject], name) :
-      addRelationshipsToGraph(prereqAsList, name);
+  // Add relationships for prerequisites if they exist
+  return !results
+    ? results
+    : prereqAsList.length <= 0
+    ? addRelationshipsToGraph([subject], name)
+    : addRelationshipsToGraph(prereqAsList, name);
 };
 
 function addRelationshipsToGraph(prerequisites, name) {
-  
   prerequisites.forEach(async (prerequisite) => {
     const query = `
   MATCH (title:Subject{name: $prerequisite}), (subject:Subject{name: $name})
@@ -202,7 +213,7 @@ const getAllNodes = async (query) => {
       const n = record.get("n");
       nodes.set(n.identity.toString(), n);
     });
-    return Array.from(nodes.values()).map(n => n.properties);
+    return Array.from(nodes.values()).map((n) => n.properties);
   } catch {
     return false;
   } finally {
@@ -227,7 +238,7 @@ const getDependencyGraph = async (topicName) => {
       const n = record.get("n");
       const m = record.get("m");
       const relList = record.get("r");
-      
+
       // Extract properties from Neo4j node objects
       const nProperties = { id: n.identity.toString(), ...n.properties };
       const mProperties = { id: m.identity.toString(), ...m.properties };
@@ -241,7 +252,10 @@ const getDependencyGraph = async (topicName) => {
         const endNode = nodes.get(rel.end.low.toString());
 
         // Update properties of start and end nodes
-        nodes.set(startNode.id.toString(), { ...startNode, ...startNode.properties });
+        nodes.set(startNode.id.toString(), {
+          ...startNode,
+          ...startNode.properties,
+        });
         nodes.set(endNode.id.toString(), { ...endNode, ...endNode.properties });
 
         relationships.set(rel.identity.toString(), {
@@ -265,24 +279,64 @@ const getDependencyGraph = async (topicName) => {
   }
 };
 
-
 const getNode = async (nodeName) => {
-  const {nodes, relationships} = await getGraphData();
-  return nodes.find((n) => n.name === nodeName)
-}
+  const { nodes, relationships } = await getGraphData();
+  return nodes.find((n) => n.name === nodeName);
+};
 
+const getOrder = async (linkToUse) => {
+  const query =
+    "MATCH (n:Subject{name: $name1}) -[r:IS_USED_IN]-> (m:Subject{name: $name2}) RETURN n, r, m";
+  const params = { name1: linkToUse.source.name, name2: linkToUse.target.name };
+  const { nodes, relationships } = await runQuery(query, params);
+  return relationships[0].properties.order !== undefined
+    ? relationships[0].properties.order
+    : -1;
+};
 
+const getTopicsInSubject = async (subject) => {
+  const session = driver.session();
+  const query = "MATCH (n:Subject{type: 'topic', subject: $subject}) RETURN n";
+  const params = { subject };
+  try {
+    const result = await session.run(query, params);
+    return result.records.map((record) => record.get("n").properties);
+  } catch (error) {
+    console.error("Error fetching topics in subject:", error);
+    return [];
+  } finally {
+    await session.close();
+  }
+};
 
-export { 
-  getGraphData, 
+const getMiniSubjectInSubject = async (subject) => {
+  const session = driver.session();
+  const query =
+    "MATCH (n:Subject{type: 'subject', subject: $subject, mainSubject: false}) RETURN n";
+  const params = { subject };
+  try {
+    const result = await session.run(query, params);
+    return result.records.map((record) => record.get("n").properties);
+  } catch (error) {
+    console.error("Error fetching mini subjects in subject:", error);
+    return [];
+  } finally {
+    await session.close();
+  }
+};
+
+export {
+  getGraphData,
   mainSubjectExists,
   subjectExists,
   nodeExists,
-  getMainSubjects, 
-  addMainSubjectToGraph, 
-  addMiniSubjectToGraph, 
+  getMainSubjects,
+  addMainSubjectToGraph,
+  addMiniSubjectToGraph,
   addTopicToGraph,
   getDependencyGraph,
-  getNode
+  getNode,
+  getOrder,
+  getTopicsInSubject,
+  getMiniSubjectInSubject,
 };
-
