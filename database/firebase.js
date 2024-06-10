@@ -26,7 +26,6 @@ export const getCurrentUserDocData = async (email) => {
   try {
     const userQuery = query(collection(db, "Users"), where("email", "==", email));
     const userQuerySnapshot = await getDocs(userQuery);
-
     if (userQuerySnapshot.empty) {
       console.log("No user document found with the email:", email);
       return null;
@@ -92,3 +91,8 @@ const getUserDocumentByUserEmail = async (email) => {
     return null;
   }
 };
+
+export const getUserPrivledge = async (email) => {
+  const userDoc = await getCurrentUserDocData(email);
+  return userDoc.privledge
+}

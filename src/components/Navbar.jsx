@@ -3,20 +3,25 @@ import { Link } from "react-router-dom";
 import NavbarDropdown from "./NavbarDropdown";
 import AuthFormOverlay from "./FormOverlay"; 
 import SearchBar from "./SearchBar";
-import { auth } from "../../database/firebase";
+import { auth, getUserPrivledge } from "../../database/firebase";
 import "../styles/Navbar.css";
 
 const MyNavbar = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [formType, setFormType] = useState(""); 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [privilegeLevel, setPrivilegeLevel] = useState("guest")
+  const [privilegeLevel, setPrivilegeLevel] = useState("guest");
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(user => {
-      setIsLoggedIn(user);
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      setIsLoggedIn(!!user);
       if (user) {
-        setPrivilegeLevel("moderator");
+        try {
+          const privilege = await getUserPrivledge(user.email);
+          setPrivilegeLevel(privilege);
+        } catch (error) {
+          console.error("Error fetching user privilege:", error);
+        }
       } else {
         setPrivilegeLevel("guest");
       }
@@ -96,7 +101,7 @@ const DisabledTopicAdder = () => (
   <div className="collapse navbar-collapse">
     <ul className="navbar-nav mr-auto">
       <li className="nav-item">
-        <button className="btn btn-success disabled-button-style" disabled>
+        <button className="btn btn-success disabled-button-style" disabled style={{ fontSize: '12px' }}>
           Login to add a topic
         </button>
       </li>

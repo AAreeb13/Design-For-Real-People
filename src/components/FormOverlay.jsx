@@ -111,7 +111,9 @@ const FormOverlay = ({ onClose, formType }) => {
     }
 
     try {
-      await addDoc(usersCollectionRef, documentData);
+      if (formType === "signup") {
+        await addDoc(usersCollectionRef, documentData);
+      }
       onClose();
     } catch (error) {
       console.error("Error adding document:", error);
