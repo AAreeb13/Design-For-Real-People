@@ -326,6 +326,7 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
 const getTotalNodesForSubject = (subject, links, nodes) => {
   const totalTopics = getTopicsFromSubject(subject, links, nodes);
   const totalMiniSubjects = getMiniSubjectFromSubject(subject, links, nodes);
+  console.log("tms", totalMiniSubjects)
   return totalTopics.length + totalMiniSubjects.length;
 };
 
@@ -353,7 +354,7 @@ const getTopicsFromSubject = (subject, links, nodes) => {
 }
 
 const getMiniSubjectFromSubject = (subject, links, nodes) => {
-  return links.filter(node => (node.subject === subject & node.type === "subject" && !node.mainSubject))
+  return nodes.filter(node => (node.subject === subject & node.type === "subject" && !node.mainSubject))
 }
 
 
