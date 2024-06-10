@@ -1,11 +1,15 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import { useNavigate } from "react-router-dom";
-import { getOrder } from "../../database/graphData";
+import { getMiniSubjectInSubject, getOrder, getTopicsInSubject } from "../../database/graphData";
+import { getCurrentUserData, getUserSubjectProgress } from "../../database/firebase";
 
 const Graph = ({ nodes, links, subject = null, width, height, style }) => {
   const svgRef = useRef();
   const navigate = useNavigate();
+  const [totalTopicCount, setTotalTopicCount] = useState(0);
+  const [ourTopicCount, setOurTopicCount] = useState(0);
+  const [loading, setLoading] = useState(true); // loading status
 
   const validNodes = subject == null
     ? nodes
@@ -33,6 +37,16 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       });
 
   useEffect(() => {
+    const fetchData = async () => {
+      const [totalTopicsCount, ourTopicsCount] = await Promise.all([
+        getTotalNodesForSubject(subject),
+        getNodesCompleteForSubject(subject)
+      ]);
+      setTotalTopicCount(totalTopicsCount);
+      setOurTopicCount(ourTopicsCount);
+      setLoading(false); //  once data is fetched
+    };
+
     const svg = d3.select(svgRef.current);
 
     const zoom = d3
@@ -207,7 +221,6 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .style("pointer-events", "none")
       .text((d) => d.name);
 
-
     const text = svgGroup
       .selectAll("text.link-order")
       .data(linksToUse)
@@ -221,51 +234,46 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .style("stroke-width", "3px")
       .style("pointer-events", "none");
 
+    const progressBar = svg
+      .append("rect")
+      .attr("width", 150) 
+      .attr("height", 20)
+      .attr("fill", "#ddd") 
+      .attr("stroke", "#444")
+      .attr("stroke-width", 1)
+      .attr("rx", 10) 
+      .attr("ry", 10) 
+      .attr("x", width - 180)
+      .attr("y", 20); 
 
-  const progressBar = svg
-    .append("rect")
-    .attr("width", 150) 
-    .attr("height", 20)
-    .attr("fill", "#ddd") 
-    .attr("stroke", "#444")
-    .attr("stroke-width", 1)
-    .attr("rx", 10) 
-    .attr("ry", 10) 
-    .attr("x", width - 180)
-    .attr("y", 20); 
+    const progressBarIndicator = svg
+      .append("rect")
+      .attr("width", 0)
+      .attr("height", 20)
+      .attr("fill", "green") 
+      .attr("stroke", "#444")
+      .attr("stroke-width", 1)
+      .attr("rx", 10) 
+      .attr("ry", 10) 
+      .attr("y", 20) 
+      .attr("x", width - 180); 
 
+    const updateProgressBar = (completionPercentage) => {
+      const width = 150 * (completionPercentage / 100);
+      progressBarIndicator.attr("width", width);
+    };
 
-  const progressBarIndicator = svg
-    .append("rect")
-    .attr("width", 0)
-    .attr("height", 20)
-    .attr("fill", "green") 
-    .attr("stroke", "#444")
-    .attr("stroke-width", 1)
-    .attr("rx", 10) 
-    .attr("ry", 10) 
-    .attr("y", 20) 
-    .attr("x", width - 180); 
+    updateProgressBar((ourTopicCount / totalTopicCount) * 100);
 
-  
-  const updateProgressBar = (completionPercentage) => {
-    const width = 150 * (completionPercentage / 100);
-    progressBarIndicator.attr("width", width);
-  };
-
-  updateProgressBar(50); // todo backend
-
-
-  const completionText = svg
-    .append("text")
-    .attr("x", width - 180) 
-    .attr("y", 60) 
-    .attr("font-family", "Arial, sans-serif") 
-    .attr("font-size", "16px")
-    .attr("fill", "#333") 
-    .attr("text-anchor", "start") 
-    .text("7 out of 14 complete"); // todo backend
-
+    const completionText = svg
+      .append("text")
+      .attr("x", width - 180) 
+      .attr("y", 60) 
+      .attr("font-family", "Arial, sans-serif") 
+      .attr("font-size", "16px")
+      .attr("fill", "#333") 
+      .attr("text-anchor", "start") 
+      .text(ourTopicCount + " out of " + totalTopicCount + " complete");
 
     simulation.on("tick", () => {
       link
@@ -286,7 +294,7 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .scale(0.20);
     svg.call(zoom.transform, initialTransform);
 
-    // Function to update text elements with fetched orders
+
     const updateText = async () => {
       const promises = linksToUse.map((d) => getOrder(d));
       const orders = await Promise.all(promises);
@@ -295,9 +303,42 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
     };
 
     updateText();
-  }, [nodesToUse, linksToUse]);
+    fetchData();
+  }, [nodesToUse, linksToUse, ourTopicCount, totalTopicCount, subject]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return <svg ref={svgRef} width={width} height={height} style={style}></svg>;
 };
+
+const getTotalNodesForSubject = async (subject) => {
+  const totalTopics = await getTopicsInSubject(subject);
+  const totalMiniSubjects = await getMiniSubjectInSubject(subject);
+  return totalTopics.length + totalMiniSubjects.length;
+};
+
+const getNodesCompleteForSubject = async (subject) => {
+  const user = await getCurrentUserData();
+  const subjectProgress = await getUserSubjectProgress(user.email);
+  let progCount = 0;
+
+  const totalTopics = await getTopicsInSubject(subject);
+  const totalMiniSubjects = await getMiniSubjectInSubject(subject);
+
+  totalTopics.forEach((topic) => {
+    progCount = progCount + (subjectProgress[topic.name] ? 1 : 0);
+  });
+
+  await Promise.all(totalMiniSubjects.map(async (miniSubject) => {
+    const miniSubjectNodeCount = await getTotalNodesForSubject(miniSubject.name);
+    const ourMiniSubjectCount = await getNodesCompleteForSubject(miniSubject.name);
+    progCount = progCount + ((miniSubjectNodeCount === ourMiniSubjectCount) ? 1 : 0);
+  }));
+
+  return progCount;
+};
+
 
 export default Graph;

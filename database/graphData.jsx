@@ -279,6 +279,36 @@ const getOrder = async (linkToUse) => {
   return relationships[0].properties.order !== undefined ? relationships[0].properties.order : -1
 }
 
+const getTopicsInSubject = async (subject) => {
+  const session = driver.session();
+  const query = "MATCH (n:Subject{type: 'topic', subject: $subject}) RETURN n";
+  const params = { subject };
+  try {
+    const result = await session.run(query, params);
+    return result.records.map(record => record.get("n").properties);
+  } catch (error) {
+    console.error("Error fetching topics in subject:", error);
+    return [];
+  } finally {
+    await session.close();
+  }
+};
+
+const getMiniSubjectInSubject = async (subject) => {
+  const session = driver.session();
+  const query = "MATCH (n:Subject{type: 'subject', subject: $subject, mainSubject: false}) RETURN n";
+  const params = { subject };
+  try {
+    const result = await session.run(query, params);
+    return result.records.map(record => record.get("n").properties);
+  } catch (error) {
+    console.error("Error fetching mini subjects in subject:", error);
+    return [];
+  } finally {
+    await session.close();
+  }
+};
+
 export { 
   getGraphData, 
   mainSubjectExists,
@@ -290,6 +320,7 @@ export {
   addTopicToGraph,
   getDependencyGraph,
   getNode,
-  getOrder
+  getOrder,
+  getTopicsInSubject,
+  getMiniSubjectInSubject
 };
-
