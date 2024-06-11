@@ -9,7 +9,7 @@ const Backtrack = ({ paths }) => {
         <span key={index} className="backtrack-item">
           {index < paths.length - 1 ? (
             <>
-              <Link to={"tmp"}>{path.name}</Link>
+              <Link to={"/graph/"+path.name}>{path.name}</Link>
               <span className="backtrack-separator">/</span>
             </>
           ) : (

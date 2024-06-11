@@ -329,11 +329,11 @@ const getPaths = (node, graphData) => {
   const parentNode = graphData.nodes.find((n) => n.name === node.subject);
   
   if (!parentNode || parentNode.mainSubject) {
-    return [parentNode];
+    return [parentNode, node];
   }
 
   const ancestorNodes = getPaths(parentNode, graphData);
-  return [...ancestorNodes, parentNode];
+  return [...ancestorNodes, node];
 };
 
 export {
