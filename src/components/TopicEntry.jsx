@@ -5,6 +5,7 @@ import { getGraphData, getPaths } from "../../database/graphData";
 import {
   getCurrentUserData,
   getCurrentUserDocData,
+  updateBookmarkStatus,
   updateCompletionStatus,
 } from "../../database/firebase";
 import "../styles/TopicEntry.css";
@@ -33,7 +34,7 @@ const TopicEntry = ({ userData, graphData, node }) => {
 
             if (userDoc && userDoc.subjectProgress) {
               setCompleted(userDoc.subjectProgress[fetchedTopic[0].name] || false);
-              console.log("userdoc is", userDoc.privledge === "member");
+              setIsBookmarked(userDoc.bookmarks[fetchedTopic[0].name] || false)
               setIsMember(userDoc.privledge === "member");
             } else {
               setCompleted(false);
@@ -75,8 +76,15 @@ const TopicEntry = ({ userData, graphData, node }) => {
     }
   };
 
-  const toggleBookmark = () => {
-    setIsBookmarked(!isBookmarked);
+  const toggleBookmark = async () => {
+    const newStatus = !isBookmarked;
+    setIsBookmarked(newStatus);
+
+    if (userEmail && topicNode) {
+      const topicKey = topicNode.name;
+      await updateBookmarkStatus(userEmail, topicKey, newStatus)
+    }
+
   };
 
   if (error) {
