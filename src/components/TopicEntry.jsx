@@ -32,7 +32,7 @@ const TopicEntry = ({ userData, graphData, node }) => {
             setUserId(userData.uid);
             const userDoc = await getCurrentUserDocData(userData.email);
 
-            if (userDoc && userDoc.subjectProgress) {
+            if (userDoc && userDoc.subjectProgress && userDoc.privledge === "member") {
               setCompleted(userDoc.subjectProgress[fetchedTopic[0].name] || false);
               setIsBookmarked(userDoc.bookmarks[fetchedTopic[0].name] || false)
               setIsMember(userDoc.privledge === "member");
@@ -44,6 +44,7 @@ const TopicEntry = ({ userData, graphData, node }) => {
           setError("Topic not found.");
         }
       } catch (err) {
+        console.error(err)
         setError("Failed to fetch topic data.");
       }
     };
@@ -84,7 +85,6 @@ const TopicEntry = ({ userData, graphData, node }) => {
       const topicKey = topicNode.name;
       await updateBookmarkStatus(userEmail, topicKey, newStatus)
     }
-
   };
 
   if (error) {
@@ -158,7 +158,6 @@ const TopicEntry = ({ userData, graphData, node }) => {
 const getTopic = async (name) => {
   console.log("we got here");
   const { nodes, relationships } = await getGraphData();
-
   return nodes.filter((n) => n.name === name);
 };
 
