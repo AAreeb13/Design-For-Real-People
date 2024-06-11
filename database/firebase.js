@@ -235,3 +235,30 @@ export const removeBookmark = async (userEmail, bookmarkTopicName) => {
     console.error("Error removing bookmark:", error);
   }
 };
+
+export const getRating = async (email, topicName) => {
+  const userDoc = await getCurrentUserDocData(email);
+  return userDoc.ratings[topicName];
+}
+
+export const updateRating = async (userEmail, newRatingName, newRatingValue) => {
+  try { 
+    const docId = await getUserDocumentByUserEmail(userEmail); 
+    const userDocData = await getCurrentUserDocData(userEmail);
+
+    if (docId && userDocData) {
+      const updatedRatings = {...userDocData.ratings}
+      updatedRatings[newRatingName] = newRatingValue
+
+      const userDocRef = doc(db, "Users", docId);
+      await updateDoc(userDocRef, {
+        ratings: updatedRatings,
+      })
+      console.log("Ratings updated successfully")
+    } else {
+      console.error("User document not found")
+    }
+  } catch (error) {
+    console.error("Error updating rating:", error)
+  }
+}

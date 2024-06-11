@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaBookmark } from "react-icons/fa";
-import Backtrack from "./Backtrack"; 
+import Backtrack from "./Backtrack";
 import { getGraphData, getPaths } from "../../database/graphData";
 import {
   getCurrentUserData,
@@ -9,6 +9,8 @@ import {
   updateCompletionStatus,
 } from "../../database/firebase";
 import "../styles/TopicEntry.css";
+import TopicRatingButtons from "./TopicRatingButtons";
+import TopicRatingDisplay from "./TopicRatingDisplay";
 
 const TopicEntry = ({ userData, graphData, node }) => {
   const [topicNode, setTopicNode] = useState(null);
@@ -17,8 +19,9 @@ const TopicEntry = ({ userData, graphData, node }) => {
   const [userEmail, setUserEmail] = useState(null);
   const [userId, setUserId] = useState(null);
   const [fullPath, setFullPath] = useState([]);
-  const [isMember, setIsMember] = useState(false); 
-  const [isBookmarked, setIsBookmarked] = useState(false); 
+  const [isMember, setIsMember] = useState(false);
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [privledge, setprivledge] = useState(null);
 
   useEffect(() => {
     const fetchTopic = async () => {
@@ -33,9 +36,14 @@ const TopicEntry = ({ userData, graphData, node }) => {
             const userDoc = await getCurrentUserDocData(userData.email);
 
             if (userDoc && userDoc.subjectProgress) {
-              setCompleted(userDoc.subjectProgress[fetchedTopic[0].name] || false);
+              setCompleted(
+                userDoc.subjectProgress[fetchedTopic[0].name] || false
+              );
+              setprivledge(userDoc.privledge || null);
               if (userDoc.privledge === "member") {
-                setIsBookmarked(userDoc.bookmarks[fetchedTopic[0].name] || false)
+                setIsBookmarked(
+                  userDoc.bookmarks[fetchedTopic[0].name] || false
+                );
                 setIsMember(userDoc.privledge === "member");
               }
             } else {
@@ -46,7 +54,7 @@ const TopicEntry = ({ userData, graphData, node }) => {
           setError("Topic not found.");
         }
       } catch (err) {
-        console.error(err)
+        console.error(err);
         setError("Failed to fetch topic data.");
       }
     };
@@ -85,8 +93,12 @@ const TopicEntry = ({ userData, graphData, node }) => {
 
     if (userEmail && topicNode) {
       const topicKey = topicNode.name;
-      await updateBookmarkStatus(userEmail, topicKey, newStatus)
+      await updateBookmarkStatus(userEmail, topicKey, newStatus);
     }
+  };
+
+  const handleRatingChange = async (rating) => {
+    console.log("Rating changed to:", rating);
   };
 
   if (error) {
@@ -110,15 +122,23 @@ const TopicEntry = ({ userData, graphData, node }) => {
             marginTop: "80px",
             display: "flex",
             flexDirection: "column",
-            gap: "10px"
+            gap: "10px",
           }}
         >
-          <button onClick={toggleCompletion} className={`btn btn-block ${completed ? "btn-dark" : "btn-outline-dark"}`} style={{marginTop:"15px"}}>
+          <button
+            onClick={toggleCompletion}
+            className={`btn btn-block ${
+              completed ? "btn-dark" : "btn-outline-dark"
+            }`}
+            style={{ marginTop: "15px" }}
+          >
             {completed ? "Completed ✔️" : "Mark as Completed"}
           </button>
-          {isMember && (
+          {privledge === "member" && (
             <button
-              className={`btn btn-block ${isBookmarked ? "btn-warning" : "btn-outline-warning"}`}
+              className={`btn btn-block ${
+                isBookmarked ? "btn-warning" : "btn-outline-warning"
+              }`}
               onClick={toggleBookmark}
             >
               <FaBookmark /> {isBookmarked ? "Bookmarked" : "Bookmark Topic"}
@@ -152,6 +172,16 @@ const TopicEntry = ({ userData, graphData, node }) => {
             <li key={index}>{o}</li>
           ))}
         </ul>
+        { privledge === "member" && (
+          <TopicRatingButtons
+            onRatingChange={handleRatingChange}
+            userEmail={userEmail}
+            topicName={topicNode.name}
+          />
+        )}
+        {privledge === "moderator" && (
+          <TopicRatingDisplay topicName={topicNode.name}/>
+        )}
       </div>
     </div>
   );

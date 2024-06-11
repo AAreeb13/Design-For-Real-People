@@ -47,8 +47,9 @@ CREATE (n:Subject{
   description: 'The study of limit testing with ratios',
   requires: ['proofs', 'limits'],
   links: 'www.example.com',
-  approvals: 23,
-  rejections: 30,
+  good: 23,
+  alright: 30,
+  bad: 0,
   comments: [
     'This topic is well explained but could use more real-world examples.',
     'I found the section on practical applications a bit confusing.',
@@ -76,8 +77,9 @@ CREATE (n:Subject{
   description: 'An essential technique for evaluating limits that result in indeterminate forms, using derivatives to find the limit.',
   requires: ['proofs', 'limits', 'differentiation'],
   links: 'www.example.com',
-  approvals: 23,
-  rejections: 30,
+  good: 23,
+  alright: 30,
+  bad: 0,
   comments: [
     'Very clear explanation of L\'Hopital\'s Rule with great examples.',
     'The proof section was a bit hard to follow. Could use some simplification.',
@@ -110,8 +112,9 @@ CREATE (n:Subject{
   description: 'A fundamental technique for differentiating compositions of functions, essential for calculus students.',
   requires: ['differentiation'],
   links: 'www.example.com',
-  approvals: 97,
-  rejections: 23,
+  good: 23,
+  alright: 30,
+  bad: 0,
   comments: [
     'The examples provided make understanding the Chain Rule much easier.',
     'I wish there were more real-life applications shown to see its practical use.',
@@ -144,8 +147,9 @@ CREATE (n:Subject{
   description: 'A key differentiation rule used to compute the derivative of the product of two functions, vital for students of calculus.',
   requires: ['differentiation'],
   links: 'www.example.com',
-  approvals: 80,
-  rejections: 40,
+  good: 23,
+  alright: 30,
+  bad: 0,
   comments: [
     'This topic was well presented, especially with the proof included.',
     'Could use some examples with higher degree polynomials.',
@@ -178,8 +182,9 @@ CREATE (n:Subject{
   description: 'A fundamental technique derived from the product rule of differentiation, used to integrate products of functions.',
   requires: ['integration'],
   links: 'www.example.com',
-  approvals: 74,
-  rejections: 23,
+  good: 23,
+  alright: 30,
+  bad: 0,
   comments: [
     'Really appreciated the clear steps presented in the tutorial.',
     'More examples with exponential and logarithmic functions would be helpful.',
@@ -212,8 +217,9 @@ CREATE (n:Subject{
   description: 'Exploration of functions, which are special types of relations that assign each input exactly one output.',
   requires: ['basic algebra'],
   links: 'www.example.com',
-  approvals: 74,
-  rejections: 23,
+  good: 23,
+  alright: 30,
+  bad: 0,
   comments: [
     'The interactive graphs helped me visualize function behavior effectively.',
     'Could benefit from more real-world application examples to illustrate the importance of functions.'
@@ -251,8 +257,9 @@ CREATE (n:Subject{
   description: 'Learn how to integrate constants such as 1, 2, e, pi, etc., fundamental for understanding basic integration techniques.',
   requires: ['integration preliminaries'],
   links: 'www.example.com',
-  approvals: 74,
-  rejections: 23,
+  good: 23,
+  alright: 30,
+  bad: 0,
   comments: [
     'Good foundational topic, very straightforward and well explained.'
   ],
@@ -276,8 +283,9 @@ CREATE (n:Subject{
   description: 'Explore how to integrate terms like x, x^2, x^3, essential for mastering polynomial integration.',
   requires: ['integration preliminaries'],
   links: 'www.example.com',
-  approvals: 74,
-  rejections: 23,
+  good: 23,
+  alright: 30,
+  bad: 0,
   comments: [
     'Very helpful for understanding polynomial integrals.'
   ],
@@ -301,8 +309,9 @@ CREATE (n:Subject{
   description: 'Understand the methods for integrating terms like x^-1, x^-2, which are pivotal for dealing with rational functions.',
   requires: ['integration preliminaries'],
   links: 'www.example.com',
-  approvals: 74,
-  rejections: 23,
+  good: 23,
+  alright: 30,
+  bad: 0,
   comments: [
     'Challenging topic, but explanations were clear.'
   ],
@@ -327,8 +336,9 @@ CREATE (n:Subject{
   description: 'Learn to integrate terms such as x^0.5, x^3.5, crucial for handling non-integer exponents in calculus.',
   requires: ['integration preliminaries'],
   links: 'www.example.com',
-  approvals: 74,
-  rejections: 23,
+  good: 23,
+  alright: 30,
+  bad: 0,
   comments: [
     'Fascinating extension of polynomial integration to fractional powers.'
   ],
@@ -353,8 +363,9 @@ CREATE (n:Subject{
   description: 'Focus on integrating terms such as 1/x, essential for logarithmic integration and advanced calculus applications.',
   requires: ['integration preliminaries'],
   links: 'www.example.com',
-  approvals: 74,
-  rejections: 23,
+  good: 23,
+  alright: 30,
+  bad: 0,
   comments: [
     'Essential for understanding the link between logarithmic functions and integration.'
   ],
@@ -379,8 +390,9 @@ CREATE (n:Subject{
 	description: 'Reverse chain rule',
 	requires: ['integration'],
 	links: 'www.example.com',
-	approvals: 74,
-	rejections: 23,
+  good: 23,
+  alright: 30,
+  bad: 0,
 	comments: [],
 	suggestions: [],
 	resources: [],
@@ -394,8 +406,9 @@ CREATE (n:Subject{
   description: 'Introduction to using integration to calculate lengths, areas, volumes, and surface areas, foundational for applications in physics and engineering.',
   requires: ['integration'],
   links: 'www.example.com',
-  approvals: 74,
-  rejections: 23,
+  good: 23,
+  alright: 30,
+  bad: 0,
   comments: [
     "Very applicable to engineering problems I've encountered.",
     'Helpful in visualizing the physical implications of mathematical concepts.'
@@ -423,8 +436,9 @@ CREATE (n:Subject{
   description: 'Techniques for integrating functions expressed in polar coordinates, crucial for dealing with circular and spiral forms.',
   requires: ['integration'],
   links: 'www.example.com',
-  approvals: 74,
-  rejections: 23,
+  good: 23,
+  alright: 30,
+  bad: 0,
   comments: [
     'Transformed my understanding of integrals in circular and complex domains.',
     'Essential for anyone dealing with fields involving radial symmetry.'
@@ -459,8 +473,9 @@ CREATE (n:Subject{
   description: 'A mathematical tool used to decompose periodic functions into sums of simpler, sinusoidal functions. Essential for applications in signal processing, physics, and engineering.',
   requires: ['integration', 'differential equations'],
   links: 'www.example.com',
-  approvals: 74,
-  rejections: 23,
+  good: 23,
+  alright: 30,
+  bad: 0,
   comments: [
     'Invaluable for understanding signal processing and heat equations.',
     'The mathematical depth is challenging but rewarding.'
@@ -491,8 +506,9 @@ CREATE (n:Subject{
   description: 'A powerful mathematical tool that transforms a time-domain function into a complex frequency-domain representation, integrating concepts from calculus and complex numbers. Widely used in engineering and physics to solve differential equations.',
   requires: ['integration', 'differentiation', 'complex numbers'],
   links: 'www.example.com',
-  approvals: 74,
-  rejections: 23,
+  good: 23,
+  alright: 30,
+  bad: 0,
   comments: [
     'This transformation is crucial for understanding control systems and electrical circuits.',
     'Challenging to grasp at first, but extremely useful in practical applications.'
@@ -523,8 +539,9 @@ CREATE (n:Subject{
   description: 'A mathematical transformation used to convert a time-domain signal into its corresponding frequency-domain representation, employing integral calculus to output a new function that describes frequency content.',
   requires: ['integration'],
   links: 'www.example.com',
-  approvals: 74,
-  rejections: 23,
+  good: 23,
+  alright: 30,
+  bad: 0,
   comments: [
     'Essential for analyzing signals in both engineering and physics.',
     'Can be abstract but highly applicable in fields like communications and signal processing.'
@@ -554,8 +571,9 @@ CREATE (n:Subject{
   description: 'Study and solution of equations involving derivatives of functions, focusing on relationships that involve rates of change and the variables over which they are functions.',
   requires: ['integration'],
   links: 'www.example.com',
-  approvals: 74,
-  rejections: 23,
+  good: 23,
+  alright: 30,
+  bad: 0,
   comments: [
     'Foundational for understanding dynamic systems in engineering and natural sciences.',
     'Challenging but crucial for any serious student of mathematics or physics.'
@@ -593,8 +611,9 @@ CREATE (n1:Subject{
   description: 'Focuses on solving equations that involve only the first derivative of a function. These are fundamental in modeling systems with a single rate of change.',
   requires: ['integration'],
   links: 'www.example.com',
-  approvals: 74,
-  rejections: 23,
+  good: 23,
+  alright: 30,
+  bad: 0,
   comments: ['Essential for any student in engineering or physics.', 'Would appreciate more examples in biological contexts.'],
   suggestions: ['Interactive simulations for dynamic systems modeled by these equations.', 'Workshops on analytical solutions versus numerical methods.'],
   resources: ['Comprehensive guide on first-order differential equations', 'Video tutorials explaining methods of solving linear and nonlinear first-order ODEs'],
@@ -608,8 +627,9 @@ CREATE (n2:Subject{
   description: 'Deals with equations that include derivatives up to the second level, crucial for understanding phenomena involving accelerations and forces.',
   requires: ['integration'],
   links: 'www.example.com',
-  approvals: 74,
-  rejections: 23,
+  good: 23,
+  alright: 30,
+  bad: 0,
   comments: ['Key for mechanical and electrical engineering students.', 'Needs more practical examples especially in oscillations and wave applications.'],
   suggestions: ['Series of problem-solving sessions with focus on mechanical vibrations.', 'Online calculator tools for characteristic equation solutions.'],
   resources: ['Textbook sections on harmonic motion and electrical circuits', 'Series of step-by-step problem-solving videos'],
@@ -623,8 +643,9 @@ CREATE (n3:Subject{
   description: 'Involves the use of heuristics to analyze data, focusing on the interpretation of results rather than exact solutions.',
   requires: ['integration'],
   links: 'www.example.com',
-  approvals: 74,
-  rejections: 23,
+  good: 23,
+  alright: 30,
+  bad: 0,
   comments: ['Very applicable to market analysis and economic forecasting.', 'Would benefit from more case studies on data interpretation.'],
   suggestions: ['Interactive data visualization tools.', 'Seminars on statistical methods for qualitative analysis.'],
   resources: ['E-books on data-driven decision making', 'Video courses on qualitative techniques in various industries'],
@@ -639,8 +660,9 @@ CREATE (n1:Subject{
   description: 'Studies the conditions under which small changes in the parameters of a system cause a qualitative or topological change in its behavior, leading to the splitting into branches.',
   requires: ['integration'],
   links: 'www.example.com',
-  approvals: 74,
-  rejections: 23,
+  good: 23,
+  alright: 30,
+  bad: 0,
   comments: [
     'Fascinating topic that connects deeply with both mathematics and physics.',
     'Would be helpful to see more real-world applications like in ecology or economics.'
@@ -667,8 +689,9 @@ CREATE (n2:Subject{
   description: 'Explores advanced topics in calculus involving multiple variables, including partial differentiation and multiple integration, essential for fields like engineering, physics, and economics.',
   requires: ['integration', 'differentiation'],
   links: 'www.example.com',
-  approvals: 74,
-  rejections: 23,
+  good: 23,
+  alright: 30,
+  bad: 0,
   comments: [
     'Core subject for any STEM field student, incredibly useful.',
     'Examples of multivariable optimization would enhance understanding.'
@@ -707,8 +730,9 @@ CREATE
   description: 'The study of averages, fundamental in understanding the central tendency of data sets.',
   requires: ['probability and statistics'],
   links: 'www.example.com',
-  approvals: 200,
-  rejections: 30,
+  good: 23,
+  alright: 30,
+  bad: 0,
   comments: ['Essential concept for all fields of statistical analysis.', 'Would like more examples using real-world data.'],
   suggestions: ['Interactive tools to calculate mean for various data sets.', 'Webinars on statistical means in different contexts.'],
   resources: ['Guide on calculating and interpreting the mean.', 'Video tutorials on mean calculation in Excel and Python.'],
@@ -721,8 +745,9 @@ CREATE
   description: 'The study of dispersion, measuring how spread out the numbers are in a data set.',
   requires: ['probability and statistics'],
   links: 'www.example.com',
-  approvals: 200,
-  rejections: 30,
+  good: 23,
+  alright: 30,
+  bad: 0,
   comments: ['Helpful for understanding data variability.', 'Needs clearer examples for financial and scientific data.'],
   suggestions: ['Case studies on variance in stock market analysis.', 'Detailed guides on variance calculation for different types of data.'],
   resources: ['Step-by-step videos on computing variance.', 'Interactive quizzes to practice variance calculation.'],
@@ -735,8 +760,9 @@ CREATE
   description: 'A measure of the amount of variation or dispersion of a set of values, a widely used data variability measure.',
   requires: ['variance'],
   links: 'www.example.com',
-  approvals: 200,
-  rejections: 30,
+  good: 23,
+  alright: 30,
+  bad: 0,
   comments: ['Crucial for risk assessment in finance.', 'More applications in quality control would be beneficial.'],
   suggestions: ['Workshops on using standard deviation in quality assurance.', 'Simulation tools to demonstrate effects of standard deviation in process control.'],
   resources: ['Tutorial on standard deviation and its applications.', 'Case studies illustrating standard deviation in business and science.'],
@@ -749,8 +775,9 @@ CREATE
   description: 'The study of asymmetry in a statistical distribution, a crucial measure to understand the distribution\'s shape.',
   requires: ['probability and statistics'],
   links: 'www.example.com',
-  approvals: 200,
-  rejections: 30,
+  good: 23,
+  alright: 30,
+  bad: 0,
   comments: ['Important for data distribution analysis.', 'Examples from psychology and health sciences are needed.'],
   suggestions: ['Visual tools to demonstrate skewness in different distributions.', 'Training on interpreting skewness results.'],
   resources: ['Videos explaining skewness and its calculation.', 'Interactive modules to explore the effects of skewness on statistical interpretation.'],
@@ -763,8 +790,9 @@ CREATE
   description: 'A mathematical function that summarizes all moments of a probability distribution, used to derive mean, variance, standard deviation, and skewness.',
   requires: ['probability and statistics', 'mean', 'standard deviation', 'skewness'],
   links: 'www.example.com',
-  approvals: 200,
-  rejections: 30,
+  good: 23,
+  alright: 30,
+  bad: 0,
   comments: ['Complex but incredibly powerful tool for statistical analysis.', 'Would be helpful to include software implementation examples.'],
   suggestions: ['Workshops on practical applications using moment generating functions.', 'Integration of software tools like R and Python in tutorials.'],
   resources: ['Comprehensive guides on the theory and use of moment generating functions.', 'Software tutorials for implementing moment generating functions in statistical calculations.'],
@@ -809,8 +837,9 @@ CREATE (n:Subject{
   description: 'Fundamental concepts in matrix theory, critical for understanding many applications of linear algebra.',
   requires: ['matrix theory'],
   links: 'www.example.com',
-  approvals: 98,
-  rejections: 10,
+  good: 23,
+  alright: 30,
+  bad: 0,
   comments: [
     'The explanations are clear and the visual aids are very helpful.',
     'A deeper dive into applications in computer science would be beneficial.',
@@ -841,8 +870,9 @@ CREATE (n:Subject{
   description: 'A key concept in matrix theory, used to determine the solvability of a system of linear equations.',
   requires: ['matrix theory'],
   links: 'www.example.com',
-  approvals: 85,
-  rejections: 15,
+  good: 23,
+  alright: 30,
+  bad: 0,
   comments: [
     'The proof of properties of determinants is very well explained.',
     'Could use more examples with larger matrices.',
@@ -873,8 +903,9 @@ CREATE (n:Subject{
   description: 'An introduction to inner product spaces, essential for advanced studies in linear algebra and its applications.',
   requires: ['vector spaces'],
   links: 'www.example.com',
-  approvals: 78,
-  rejections: 22,
+  good: 23,
+  alright: 30,
+  bad: 0,
   comments: [
     'Great introduction to inner product spaces with clear examples.',
     'Would appreciate more real-life applications.',
@@ -905,8 +936,9 @@ CREATE (n:Subject{
 	description: 'Understanding the basis of a vector space and its dimension, foundational concepts in linear algebra.',
 	requires: ['vector spaces'],
 	links: 'www.example.com',
-	approvals: 90,
-	rejections: 10,
+  good: 23,
+  alright: 30,
+  bad: 0,
 	comments: [
     'Excellent coverage of basis and dimension with intuitive examples.',
     'The applications to various fields are very insightful.'
@@ -934,8 +966,9 @@ CREATE (n:Subject{
   description: 'An in-depth look at linear operators, their properties, and applications in linear algebra.',
   requires: ['linear transformations'],
   links: 'www.example.com',
-  approvals: 82,
-  rejections: 18,
+  good: 23,
+  alright: 30,
+  bad: 0,
   comments: [
     "The section on the application of linear operators in quantum mechanics is fascinating.",
     'Clear and concise explanation of properties and examples.'
@@ -987,8 +1020,9 @@ CREATE (n:Subject{
   description: 'Study of polynomial equations, including methods for solving and analyzing their properties.',
   requires: ['basic algebra'],
   links: 'www.example.com',
-  approvals: 95,
-  rejections: 5,
+  good: 23,
+  alright: 30,
+  bad: 0,
   comments: [
     'Clear and concise explanation of solving polynomial equations.',
     'Examples provided are very helpful for understanding.'
@@ -1017,8 +1051,9 @@ CREATE (n:Subject{
   description: 'Introduction to group theory, a fundamental area in abstract algebra.',
   requires: ['abstract algebra'],
   links: 'www.example.com',
-  approvals: 88,
-  rejections: 12,
+  good: 23,
+  alright: 30,
+  bad: 0,
   comments: [
     'Excellent introduction to group theory concepts.',
     'Would benefit from more real-world applications.'
@@ -1047,8 +1082,9 @@ CREATE (n:Subject{
   description: 'Study of rings, another key concept in abstract algebra, focusing on their properties and applications.',
   requires: ['abstract algebra'],
   links: 'www.example.com',
-  approvals: 85,
-  rejections: 15,
+  good: 23,
+  alright: 30,
+  bad: 0,
   comments: [
     'Comprehensive coverage of ring theory.',
     'Examples provided are very clear and helpful.'
@@ -1077,8 +1113,9 @@ CREATE (n:Subject{
 	description: 'Introduction to field theory, including the study of fields and their properties.',
 	requires: ['abstract algebra'],
 	links: 'www.example.com',
-	approvals: 90,
-	rejections: 10,
+  good: 23,
+  alright: 30,
+  bad: 0,
 	comments: [
     'Great introduction to field theory with clear examples.',
     'Would love to see more real-world applications discussed.'
@@ -1106,8 +1143,9 @@ CREATE (n:Subject{
   description: 'Study of linear equations, including methods for solving systems of linear equations.',
   requires: ['linear algebra'],
   links: 'www.example.com',
-  approvals: 92,
-  rejections: 8,
+  good: 23,
+  alright: 30,
+  bad: 0,
   comments: [
     "The methods for solving linear equations are well explained.",
     'The section on applications in economics and engineering is very useful.'
@@ -1165,8 +1203,9 @@ CREATE (n:Subject{
   description: 'Study of connectivity in graphs, including algorithms for determining connectivity and its applications.',
   requires: ['graph theory'],
   links: 'www.example.com',
-  approvals: 94,
-  rejections: 6,
+  good: 23,
+  alright: 30,
+  bad: 0,
   comments: [
     'Clear explanation of graph connectivity algorithms.',
     'The section on applications in computer networks is very insightful.'
@@ -1194,8 +1233,9 @@ CREATE (n:Subject{
   description: 'Study of permutations and combinations, including methods for counting and generating them.',
   requires: ['combinatorics'],
   links: 'www.example.com',
-  approvals: 96,
-  rejections: 4,
+  good: 23,
+  alright: 30,
+  bad: 0,
   comments: [
     'Excellent coverage of permutations and combinations.',
     'The examples provided are very helpful for understanding.'
@@ -1223,8 +1263,9 @@ CREATE (n:Subject{
   description: 'Introduction to propositional logic, including truth tables, logical equivalences, and applications.',
   requires: ['logic'],
   links: 'www.example.com',
-  approvals: 92,
-  rejections: 8,
+  good: 23,
+  alright: 30,
+  bad: 0,
   comments: [
     'Clear explanation of propositional logic concepts.',
     'The section on logical equivalences is very well done.'
@@ -1252,8 +1293,9 @@ CREATE (n:Subject{
 	description: 'Study of sets and their properties, including set operations, relations, and functions.',
 	requires: ['logic'],
 	links: 'www.example.com',
-	approvals: 90,
-	rejections: 10,
+  good: 23,
+  alright: 30,
+  bad: 0,
 	comments: [
     'Clear explanation of set theory concepts.',
     'The section on set operations is particularly helpful.'
@@ -1281,8 +1323,9 @@ CREATE (n:Subject{
   description: 'Study of algorithms for finding the shortest paths in graphs, including Dijkstra\'s algorithm and Floyd-Warshall algorithm.',
   requires: ['graph theory'],
   links: 'www.example.com',
-  approvals: 88,
-  rejections: 12,
+  good: 23,
+  alright: 30,
+  bad: 0,
   comments: [
     'Clear explanation of shortest path algorithms.',
     'The examples provided are very helpful for understanding.'

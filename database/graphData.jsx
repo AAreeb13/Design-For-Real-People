@@ -34,7 +34,7 @@ const runQuery = async (query, params = {}) => {
   }
 };
 
-const getGraphData = async () => {
+export const getGraphData = async () => {
   let nodes = {};
   let relationships = [];
   try {
@@ -68,7 +68,7 @@ const getGraphData = async () => {
   return { nodes, relationships };
 };
 
-const nodeExists = async (label, properties) => {
+export const nodeExists = async (label, properties) => {
   const session = driver.session();
   const name = properties.name;
   const params = { name };
@@ -81,7 +81,7 @@ const nodeExists = async (label, properties) => {
   }
 };
 
-const subjectExists = async (label, properties, isMainSubject = true) => {
+export const subjectExists = async (label, properties, isMainSubject = true) => {
   const session = driver.session();
   const name = isMainSubject ? properties.name : properties.subject;
   const params = { name };
@@ -94,7 +94,7 @@ const subjectExists = async (label, properties, isMainSubject = true) => {
   }
 };
 
-const mainSubjectExists = async (label, properties) => {
+export const mainSubjectExists = async (label, properties) => {
   const session = driver.session();
   let name = properties.name;
   let params = { name };
@@ -108,7 +108,7 @@ const mainSubjectExists = async (label, properties) => {
   }
 };
 
-const mainSubjectExistsForMini = async (label, properties) => {
+export const mainSubjectExistsForMini = async (label, properties) => {
   const session = driver.session();
   let name = properties.name;
   let params = { name };
@@ -128,7 +128,7 @@ const mainSubjectExistsForMini = async (label, properties) => {
 };
 
 
-const getMainSubjects = async () => {
+export const getMainSubjects = async () => {
   let nodes = await getAllNodes(
     "MATCH (n:Subject{type: 'subject', mainSubject: True}) RETURN (n)"
   );
@@ -136,7 +136,7 @@ const getMainSubjects = async () => {
   return nodes;
 };
 
-const addMainSubjectToGraph = async (name, theme) => {
+export const addMainSubjectToGraph = async (name, theme) => {
   const query = `
       CREATE (n:Subject{
         name: $name,
@@ -149,7 +149,7 @@ const addMainSubjectToGraph = async (name, theme) => {
   return await runQuery(query, params);
 };
 
-const addMiniSubjectToGraph = async (name, subject, prerequisites) => {
+export const addMiniSubjectToGraph = async (name, subject, prerequisites) => {
   let query = `
       CREATE (n:Subject{
         name: $name,
@@ -171,8 +171,7 @@ const addMiniSubjectToGraph = async (name, subject, prerequisites) => {
   return addRelationshipsToGraph(prereqAsList, name, subject);
 };
 
-const addTopicToGraph = async (name, subject, prerequisites) => {
-  // Convert prerequisites to an array of strings
+export const addTopicToGraph = async (name, subject, prerequisites) => {
   const prereqAsList = prerequisites.split(",").map((item) => item.trim());
 
   let query = `
@@ -269,7 +268,7 @@ const getAllNodes = async (query) => {
   }
 };
 
-const getDependencyGraph = async (topicName) => {
+export const getDependencyGraph = async (topicName) => {
   const session = driver.session();
   const query = `
     MATCH (n:Subject)-[r:IS_USED_IN*]->(m:Subject{name: $topicName}) 
@@ -327,12 +326,12 @@ const getDependencyGraph = async (topicName) => {
   }
 };
 
-const getNode = async (nodeName) => {
+export const getNode = async (nodeName) => {
   const { nodes, relationships } = await getGraphData();
   return nodes.find((n) => n.name === nodeName);
 };
 
-const getOrder = async (linkToUse) => {
+export const getOrder = async (linkToUse) => {
   const query =
     "MATCH (n:Subject{name: $name1}) -[r:IS_USED_IN]-> (m:Subject{name: $name2}) RETURN n, r, m";
   const params = { name1: linkToUse.source.name, name2: linkToUse.target.name };
@@ -342,7 +341,7 @@ const getOrder = async (linkToUse) => {
     : -1;
 };
 
-const getTopicsInSubject = async (subject) => {
+export const getTopicsInSubject = async (subject) => {
   const session = driver.session();
   const query = "MATCH (n:Subject{type: 'topic', subject: $subject}) RETURN n";
   const params = { subject };
@@ -357,7 +356,7 @@ const getTopicsInSubject = async (subject) => {
   }
 };
 
-const getMiniSubjectInSubject = async (subject) => {
+export const getMiniSubjectInSubject = async (subject) => {
   const session = driver.session();
   const query =
     "MATCH (n:Subject{type: 'subject', subject: $subject, mainSubject: false}) RETURN n";
@@ -373,7 +372,7 @@ const getMiniSubjectInSubject = async (subject) => {
   }
 };
 
-const getPaths = async (node, graphData) => {
+export const getPaths = async (node, graphData) => {
   let nodeToUse = (node.name === undefined) ? // asm string at this pt
     node = graphData.nodes.find((n) => n.name === node) :
     node
@@ -400,20 +399,60 @@ const getPaths = async (node, graphData) => {
   return [...ancestorNodes, nodeToUse];
 };
 
-export {
-  getGraphData,
-  mainSubjectExists,
-  subjectExists,
-  nodeExists,
-  getMainSubjects,
-  addMainSubjectToGraph,
-  addMiniSubjectToGraph,
-  addTopicToGraph,
-  getDependencyGraph,
-  getNode,
-  getOrder,
-  getTopicsInSubject,
-  getMiniSubjectInSubject,
-  getPaths,
-  mainSubjectExistsForMini
-};
+export const increaseRatingInGraph = async (topicName, rating) => {
+  const { nodes, relationships } = await getGraphData();
+  const nodeToCheck = nodes.find((node) => node.name === topicName); // Use find instead of filter
+  if (!nodeToCheck) {
+    throw new Error("Node not found");
+  }
+
+  const lowValue = nodeToCheck[rating] ? parseInt(nodeToCheck[rating].low) : 0;
+  const newRating = parseInt(lowValue) + 1;
+  
+  const session = driver.session();
+  try {
+    const updateQuery = `
+      MATCH (n:Subject {name: $topicName})
+      SET n.${rating} = toInteger($newRating)
+      RETURN n
+    `;
+    const updateParams = { topicName, newRating };
+    await session.run(updateQuery, updateParams);
+
+    return newRating;
+  } catch (error) {
+    console.error("Error increasing rating in graph:", error);
+    throw error;
+  } finally {
+    await session.close();
+  }
+}
+
+export const decreaseRatingInGraph = async (topicName, rating) => {
+  const { nodes, relationships } = await getGraphData();
+  const nodeToCheck = nodes.find((node) => node.name === topicName); // Use find instead of filter
+  if (!nodeToCheck) {
+    throw new Error("Node not found");
+  }
+
+  const lowValue = nodeToCheck[rating] ? parseInt(nodeToCheck[rating].low) : 0;
+  const newRating = parseInt(lowValue) - 1;
+  
+  const session = driver.session();
+  try {
+    const updateQuery = `
+      MATCH (n:Subject {name: $topicName})
+      SET n.${rating} = toInteger($newRating)
+      RETURN n
+    `;
+    const updateParams = { topicName, newRating };
+    await session.run(updateQuery, updateParams);
+
+    return newRating;
+  } catch (error) {
+    console.error("Error decreasing rating in graph:", error);
+    throw error;
+  } finally {
+    await session.close();
+  }
+}
