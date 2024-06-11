@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { BsEmojiSmile, BsEmojiNeutral, BsEmojiFrown } from "react-icons/bs";
 import { updateRating, getRating } from "../../database/firebase";
+import { decreaseRatingInGraph, increaseRatingInGraph } from "../../database/graphData";
 
 const TopicRatingButtons = ({ onRatingChange, userEmail, topicName }) => {
   const [selectedRating, setSelectedRating] = useState(null);
@@ -26,7 +27,12 @@ const TopicRatingButtons = ({ onRatingChange, userEmail, topicName }) => {
   const handleRatingClick = (rating) => {
     if (selectedRating === rating) {
       setSelectedRating(null);
+			decreaseRatingInGraph(topicName, rating)
     } else {
+			if (selectedRating !== null && selectedRating !== undefined) {
+				decreaseRatingInGraph(topicName, selectedRating)
+			}
+			increaseRatingInGraph(topicName, rating)
       setSelectedRating(rating);
       onRatingChange(rating);
     }

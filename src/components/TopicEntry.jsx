@@ -98,7 +98,6 @@ const TopicEntry = ({ userData, graphData, node }) => {
   };
 
   const handleRatingChange = async (rating) => {
-    // Handle the rating change logic here, such as updating it in the database
     console.log("Rating changed to:", rating);
   };
 
@@ -135,7 +134,7 @@ const TopicEntry = ({ userData, graphData, node }) => {
           >
             {completed ? "Completed ✔️" : "Mark as Completed"}
           </button>
-          {privledge === "member" && ( // Check privledge
+          {privledge === "member" && (
             <button
               className={`btn btn-block ${
                 isBookmarked ? "btn-warning" : "btn-outline-warning"
