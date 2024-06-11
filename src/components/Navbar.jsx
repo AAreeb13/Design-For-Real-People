@@ -137,7 +137,7 @@ const DisabledTopicAdder = () => (
       <li className="nav-item">
         <div className="tooltip-wrapper">
           <button
-            className="btn btn-success disabled-button-style"
+            className="btn btn-success disabled-button-style dis-button"
             disabled
             style={{ fontSize: "12px" }}
           >
@@ -210,7 +210,7 @@ const BookmarkButton = () => (
 const LoggedOutButtons = ({ handleOpenForm }) => (
   <>
     <button
-      className="btn btn-outline-success login-style"
+      className="btn btn-outline-success login-style our-login"
       onClick={() => handleOpenForm("login")}
     >
       Login
