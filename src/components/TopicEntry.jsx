@@ -1,20 +1,23 @@
 import React, { useState, useEffect } from "react";
-import Backtrack from "./Backtrack"; // Import the Backtrack component
+import { FaBookmark } from "react-icons/fa";
+import Backtrack from "./Backtrack"; 
 import { getGraphData, getPaths } from "../../database/graphData";
 import {
   getCurrentUserData,
   getCurrentUserDocData,
   updateCompletionStatus,
 } from "../../database/firebase";
-import "../styles/TopicEntry.css"
+import "../styles/TopicEntry.css";
 
 const TopicEntry = ({ userData, graphData, node }) => {
   const [topicNode, setTopicNode] = useState(null);
   const [error, setError] = useState(null);
   const [completed, setCompleted] = useState(false);
-  const [userEmail, setUserEmail] = useState(null); 
-  const [userId, setUserId] = useState(null); 
+  const [userEmail, setUserEmail] = useState(null);
+  const [userId, setUserId] = useState(null);
   const [fullPath, setFullPath] = useState([]);
+  const [isMember, setIsMember] = useState(false); 
+  const [isBookmarked, setIsBookmarked] = useState(false); 
 
   useEffect(() => {
     const fetchTopic = async () => {
@@ -24,14 +27,14 @@ const TopicEntry = ({ userData, graphData, node }) => {
           setTopicNode(fetchedTopic[0]);
           const userData = await getCurrentUserData();
           if (userData) {
-            setUserEmail(userData.email); 
-            setUserId(userData.uid); 
+            setUserEmail(userData.email);
+            setUserId(userData.uid);
             const userDoc = await getCurrentUserDocData(userData.email);
 
             if (userDoc && userDoc.subjectProgress) {
-              setCompleted(
-                userDoc.subjectProgress[fetchedTopic[0].name] || false
-              );
+              setCompleted(userDoc.subjectProgress[fetchedTopic[0].name] || false);
+              console.log("userdoc is", userDoc.privledge === "member");
+              setIsMember(userDoc.privledge === "member");
             } else {
               setCompleted(false);
             }
@@ -72,6 +75,10 @@ const TopicEntry = ({ userData, graphData, node }) => {
     }
   };
 
+  const toggleBookmark = () => {
+    setIsBookmarked(!isBookmarked);
+  };
+
   if (error) {
     return <div>{error}</div>;
   }
@@ -82,20 +89,32 @@ const TopicEntry = ({ userData, graphData, node }) => {
 
   return (
     <div>
-      <Backtrack paths={fullPath}/>
+      <Backtrack paths={fullPath} />
       {userEmail && (
-        <button
+        <div
           style={{
             position: "fixed",
             top: "10px",
             right: "10px",
             zIndex: "9999",
             marginTop: "80px",
+            display: "flex",
+            flexDirection: "column",
+            gap: "10px"
           }}
-          onClick={toggleCompletion}
         >
-          {completed ? "Completed ✔️" : "Mark as Completed"}
-        </button>
+          <button onClick={toggleCompletion} className={`btn btn-block ${completed ? "btn-dark" : "btn-outline-dark"}`}>
+            {completed ? "Completed ✔️" : "Mark as Completed"}
+          </button>
+          {isMember && (
+            <button
+              className={`btn btn-block ${isBookmarked ? "btn-warning" : "btn-outline-warning"}`}
+              onClick={toggleBookmark}
+            >
+              <FaBookmark /> {isBookmarked ? "Bookmarked" : "Bookmark Topic"}
+            </button>
+          )}
+        </div>
       )}
       <div className="our-topic-div">
         <h2 className="topic-name our-topic-name">{topicNode.name}</h2>
