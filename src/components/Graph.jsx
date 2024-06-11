@@ -7,14 +7,6 @@ import {
 } from "../../database/firebase";
 import { getOrder } from "../../database/graphData";
 
-/**
- * WAKE UP TODO:
- *    ALSO FIX SETUP2.CQL to prevent deep graphs
- */
-
-
-
-
 
 const Graph = ({ nodes, links, subject = null, width, height, style }) => {
   const svgRef = useRef();

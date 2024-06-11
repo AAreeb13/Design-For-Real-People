@@ -83,7 +83,7 @@ function App() {
           />
           <Route
             path="/topic/:node"
-            element={<TopicRouteWrapper userData={userData} />}
+            element={<TopicRouteWrapper graphData={graphData} userData={userData} />}
           />
           <Route
             path="/subgraph/:topicName"
@@ -97,14 +97,14 @@ function App() {
   );
 }
 
-function TopicRouteWrapper({ userData }) {
+function TopicRouteWrapper({ graphData, userData }) {
   const { node } = useParams();
 
   useEffect(() => {
     console.log("TopicRouteWrapper userData changed:", userData);
   }, [userData]);
 
-  return <TopicEntry node={node} userData={userData} />;
+  return <TopicEntry node={node} graphData={graphData} userData={userData} />;
 }
 
 function GraphRouteWrapper({ graphData, userData }) {
