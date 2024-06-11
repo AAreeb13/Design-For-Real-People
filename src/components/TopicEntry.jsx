@@ -6,6 +6,7 @@ import {
   getCurrentUserDocData,
   updateCompletionStatus,
 } from "../../database/firebase";
+import "../styles/TopicEntry.css"
 
 const TopicEntry = ({ userData, graphData, node }) => {
   const [topicNode, setTopicNode] = useState(null);
@@ -13,6 +14,7 @@ const TopicEntry = ({ userData, graphData, node }) => {
   const [completed, setCompleted] = useState(false);
   const [userEmail, setUserEmail] = useState(null); 
   const [userId, setUserId] = useState(null); 
+  const [fullPath, setFullPath] = useState([]);
 
   useEffect(() => {
     const fetchTopic = async () => {
@@ -45,6 +47,21 @@ const TopicEntry = ({ userData, graphData, node }) => {
     fetchTopic();
   }, [node]);
 
+  useEffect(() => {
+    const fetchPaths = async () => {
+      if (topicNode) {
+        try {
+          const paths = await getPaths(topicNode, graphData);
+          setFullPath(paths);
+        } catch (err) {
+          setError("Failed to fetch paths.");
+        }
+      }
+    };
+
+    fetchPaths();
+  }, [topicNode, graphData]);
+
   const toggleCompletion = async () => {
     const newStatus = !completed;
     setCompleted(newStatus);
@@ -63,8 +80,6 @@ const TopicEntry = ({ userData, graphData, node }) => {
     return <div>Loading...</div>;
   }
 
-  const fullPath = getPaths(topicNode, graphData)
-
   return (
     <div>
       <Backtrack paths={fullPath}/>
@@ -82,9 +97,8 @@ const TopicEntry = ({ userData, graphData, node }) => {
           {completed ? "Completed ✔️" : "Mark as Completed"}
         </button>
       )}
-      <div>
-        <h1 className="topic-header">{topicNode.subject}</h1>
-        <h2 className="topic-name">{topicNode.name}</h2>
+      <div className="our-topic-div">
+        <h2 className="topic-name our-topic-name">{topicNode.name}</h2>
 
         <h3>Description:</h3>
         <p className="topic-description">{topicNode.description}</p>

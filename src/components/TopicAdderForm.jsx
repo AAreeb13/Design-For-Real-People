@@ -5,6 +5,7 @@ import {
   addMiniSubjectToGraph,
   addTopicToGraph,
   mainSubjectExists,
+  mainSubjectExistsForMini,
   nodeExists,
   subjectExists,
 } from "../../database/graphData";
@@ -15,70 +16,41 @@ const TopicAdderForm = ({
   handleChange,
   handleTypeChange,
   handleSubmit,
-}) => (
-  <form onSubmit={handleSubmit}>
-    <div className="form-group">
-      <label htmlFor="type">Type</label>
-      <select
-        id="type"
-        name="type"
-        className="form-control"
-        value={selectedType}
-        onChange={handleTypeChange}
-      >
-        <option value="">Select Type</option>
-        <option value="main-subject">Main Subject</option>
-        <option value="mini-subject">Mini Subject</option>
-        <option value="topic">Topic</option>
-      </select>
-    </div>
-    {selectedType && (
-      <>
+}) => {
+  const isInGraphPath = window.location.pathname.includes("/graph/");
+
+  if (!isInGraphPath) {
+    // render only the main form
+    formData.type = "main-subject";
+    return (
+      <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label htmlFor="name">Name</label>
-          <input
-            type="text"
+          <label htmlFor="type">Type</label>
+          <select
+            id="type"
+            name="type"
             className="form-control"
-            id="name"
-            name="name"
-            placeholder="Enter name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-          />
+            value={selectedType}
+            onChange={handleTypeChange}
+          >
+            <option value="main-subject">Main Subject</option>
+          </select>
         </div>
 
-        {selectedType === "topic" && (
-          <>
-            <div className="form-group">
-              <label htmlFor="subject">Subject</label>
-              <input
-                type="text"
-                className="form-control"
-                id="subject"
-                name="subject"
-                placeholder="Enter the subject that this topic will belong to"
-                value={formData.subject}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="prerequisites">Prerequisites</label>
-              <textarea
-                className="form-control"
-                id="prerequisites"
-                name="prerequisites"
-                placeholder="Enter prerequisites, separated by a ',' and ensure that it the prerequisite spelled correctly"
-                value={formData.prerequisites}
-                onChange={handleChange}
-                required
-              ></textarea>
-            </div>
-          </>
-        )}
-
-        {selectedType === "main-subject" && (
+        <>
+          <div className="form-group">
+            <label htmlFor="name">Name</label>
+            <input
+              type="text"
+              className="form-control"
+              id="name"
+              name="name"
+              placeholder="Enter name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+            />
+          </div>
           <div className="form-group">
             <label htmlFor="theme">Theme</label>
             <input
@@ -92,50 +64,89 @@ const TopicAdderForm = ({
               required
             />
           </div>
-        )}
+        </>
 
-        {selectedType === "mini-subject" && (
-          <>
+        <button
+          type="submit"
+          className="btn btn-success submit-button-style"
+        >
+          Submit
+        </button>
+      </form>
+    );
+  }
+
+  // full form if in a graph
+
+  const fullPathArr = decodeURIComponent(window.location.pathname).split("/");
+  const subject = fullPathArr[fullPathArr.length - 1];
+  formData.subject = subject;
+  formData.prerequisites = subject;
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <div className="form-group">
+        <label htmlFor="type">Type</label>
+        <select
+          id="type"
+          name="type"
+          className="form-control"
+          value={selectedType}
+          onChange={handleTypeChange}
+        >
+          <option value="">Select Type</option>
+          <option value="main-subject">Main Subject</option>
+          <option value="mini-subject">Mini Subject</option>
+          <option value="topic">Topic</option>
+        </select>
+      </div>
+      {selectedType && (
+        <>
+          <div className="form-group">
+            <label htmlFor="name">Name</label>
+            <input
+              type="text"
+              className="form-control"
+              id="name"
+              name="name"
+              placeholder="Enter name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          {selectedType === "main-subject" && (
             <div className="form-group">
-              <label htmlFor="subject">Subject</label>
+              <label htmlFor="theme">Theme</label>
               <input
                 type="text"
                 className="form-control"
-                id="subject"
-                name="subject"
-                placeholder="Enter the name of the subject this mini-subject belongs to"
-                value={formData.subject}
+                id="theme"
+                name="theme"
+                placeholder="Enter the theme of this topic, for example 'mathematics'"
+                value={formData.theme}
                 onChange={handleChange}
                 required
               />
             </div>
-            <div className="form-group">
-              <label htmlFor="prerequisites">Prerequisites</label>
-              <textarea
-                className="form-control"
-                id="prerequisites"
-                name="prerequisites"
-                placeholder="Enter prerequisites, separated by a ',' and ensure that it the prerequisite spelled correctly"
-                value={formData.prerequisites}
-                onChange={handleChange}
-                required
-              ></textarea>
-            </div>
-          </>
-        )}
-      </>
-    )}
-    <button type="submit" className="btn btn-success submit-button-style">
-      Submit
-    </button>
-  </form>
-);
+          )}
+        </>
+      )}
+      <button type="submit" className="btn btn-success submit-button-style">
+        Submit
+      </button>
+    </form>
+  );
+};
 
 export async function handleTopicAdderSubmit(formData, isValid) {
   if (formData.type === "main-subject") {
     isValid = await validateMainSubject(formData);
     if (isValid) {
-      addMainSubjectToGraph(formData.name, formData.theme);
+      await addMainSubjectToGraph(formData.name, formData.theme);
+      const newPath = `/graph/${formData.name}`;
+      window.location.assign(newPath);
     } else {
       alert(
         "Please ensure all fields are filled, and that the subject doesn't currently exist"
@@ -178,7 +189,7 @@ const validateMiniSubject = async (data) => {
     data.name.trim() !== "" &&
     data.subject.trim() !== "" &&
     data.prerequisites.trim() !== "";
-  const mainSubExst = await mainSubjectExists("Subject", data);
+  const mainSubExst = await mainSubjectExistsForMini("Subject", data);
   const minSubExst = await subjectExists("Subject", data);
 
   const prerequisitesArray = data.prerequisites
@@ -198,7 +209,7 @@ const validateTopic = async (data) => {
     data.name.trim() !== "" &&
     data.subject.trim() !== "" &&
     data.prerequisites.trim() !== "";
-  const mainSubExst = await mainSubjectExists("Subject", data, false);
+  const mainSubExst = await mainSubjectExistsForMini("Subject", data, false);
   const topicExst = await nodeExists("Subject", data);
 
   const prerequisitesArray = data.prerequisites
