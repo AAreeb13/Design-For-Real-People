@@ -174,6 +174,11 @@ export const getUserSubjectProgress = async (email) => {
   return userDoc.subjectProgress;
 };
 
+export const getUserBookmarks = async (email) => {
+  const userDoc = await getCurrentUserDocData(email);
+  return userDoc.bookmarks;
+}
+
 export const addUserSuggestion = async (suggestion) => {
   try {
     const suggestionData = {
