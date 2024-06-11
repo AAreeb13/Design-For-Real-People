@@ -180,7 +180,7 @@ const TopicEntry = ({ userData, graphData, node }) => {
           />
         )}
         {privledge === "moderator" && (
-          <TopicRatingDisplay />
+          <TopicRatingDisplay topicName={topicNode.name}/>
         )}
       </div>
     </div>
