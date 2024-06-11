@@ -101,6 +101,20 @@ const mainSubjectExists = async (label, properties) => {
   try {
     const query = `MATCH (n:${label} {name: $name, type: 'subject'}) RETURN n`;
     let result = await session.run(query, params);
+    
+    return result.records.length > 0;
+  } finally {
+    await session.close();
+  }
+};
+
+const mainSubjectExistsForMini = async (label, properties) => {
+  const session = driver.session();
+  let name = properties.name;
+  let params = { name };
+  try {
+    const query = `MATCH (n:${label} {name: $name, type: 'subject'}) RETURN n`;
+    let result = await session.run(query, params);
     if (result.records.length == 0) {
       name = properties.subject;
       params = { name };
@@ -112,6 +126,7 @@ const mainSubjectExists = async (label, properties) => {
     await session.close();
   }
 };
+
 
 const getMainSubjects = async () => {
   let nodes = await getAllNodes(
@@ -153,7 +168,7 @@ const addMiniSubjectToGraph = async (name, subject, prerequisites) => {
 
   const prereqAsList = prerequisites.split(",").map((item) => item.trim());
 
-  return addRelationshipsToGraph(prereqAsList, name);
+  return addRelationshipsToGraph(prereqAsList, name, subject);
 };
 
 const addTopicToGraph = async (name, subject, prerequisites) => {
@@ -184,17 +199,50 @@ const addTopicToGraph = async (name, subject, prerequisites) => {
   return !results
     ? results
     : prereqAsList.length <= 0
-    ? addRelationshipsToGraph([subject], name)
-    : addRelationshipsToGraph(prereqAsList, name);
+    ? await addRelationshipsToGraph([subject], name, subject)
+    : await addRelationshipsToGraph(prereqAsList, name, subject);
 };
 
-function addRelationshipsToGraph(prerequisites, name) {
+const getHighestOrderFromSubject = async (subjectName) => {
+  const session = driver.session();
+  const query = `
+    MATCH (n:Subject {subject: $subjectName})<- [r:IS_USED_IN] - (m:Subject)
+    RETURN r.order AS order
+  `;
+  const params = { subjectName };
+
+  try {
+    const result = await session.run(query, params);
+    let highestOrder = null;
+    result.records.forEach((record) => {
+      const order = record.get('order');
+      if (order !== null) {
+        const orderValue = order.low !== undefined ? order.low : order;
+        if (highestOrder === null || orderValue > highestOrder) {
+          highestOrder = orderValue;
+        }
+      }
+    });
+
+    return highestOrder;
+  } finally {
+    await session.close();
+  }
+};
+
+
+
+
+async function addRelationshipsToGraph(prerequisites, name, subject) {
+  let startNumber = await getHighestOrderFromSubject(subject)
+  startNumber = startNumber !== null ? startNumber : 0
   prerequisites.forEach(async (prerequisite) => {
+    startNumber = startNumber + 1
     const query = `
   MATCH (title:Subject{name: $prerequisite}), (subject:Subject{name: $name})
-  CREATE (title) - [:IS_USED_IN] -> (subject);
+  CREATE (title) - [r:IS_USED_IN{order: $startNumber}] -> (subject);
   `;
-    const params = { prerequisite, name };
+    const params = { prerequisite, startNumber, name };
     const results = await runQuery(query, params);
     if (results === false) {
       return false;
@@ -325,10 +373,18 @@ const getMiniSubjectInSubject = async (subject) => {
   }
 };
 
-const getPaths = (node, graphData) => {
-  const nodeToUse = (node.name === undefined) ? // asm string at this pt
+const getPaths = async (node, graphData) => {
+  let nodeToUse = (node.name === undefined) ? // asm string at this pt
     node = graphData.nodes.find((n) => n.name === node) :
     node
+
+  if (nodeToUse === undefined) {
+    return [{name: node}]
+  }
+
+  if (nodeToUse.mainSubject) {
+    return [nodeToUse]
+  }
 
   const parentNode = graphData.nodes.find((n) => n.name === nodeToUse.subject);
 
@@ -340,7 +396,7 @@ const getPaths = (node, graphData) => {
     return [parentNode, nodeToUse];
   }
 
-  const ancestorNodes = getPaths(parentNode, graphData);
+  const ancestorNodes = await getPaths(parentNode, graphData);
   return [...ancestorNodes, nodeToUse];
 };
 
@@ -358,5 +414,6 @@ export {
   getOrder,
   getTopicsInSubject,
   getMiniSubjectInSubject,
-  getPaths
+  getPaths,
+  mainSubjectExistsForMini
 };
