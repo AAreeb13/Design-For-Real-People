@@ -326,14 +326,22 @@ const getMiniSubjectInSubject = async (subject) => {
 };
 
 const getPaths = (node, graphData) => {
-  const parentNode = graphData.nodes.find((n) => n.name === node.subject);
-  
-  if (!parentNode || parentNode.mainSubject) {
-    return [parentNode, node];
+  const nodeToUse = (node.name === undefined) ? // asm string at this pt
+    node = graphData.nodes.find((n) => n.name === node) :
+    node
+
+  const parentNode = graphData.nodes.find((n) => n.name === nodeToUse.subject);
+
+  if (!parentNode ) {
+    return [nodeToUse]
+  }
+
+  if (parentNode.mainSubject) {
+    return [parentNode, nodeToUse];
   }
 
   const ancestorNodes = getPaths(parentNode, graphData);
-  return [...ancestorNodes, node];
+  return [...ancestorNodes, nodeToUse];
 };
 
 export {

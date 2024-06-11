@@ -10,9 +10,10 @@ import HomePage from "./pages/HomePage";
 import Graph from "./components/Graph";
 import Navbar from "./components/Navbar";
 import GridMenu from "./pages/GridMenu";
-import { getGraphData } from "../database/graphData";
+import { getGraphData, getPaths } from "../database/graphData";
 import { initAuthStateListener, auth } from "../database/firebase";
 import TopicEntry from "./components/TopicEntry";
+import Backtrack from "./components/Backtrack";
 
 function App() {
   const [graphData, setGraphData] = useState({ nodes: [], links: [] });
@@ -113,15 +114,18 @@ function GraphRouteWrapper({ graphData, userData }) {
   useEffect(() => {
     console.log("GraphRouteWrapper userData changed:", userData);
   }, [userData]);
-
+  
   return (
-    <Graph
-      nodes={graphData.nodes}
-      links={graphData.relationships}
-      subject={subject}
-      width={1500}
-      height={600}
-    />
+    <>
+      <Backtrack paths={getPaths(subject, graphData)}/>
+      <Graph
+        nodes={graphData.nodes}
+        links={graphData.relationships}
+        subject={subject}
+        width={1500}
+        height={600}
+        />
+    </>
   );
 }
 

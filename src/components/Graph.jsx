@@ -78,7 +78,6 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       if (user) {
         setUserLoggedIn(true);
         const subjectProgress = await getUserSubjectProgress(user.email);
-        console.log("subject progress", subjectProgress)
         const totalTopicsCount = getTotalNodesForSubject(subject, links, nodes);
         const ourTopicsCount = getNodesCompleteForSubject(
           subject,
