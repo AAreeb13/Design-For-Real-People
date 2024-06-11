@@ -1,9 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BsEmojiSmile, BsEmojiNeutral, BsEmojiFrown } from "react-icons/bs";
+import { updateRating, getRating } from "../../database/firebase";
 
-const TopicRatingButtons = ({ onRatingChange }) => {
+const TopicRatingButtons = ({ onRatingChange, userEmail, topicName }) => {
   const [selectedRating, setSelectedRating] = useState(null);
   const [hoveredRating, setHoveredRating] = useState(null);
+
+  useEffect(() => {
+    const fetchRating = async () => {
+      try {
+        const rating = await getRating(userEmail, topicName);
+        setSelectedRating(rating);
+      } catch (error) {
+        console.error("Error fetching rating:", error);
+      }
+    };
+
+    fetchRating();
+  }, [userEmail, topicName]);
 
   const handleRatingHover = (rating) => {
     setHoveredRating(rating);
@@ -16,6 +30,7 @@ const TopicRatingButtons = ({ onRatingChange }) => {
       setSelectedRating(rating);
       onRatingChange(rating);
     }
+    updateRating(userEmail, topicName, rating);
   };
 
   return (
