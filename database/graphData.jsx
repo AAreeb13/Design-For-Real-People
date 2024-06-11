@@ -168,7 +168,7 @@ const addMiniSubjectToGraph = async (name, subject, prerequisites) => {
 
   const prereqAsList = prerequisites.split(",").map((item) => item.trim());
 
-  return addRelationshipsToGraph(prereqAsList, name);
+  return addRelationshipsToGraph(prereqAsList, name, subject);
 };
 
 const addTopicToGraph = async (name, subject, prerequisites) => {
@@ -199,17 +199,50 @@ const addTopicToGraph = async (name, subject, prerequisites) => {
   return !results
     ? results
     : prereqAsList.length <= 0
-    ? addRelationshipsToGraph([subject], name)
-    : addRelationshipsToGraph(prereqAsList, name);
+    ? await addRelationshipsToGraph([subject], name, subject)
+    : await addRelationshipsToGraph(prereqAsList, name, subject);
 };
 
-function addRelationshipsToGraph(prerequisites, name) {
+const getHighestOrderFromSubject = async (subjectName) => {
+  const session = driver.session();
+  const query = `
+    MATCH (n:Subject {subject: $subjectName})<- [r:IS_USED_IN] - (m:Subject)
+    RETURN r.order AS order
+  `;
+  const params = { subjectName };
+
+  try {
+    const result = await session.run(query, params);
+    let highestOrder = null;
+    result.records.forEach((record) => {
+      const order = record.get('order');
+      if (order !== null) {
+        const orderValue = order.low !== undefined ? order.low : order;
+        if (highestOrder === null || orderValue > highestOrder) {
+          highestOrder = orderValue;
+        }
+      }
+    });
+
+    return highestOrder;
+  } finally {
+    await session.close();
+  }
+};
+
+
+
+
+async function addRelationshipsToGraph(prerequisites, name, subject) {
+  let startNumber = await getHighestOrderFromSubject(subject)
+  startNumber = startNumber !== null ? startNumber : 0
   prerequisites.forEach(async (prerequisite) => {
+    startNumber = startNumber + 1
     const query = `
   MATCH (title:Subject{name: $prerequisite}), (subject:Subject{name: $name})
-  CREATE (title) - [:IS_USED_IN] -> (subject);
+  CREATE (title) - [r:IS_USED_IN{order: $startNumber}] -> (subject);
   `;
-    const params = { prerequisite, name };
+    const params = { prerequisite, startNumber, name };
     const results = await runQuery(query, params);
     if (results === false) {
       return false;
@@ -363,7 +396,7 @@ const getPaths = async (node, graphData) => {
     return [parentNode, nodeToUse];
   }
 
-  const ancestorNodes = getPaths(parentNode, graphData);
+  const ancestorNodes = await getPaths(parentNode, graphData);
   return [...ancestorNodes, nodeToUse];
 };
 
