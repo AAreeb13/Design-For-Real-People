@@ -111,7 +111,7 @@ const TopicEntry = ({ userData, graphData, node }) => {
             gap: "10px"
           }}
         >
-          <button onClick={toggleCompletion} className={`btn btn-block ${completed ? "btn-dark" : "btn-outline-dark"}`}>
+          <button onClick={toggleCompletion} className={`btn btn-block ${completed ? "btn-dark" : "btn-outline-dark"}`} style={{marginTop:"15px"}}>
             {completed ? "Completed ✔️" : "Mark as Completed"}
           </button>
           {isMember && (

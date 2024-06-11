@@ -1,27 +1,33 @@
 .bookmarked-container {
-    padding: 20px;
-    max-width: 800px;
-    margin: 0 auto;
-  }
-  
-  .bookmarked-list {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .bookmarked-item {
-    background: #f9f9f9;
-    margin-bottom: 20px;
-    padding: 15px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .bookmarked-item h2 {
-    margin: 0 0 10px;
-  }
-  
-  .bookmarked-item p {
-    margin: 0;
-  }
-  
+  padding: 20px;
+}
+
+.bookmarked-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.bookmarked-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.bookmarked-content {
+  flex-grow: 1;
+}
+
+.bookmarked-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-left: 20px;
+}
+
+.btn {
+  width: 150px;
+}
