@@ -341,7 +341,7 @@ const getPaths = (node, graphData) => {
   }
 
   const ancestorNodes = getPaths(parentNode, graphData);
-  return [...ancestorNodes, nodeToUse];
+  return [parentNode, nodeToUse];
 };
 
 export {
