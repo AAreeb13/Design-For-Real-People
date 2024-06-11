@@ -32,10 +32,12 @@ const TopicEntry = ({ userData, graphData, node }) => {
             setUserId(userData.uid);
             const userDoc = await getCurrentUserDocData(userData.email);
 
-            if (userDoc && userDoc.subjectProgress && userDoc.privledge === "member") {
+            if (userDoc && userDoc.subjectProgress) {
               setCompleted(userDoc.subjectProgress[fetchedTopic[0].name] || false);
-              setIsBookmarked(userDoc.bookmarks[fetchedTopic[0].name] || false)
-              setIsMember(userDoc.privledge === "member");
+              if (userDoc.privledge === "member") {
+                setIsBookmarked(userDoc.bookmarks[fetchedTopic[0].name] || false)
+                setIsMember(userDoc.privledge === "member");
+              }
             } else {
               setCompleted(false);
             }
