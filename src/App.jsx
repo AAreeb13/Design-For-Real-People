@@ -14,6 +14,7 @@ import { getGraphData, getPaths } from "../database/graphData";
 import { initAuthStateListener, auth } from "../database/firebase";
 import TopicEntry from "./components/TopicEntry";
 import Backtrack from "./components/Backtrack";
+import BookmarkMenu from "./pages/BookmarkMenu";
 
 function App() {
   const [graphData, setGraphData] = useState({ nodes: [], links: [] });
@@ -92,6 +93,7 @@ function App() {
               <SubgraphRouteWrapper graphData={graphData} userData={userData} />
             }
           />
+          <Route path="/bookmarked" element={<BookmarkMenu />} />
         </Routes>
       </div>
     </Router>

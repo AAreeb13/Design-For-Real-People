@@ -199,9 +199,9 @@ const BookmarkButton = () => (
   <div className="collapse navbar-collapse">
     <ul className="navbar-nav mr-auto">
       <li className="nav-item">
-        <button className="btn btn-warning bookmark-style">
+        <Link to="/bookmarked" className="btn btn-warning bookmark-style">
           <FaBookmark /> Bookmarked Items
-        </button>
+        </Link>
       </li>
     </ul>
   </div>
