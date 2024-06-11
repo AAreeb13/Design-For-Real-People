@@ -3,9 +3,14 @@ import { Link } from "react-router-dom";
 import NavbarDropdown from "./NavbarDropdown";
 import AuthFormOverlay from "./FormOverlay";
 import SearchBar from "./SearchBar";
-import { auth, getSuggestionData, getUserPrivledge } from "../../database/firebase";
+import {
+  auth,
+  getSuggestionData,
+  getUserPrivledge,
+} from "../../database/firebase";
+import { FaBookmark } from "react-icons/fa";
 import "../styles/Navbar.css";
-import SuggestedTopicsOverlay from './SuggestedTopicsOverlay';
+import SuggestedTopicsOverlay from "./SuggestedTopicsOverlay";
 
 const MyNavbar = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -58,11 +63,10 @@ const MyNavbar = () => {
   const handleCloseSuggestedTopics = () => {
     setShowSuggestedTopics(false);
   };
-  
+
   const getSuggestedTopics = async () => {
     return await getSuggestionData();
-  }
-
+  };
 
   return (
     <div>
@@ -73,10 +77,15 @@ const MyNavbar = () => {
           {privilegeLevel === "guest" ? (
             <DisabledTopicAdder />
           ) : privilegeLevel === "member" ? (
-            <TopicSuggester handleOpenForm={handleOpenForm} />
+            <>
+              <TopicSuggester handleOpenForm={handleOpenForm} />
+              <BookmarkButton />
+            </>
           ) : privilegeLevel === "moderator" ? (
             <>
-              <SeeSuggestedTopics handleShowSuggestedTopics={handleShowSuggestedTopics} />
+              <SeeSuggestedTopics
+                handleShowSuggestedTopics={handleShowSuggestedTopics}
+              />
               <TopicAdder handleOpenForm={handleOpenForm} />
             </>
           ) : (
@@ -95,10 +104,10 @@ const MyNavbar = () => {
       {isFormOpen && (
         <AuthFormOverlay onClose={handleCloseForm} formType={formType} />
       )}
-      {showSuggestedTopics && ( 
-        <SuggestedTopicsOverlay 
-          open={showSuggestedTopics} 
-          onClose={handleCloseSuggestedTopics} 
+      {showSuggestedTopics && (
+        <SuggestedTopicsOverlay
+          open={showSuggestedTopics}
+          onClose={handleCloseSuggestedTopics}
           suggestedTopics={getSuggestedTopics}
         />
       )}
@@ -160,7 +169,12 @@ const SeeSuggestedTopics = ({ handleShowSuggestedTopics }) => (
   <div className="collapse navbar-collapse">
     <ul className="navbar-nav mr-auto">
       <li className="nav-item">
-        <button className="btn btn-warning see-suggested-topics-style" onClick={handleShowSuggestedTopics}>View Suggested Topics</button>
+        <button
+          className="btn btn-warning see-suggested-topics-style"
+          onClick={handleShowSuggestedTopics}
+        >
+          View Suggested Topics
+        </button>
       </li>
     </ul>
   </div>
@@ -176,6 +190,18 @@ const TopicAdder = ({ handleOpenForm }) => (
         >
           Add a Topic
         </button>
+      </li>
+    </ul>
+  </div>
+);
+
+const BookmarkButton = () => (
+  <div className="collapse navbar-collapse">
+    <ul className="navbar-nav mr-auto">
+      <li className="nav-item">
+        <Link to="/bookmarked" className="btn btn-warning bookmark-style">
+          <FaBookmark /> Bookmarked Items
+        </Link>
       </li>
     </ul>
   </div>

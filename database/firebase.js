@@ -94,7 +94,7 @@ export const updateCompletionStatus = async (
   newStatus
 ) => {
   try {
-    const docId = await getUserDocumentByUserEmail(userEmail); // Get the document ID
+    const docId = await getUserDocumentByUserEmail(userEmail);
     const userDocData = await getCurrentUserDocData(userEmail);
 
     if (docId && userDocData) {
@@ -103,7 +103,7 @@ export const updateCompletionStatus = async (
         [topicKey]: newStatus,
       };
 
-      const userDocRef = doc(db, "Users", docId); // Use the retrieved document ID
+      const userDocRef = doc(db, "Users", docId); 
       await updateDoc(userDocRef, {
         subjectProgress: updatedSubjectProgress,
       });
@@ -115,6 +115,34 @@ export const updateCompletionStatus = async (
     console.error("Error updating completion status:", error);
   }
 };
+
+export const updateBookmarkStatus = async (
+  userEmail,
+  topicKey,
+  newStatus
+) => {
+  try {
+    const docId = await getUserDocumentByUserEmail(userEmail); 
+    const userDocData = await getCurrentUserDocData(userEmail);
+
+    if (docId && userDocData) {
+      const updatedBookmarks = {
+        ...userDocData.bookmarks,
+        [topicKey]: newStatus,
+      };
+
+      const userDocRef = doc(db, "Users", docId);
+      await updateDoc(userDocRef, {
+        bookmarks: updatedBookmarks,
+      });
+      console.log("Bookmark status updated successfully.");
+    } else {
+      console.error("User document not found.");
+    }
+  } catch (error) {
+    console.error("Error updating bookmark status:", error);
+  }
+}
 
 const getUserDocumentByUserEmail = async (email) => {
   try {
@@ -145,6 +173,11 @@ export const getUserSubjectProgress = async (email) => {
   const userDoc = await getCurrentUserDocData(email);
   return userDoc.subjectProgress;
 };
+
+export const getUserBookmarks = async (email) => {
+  const userDoc = await getCurrentUserDocData(email);
+  return userDoc.bookmarks;
+}
 
 export const addUserSuggestion = async (suggestion) => {
   try {

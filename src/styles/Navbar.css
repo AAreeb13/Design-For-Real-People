@@ -12,6 +12,7 @@
   }
   
   .our-logo {
+    margin-right: 60px;
     padding: 5px;
     width: 150px;
   }
@@ -72,3 +73,6 @@
     margin-left: 10%;
   }
   
+  .suggest-topic-style {
+    margin-left: 40px;
+  }
