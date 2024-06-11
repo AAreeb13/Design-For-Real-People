@@ -34,8 +34,10 @@ const TopicEntry = ({ userData, graphData, node }) => {
 
             if (userDoc && userDoc.subjectProgress) {
               setCompleted(userDoc.subjectProgress[fetchedTopic[0].name] || false);
-              setIsBookmarked(userDoc.bookmarks[fetchedTopic[0].name] || false)
-              setIsMember(userDoc.privledge === "member");
+              if (userDoc.privledge === "member") {
+                setIsBookmarked(userDoc.bookmarks[fetchedTopic[0].name] || false)
+                setIsMember(userDoc.privledge === "member");
+              }
             } else {
               setCompleted(false);
             }
@@ -44,6 +46,7 @@ const TopicEntry = ({ userData, graphData, node }) => {
           setError("Topic not found.");
         }
       } catch (err) {
+        console.error(err)
         setError("Failed to fetch topic data.");
       }
     };
@@ -84,7 +87,6 @@ const TopicEntry = ({ userData, graphData, node }) => {
       const topicKey = topicNode.name;
       await updateBookmarkStatus(userEmail, topicKey, newStatus)
     }
-
   };
 
   if (error) {
@@ -111,7 +113,7 @@ const TopicEntry = ({ userData, graphData, node }) => {
             gap: "10px"
           }}
         >
-          <button onClick={toggleCompletion} className={`btn btn-block ${completed ? "btn-dark" : "btn-outline-dark"}`}>
+          <button onClick={toggleCompletion} className={`btn btn-block ${completed ? "btn-dark" : "btn-outline-dark"}`} style={{marginTop:"15px"}}>
             {completed ? "Completed ✔️" : "Mark as Completed"}
           </button>
           {isMember && (
@@ -158,7 +160,6 @@ const TopicEntry = ({ userData, graphData, node }) => {
 const getTopic = async (name) => {
   console.log("we got here");
   const { nodes, relationships } = await getGraphData();
-
   return nodes.filter((n) => n.name === name);
 };
 

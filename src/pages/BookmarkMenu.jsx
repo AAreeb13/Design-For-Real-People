@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "../styles/BookmarkMenu.css";
-import { getCurrentUserData, getUserBookmarks } from "../../database/firebase";
+import { getCurrentUserData, getUserBookmarks, removeBookmark } from "../../database/firebase";
 import { getGraphData } from "../../database/graphData";
 
 const BookmarkMenu = () => {
@@ -30,6 +30,22 @@ const BookmarkMenu = () => {
     fetchBookmarks();
   }, []);
 
+  const handleDelete = async (itemName) => {
+    try {
+      const userData = await getCurrentUserData();
+      if (userData) {
+        await removeBookmark(userData.email, itemName);
+        setBookmarkedItems((prevItems) => prevItems.filter((item) => item.name !== itemName));
+      }
+    } catch (err) {
+      console.error("Failed to remove bookmark:", err);
+    }
+  };
+
+  const handleGoto = (itemName) => {
+    window.location.assign(`/topic/${itemName}`);
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -44,8 +60,24 @@ const BookmarkMenu = () => {
       <ul className="bookmarked-list">
         {bookmarkedItems.map((item) => (
           <li key={item.name} className="bookmarked-item">
-            <h2>{item.name}</h2>
-            <p>{item.description}</p>
+            <div className="bookmarked-content">
+              <h2>{item.name}</h2>
+              <p>{item.description}</p>
+            </div>
+            <div className="bookmarked-buttons">
+              <button 
+                className="btn btn-primary"
+                onClick={() => handleGoto(item.name)}
+              >
+                Go to Topic
+              </button>
+              <button 
+                className="btn btn-danger"
+                onClick={() => handleDelete(item.name)}
+              >
+                Remove
+              </button>
+            </div>
           </li>
         ))}
       </ul>
