@@ -101,6 +101,20 @@ const mainSubjectExists = async (label, properties) => {
   try {
     const query = `MATCH (n:${label} {name: $name, type: 'subject'}) RETURN n`;
     let result = await session.run(query, params);
+    
+    return result.records.length > 0;
+  } finally {
+    await session.close();
+  }
+};
+
+const mainSubjectExistsForMini = async (label, properties) => {
+  const session = driver.session();
+  let name = properties.name;
+  let params = { name };
+  try {
+    const query = `MATCH (n:${label} {name: $name, type: 'subject'}) RETURN n`;
+    let result = await session.run(query, params);
     if (result.records.length == 0) {
       name = properties.subject;
       params = { name };
@@ -112,6 +126,7 @@ const mainSubjectExists = async (label, properties) => {
     await session.close();
   }
 };
+
 
 const getMainSubjects = async () => {
   let nodes = await getAllNodes(
@@ -330,6 +345,10 @@ const getPaths = (node, graphData) => {
     node = graphData.nodes.find((n) => n.name === node) :
     node
 
+  if (nodeToUse.mainSubject) {
+    return [nodeToUse]
+  }
+
   const parentNode = graphData.nodes.find((n) => n.name === nodeToUse.subject);
 
   if (!parentNode ) {
@@ -358,5 +377,6 @@ export {
   getOrder,
   getTopicsInSubject,
   getMiniSubjectInSubject,
-  getPaths
+  getPaths,
+  mainSubjectExistsForMini
 };

@@ -5,6 +5,7 @@ import {
   addMiniSubjectToGraph,
   addTopicToGraph,
   mainSubjectExists,
+  mainSubjectExistsForMini,
   nodeExists,
   subjectExists,
 } from "../../database/graphData";
@@ -20,7 +21,7 @@ const TopicAdderForm = ({
 
   if (!isInGraphPath) {
     // render only the main form
-    formData.type = "main-subject"
+    formData.type = "main-subject";
     return (
       <form onSubmit={handleSubmit}>
         <div className="form-group">
@@ -35,7 +36,7 @@ const TopicAdderForm = ({
             <option value="main-subject">Main Subject</option>
           </select>
         </div>
-        
+
         <>
           <div className="form-group">
             <label htmlFor="name">Name</label>
@@ -64,8 +65,11 @@ const TopicAdderForm = ({
             />
           </div>
         </>
-        
-        <button type="submit" className="btn btn-success submit-button-style">
+
+        <button
+          type="submit"
+          className="btn btn-success submit-button-style"
+        >
           Submit
         </button>
       </form>
@@ -140,7 +144,9 @@ export async function handleTopicAdderSubmit(formData, isValid) {
   if (formData.type === "main-subject") {
     isValid = await validateMainSubject(formData);
     if (isValid) {
-      addMainSubjectToGraph(formData.name, formData.theme);
+      await addMainSubjectToGraph(formData.name, formData.theme);
+      const newPath = `/graph/${formData.name}`;
+      window.location.assign(newPath);
     } else {
       alert(
         "Please ensure all fields are filled, and that the subject doesn't currently exist"
@@ -183,7 +189,7 @@ const validateMiniSubject = async (data) => {
     data.name.trim() !== "" &&
     data.subject.trim() !== "" &&
     data.prerequisites.trim() !== "";
-  const mainSubExst = await mainSubjectExists("Subject", data);
+  const mainSubExst = await mainSubjectExistsForMini("Subject", data);
   const minSubExst = await subjectExists("Subject", data);
 
   const prerequisitesArray = data.prerequisites
@@ -203,7 +209,7 @@ const validateTopic = async (data) => {
     data.name.trim() !== "" &&
     data.subject.trim() !== "" &&
     data.prerequisites.trim() !== "";
-  const mainSubExst = await mainSubjectExists("Subject", data, false);
+  const mainSubExst = await mainSubjectExistsForMini("Subject", data, false);
   const topicExst = await nodeExists("Subject", data);
 
   const prerequisitesArray = data.prerequisites

@@ -110,24 +110,39 @@ function TopicRouteWrapper({ graphData, userData }) {
 
 function GraphRouteWrapper({ graphData, userData }) {
   const { subject } = useParams();
+  const [paths, setPaths] = useState([]);
+
+  useEffect(() => {
+    const fetchPaths = async () => {
+      try {
+        const paths = await getPaths(subject, graphData);
+        setPaths(paths);
+      } catch (error) {
+        console.error("Error fetching paths:", error);
+      }
+    };
+
+    fetchPaths();
+  }, [subject, graphData]);
 
   useEffect(() => {
     console.log("GraphRouteWrapper userData changed:", userData);
   }, [userData]);
-  
+
   return (
     <>
-      <Backtrack paths={getPaths(subject, graphData)}/>
+      <Backtrack paths={paths} />
       <Graph
         nodes={graphData.nodes}
         links={graphData.relationships}
         subject={subject}
         width={1500}
         height={600}
-        />
+      />
     </>
   );
 }
+
 
 function SubgraphRouteWrapper({ graphData, userData }) {
   const { topicName } = useParams();
