@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { getGraphData } from "../../database/graphData";
+import Backtrack from "./Backtrack"; // Import the Backtrack component
+import { getGraphData, getPaths } from "../../database/graphData";
 import {
   getCurrentUserData,
   getCurrentUserDocData,
   updateCompletionStatus,
 } from "../../database/firebase";
 
-const TopicEntry = ({ node }) => {
+const TopicEntry = ({ userData, graphData, node }) => {
   const [topicNode, setTopicNode] = useState(null);
   const [error, setError] = useState(null);
   const [completed, setCompleted] = useState(false);
@@ -62,8 +63,11 @@ const TopicEntry = ({ node }) => {
     return <div>Loading...</div>;
   }
 
+  const fullPath = getPaths(topicNode, graphData)
+
   return (
     <div>
+      <Backtrack paths={fullPath}/>
       {userEmail && (
         <button
           style={{

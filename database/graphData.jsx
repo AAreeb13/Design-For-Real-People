@@ -325,6 +325,25 @@ const getMiniSubjectInSubject = async (subject) => {
   }
 };
 
+const getPaths = (node, graphData) => {
+  const nodeToUse = (node.name === undefined) ? // asm string at this pt
+    node = graphData.nodes.find((n) => n.name === node) :
+    node
+
+  const parentNode = graphData.nodes.find((n) => n.name === nodeToUse.subject);
+
+  if (!parentNode ) {
+    return [nodeToUse]
+  }
+
+  if (parentNode.mainSubject) {
+    return [parentNode, nodeToUse];
+  }
+
+  const ancestorNodes = getPaths(parentNode, graphData);
+  return [...ancestorNodes, nodeToUse];
+};
+
 export {
   getGraphData,
   mainSubjectExists,
@@ -339,4 +358,5 @@ export {
   getOrder,
   getTopicsInSubject,
   getMiniSubjectInSubject,
+  getPaths
 };
