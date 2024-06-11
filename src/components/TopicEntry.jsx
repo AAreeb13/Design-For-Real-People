@@ -9,6 +9,7 @@ import {
   updateCompletionStatus,
 } from "../../database/firebase";
 import "../styles/TopicEntry.css";
+import TopicRatingButtons from "./TopicRatingButtons";
 
 const TopicEntry = ({ userData, graphData, node }) => {
   const [topicNode, setTopicNode] = useState(null);
@@ -34,9 +35,9 @@ const TopicEntry = ({ userData, graphData, node }) => {
 
             if (userDoc && userDoc.subjectProgress) {
               setCompleted(userDoc.subjectProgress[fetchedTopic[0].name] || false);
-              if (userDoc.privledge === "member") {
-                setIsBookmarked(userDoc.bookmarks[fetchedTopic[0].name] || false)
-                setIsMember(userDoc.privledge === "member");
+              if (userDoc.privilege === "member") {
+                setIsBookmarked(userDoc.bookmarks[fetchedTopic[0].name] || false);
+                setIsMember(userDoc.privilege === "member");
               }
             } else {
               setCompleted(false);
@@ -46,7 +47,7 @@ const TopicEntry = ({ userData, graphData, node }) => {
           setError("Topic not found.");
         }
       } catch (err) {
-        console.error(err)
+        console.error(err);
         setError("Failed to fetch topic data.");
       }
     };
@@ -85,8 +86,13 @@ const TopicEntry = ({ userData, graphData, node }) => {
 
     if (userEmail && topicNode) {
       const topicKey = topicNode.name;
-      await updateBookmarkStatus(userEmail, topicKey, newStatus)
+      await updateBookmarkStatus(userEmail, topicKey, newStatus);
     }
+  };
+
+  const handleRatingChange = async (rating) => {
+    // Handle the rating change logic here, such as updating it in the database
+    console.log("Rating changed to:", rating);
   };
 
   if (error) {
@@ -152,6 +158,8 @@ const TopicEntry = ({ userData, graphData, node }) => {
             <li key={index}>{o}</li>
           ))}
         </ul>
+
+        <TopicRatingButtons onRatingChange={handleRatingChange} />
       </div>
     </div>
   );
@@ -164,3 +172,4 @@ const getTopic = async (name) => {
 };
 
 export default TopicEntry;
+
