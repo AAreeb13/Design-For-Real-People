@@ -10,9 +10,10 @@ import HomePage from "./pages/HomePage";
 import Graph from "./components/Graph";
 import Navbar from "./components/Navbar";
 import GridMenu from "./pages/GridMenu";
-import { getGraphData } from "../database/graphData";
+import { getGraphData, getPaths } from "../database/graphData";
 import { initAuthStateListener, auth } from "../database/firebase";
 import TopicEntry from "./components/TopicEntry";
+import Backtrack from "./components/Backtrack";
 
 function App() {
   const [graphData, setGraphData] = useState({ nodes: [], links: [] });
@@ -83,7 +84,7 @@ function App() {
           />
           <Route
             path="/topic/:node"
-            element={<TopicRouteWrapper userData={userData} />}
+            element={<TopicRouteWrapper graphData={graphData} userData={userData} />}
           />
           <Route
             path="/subgraph/:topicName"
@@ -97,14 +98,14 @@ function App() {
   );
 }
 
-function TopicRouteWrapper({ userData }) {
+function TopicRouteWrapper({ graphData, userData }) {
   const { node } = useParams();
 
   useEffect(() => {
     console.log("TopicRouteWrapper userData changed:", userData);
   }, [userData]);
 
-  return <TopicEntry node={node} userData={userData} />;
+  return <TopicEntry node={node} graphData={graphData} userData={userData} />;
 }
 
 function GraphRouteWrapper({ graphData, userData }) {
@@ -113,15 +114,18 @@ function GraphRouteWrapper({ graphData, userData }) {
   useEffect(() => {
     console.log("GraphRouteWrapper userData changed:", userData);
   }, [userData]);
-
+  
   return (
-    <Graph
-      nodes={graphData.nodes}
-      links={graphData.relationships}
-      subject={subject}
-      width={1500}
-      height={600}
-    />
+    <>
+      <Backtrack paths={getPaths(subject, graphData)}/>
+      <Graph
+        nodes={graphData.nodes}
+        links={graphData.relationships}
+        subject={subject}
+        width={1500}
+        height={600}
+        />
+    </>
   );
 }
 

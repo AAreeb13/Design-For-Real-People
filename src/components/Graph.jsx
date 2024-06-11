@@ -7,14 +7,6 @@ import {
 } from "../../database/firebase";
 import { getOrder } from "../../database/graphData";
 
-/**
- * WAKE UP TODO:
- *    ALSO FIX SETUP2.CQL to prevent deep graphs
- */
-
-
-
-
 
 const Graph = ({ nodes, links, subject = null, width, height, style }) => {
   const svgRef = useRef();
@@ -86,7 +78,6 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       if (user) {
         setUserLoggedIn(true);
         const subjectProgress = await getUserSubjectProgress(user.email);
-        console.log("subject progress", subjectProgress)
         const totalTopicsCount = getTotalNodesForSubject(subject, links, nodes);
         const ourTopicsCount = getNodesCompleteForSubject(
           subject,
