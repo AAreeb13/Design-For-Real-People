@@ -4,14 +4,14 @@ import {
   getCurrentUserData,
   getCurrentUserDocData,
   updateCompletionStatus,
-} from "../../database/firebase"; // Import updateCompletionStatus function
+} from "../../database/firebase";
 
 const TopicEntry = ({ node }) => {
   const [topicNode, setTopicNode] = useState(null);
   const [error, setError] = useState(null);
-  const [completed, setCompleted] = useState(false); // State to track completion status
-  const [userEmail, setUserEmail] = useState(null); // State to store user email
-  const [userId, setUserId] = useState(null); // State to store user ID
+  const [completed, setCompleted] = useState(false);
+  const [userEmail, setUserEmail] = useState(null); 
+  const [userId, setUserId] = useState(null); 
 
   useEffect(() => {
     const fetchTopic = async () => {
@@ -21,8 +21,8 @@ const TopicEntry = ({ node }) => {
           setTopicNode(fetchedTopic[0]);
           const userData = await getCurrentUserData();
           if (userData) {
-            setUserEmail(userData.email); // Store user email
-            setUserId(userData.uid); // Store user ID
+            setUserEmail(userData.email); 
+            setUserId(userData.uid); 
             const userDoc = await getCurrentUserDocData(userData.email);
 
             if (userDoc && userDoc.subjectProgress) {

@@ -13,13 +13,6 @@ CREATE (n:Subject{
 
 
 CREATE (n:Subject{
-	name: 'basic arithmetic',
-	subject: 'calculus',
-	type: 'subject',
-	mainSubject: False
-});
-
-CREATE (n:Subject{
 	name: 'proofs',
 	subject: 'calculus',
 	type: 'subject',
@@ -1316,24 +1309,22 @@ CREATE (n:Subject{
 
 
 // Grouped these by page
-MATCH (title:Subject{name: 'calculus'}), (subject:Subject{name:'basic arithmetic'})
-CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
 MATCH (title:Subject{name: 'calculus'}), (subject:Subject{name:'Functions'})
-CREATE (title) - [:IS_USED_IN{order: 2}] -> (subject);
+CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
 MATCH (title:Subject{name: 'calculus'}), (subject:Subject{name:'Qualitative Analysis'})
-CREATE (title) - [:IS_USED_IN{order: 3}] -> (subject);
+CREATE (title) - [:IS_USED_IN{order: 2}] -> (subject);
 MATCH (title:Subject{name: 'calculus'}), (subject:Subject{name:'Bifurcations'})
-CREATE (title) - [:IS_USED_IN{order: 4}] -> (subject);
+CREATE (title) - [:IS_USED_IN{order: 3}] -> (subject);
 MATCH (title:Subject{name: 'calculus'}), (subject:Subject{name:'sequences and series'})
+CREATE (title) - [:IS_USED_IN{order: 4}] -> (subject);
+MATCH (title:Subject{name: 'calculus'}), (subject:Subject{name:'proofs'})
 CREATE (title) - [:IS_USED_IN{order: 5}] -> (subject);
-MATCH (title:Subject{name: 'basic arithmetic'}), (subject:Subject{name:'proofs'})
+MATCH (title:Subject{name: 'calculus'}), (subject:Subject{name:'limits'})
 CREATE (title) - [:IS_USED_IN{order: 6}] -> (subject);
-MATCH (title:Subject{name: 'basic arithmetic'}), (subject:Subject{name:'limits'})
+MATCH (title:Subject{name: 'calculus'}), (subject:Subject{name:'differentiation'})
 CREATE (title) - [:IS_USED_IN{order: 7}] -> (subject);
-MATCH (title:Subject{name: 'basic arithmetic'}), (subject:Subject{name:'differentiation'})
+MATCH (title:Subject{name: 'calculus'}), (subject:Subject{name:'integration'})
 CREATE (title) - [:IS_USED_IN{order: 8}] -> (subject);
-MATCH (title:Subject{name: 'basic arithmetic'}), (subject:Subject{name:'integration'})
-CREATE (title) - [:IS_USED_IN{order: 9}] -> (subject);
 
 
 
