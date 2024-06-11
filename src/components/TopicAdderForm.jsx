@@ -20,6 +20,7 @@ const TopicAdderForm = ({
 
   if (!isInGraphPath) {
     // render only the main form
+    formData.type = "main-subject"
     return (
       <form onSubmit={handleSubmit}>
         <div className="form-group">
@@ -72,6 +73,12 @@ const TopicAdderForm = ({
   }
 
   // full form if in a graph
+
+  const fullPathArr = decodeURIComponent(window.location.pathname).split("/");
+  const subject = fullPathArr[fullPathArr.length - 1];
+  formData.subject = subject;
+  formData.prerequisites = subject;
+
   return (
     <form onSubmit={handleSubmit}>
       <div className="form-group">
@@ -105,36 +112,6 @@ const TopicAdderForm = ({
             />
           </div>
 
-          {selectedType === "topic" && (
-            <>
-              <div className="form-group">
-                <label htmlFor="subject">Subject</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="subject"
-                  name="subject"
-                  placeholder="Enter the subject that this topic will belong to"
-                  value={formData.subject}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="prerequisites">Prerequisites</label>
-                <textarea
-                  className="form-control"
-                  id="prerequisites"
-                  name="prerequisites"
-                  placeholder="Enter prerequisites, separated by a ',' and ensure that it the prerequisite spelled correctly"
-                  value={formData.prerequisites}
-                  onChange={handleChange}
-                  required
-                ></textarea>
-              </div>
-            </>
-          )}
-
           {selectedType === "main-subject" && (
             <div className="form-group">
               <label htmlFor="theme">Theme</label>
@@ -149,36 +126,6 @@ const TopicAdderForm = ({
                 required
               />
             </div>
-          )}
-
-          {selectedType === "mini-subject" && (
-            <>
-              <div className="form-group">
-                <label htmlFor="subject">Subject</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="subject"
-                  name="subject"
-                  placeholder="Enter the name of the subject this mini-subject belongs to"
-                  value={formData.subject}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="prerequisites">Prerequisites</label>
-                <textarea
-                  className="form-control"
-                  id="prerequisites"
-                  name="prerequisites"
-                  placeholder="Enter prerequisites, separated by a ',' and ensure that it the prerequisite spelled correctly"
-                  value={formData.prerequisites}
-                  onChange={handleChange}
-                  required
-                ></textarea>
-              </div>
-            </>
           )}
         </>
       )}
