@@ -340,10 +340,14 @@ const getMiniSubjectInSubject = async (subject) => {
   }
 };
 
-const getPaths = (node, graphData) => {
-  const nodeToUse = (node.name === undefined) ? // asm string at this pt
+const getPaths = async (node, graphData) => {
+  let nodeToUse = (node.name === undefined) ? // asm string at this pt
     node = graphData.nodes.find((n) => n.name === node) :
     node
+
+  if (nodeToUse === undefined) {
+    return [{name: node}]
+  }
 
   if (nodeToUse.mainSubject) {
     return [nodeToUse]

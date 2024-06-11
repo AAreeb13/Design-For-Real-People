@@ -17,10 +17,14 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
   const [userLoggedIn, setUserLoggedIn] = useState(false);
   const [subjectProgress, setSubjectProgress] = useState({}); 
   
-  const validNodes =
+  let validNodes =
     subject == null
       ? nodes
       : nodes.filter((n) => n.name === subject || n.subject === subject);
+  
+  if (validNodes.length === 0) {
+    validNodes = [{name: subject, type: "subject"}]
+  }
 
   const nodesToUse = validNodes.map((n) => {
     return { name: n.name, type: n.type };
@@ -425,7 +429,7 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
 
       const updateProgressBar = (completionPercentage) => {
         const width = 250 * (completionPercentage / 100);
-        progressBarIndicator.attr("width", width);
+        progressBarIndicator.attr("width", isNaN(width) ? 0 : width);
       };
 
       updateProgressBar((ourTopicCount / totalTopicCount) * 100);
