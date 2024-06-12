@@ -12,15 +12,12 @@ const TopicRatingDisplay = ({ topicName }) => {
       setTopicNode(node);
     };
 
-    // Fetch initial data
     fetchTopicNode();
 
-    // Setup interval to check for updates every 5 seconds
     const interval = setInterval(fetchTopicNode, 2000);
 
-    // Cleanup function to clear interval
     return () => clearInterval(interval);
-  }, [topicName]); // Dependency array ensures useEffect runs when topicName changes
+  }, [topicName]);
 
   if (!topicNode) {
     return <div>Loading...</div>;
