@@ -81,7 +81,11 @@ export const nodeExists = async (label, properties) => {
   }
 };
 
-export const subjectExists = async (label, properties, isMainSubject = true) => {
+export const subjectExists = async (
+  label,
+  properties,
+  isMainSubject = true
+) => {
   const session = driver.session();
   const name = isMainSubject ? properties.name : properties.subject;
   const params = { name };
@@ -101,7 +105,7 @@ export const mainSubjectExists = async (label, properties) => {
   try {
     const query = `MATCH (n:${label} {name: $name, type: 'subject'}) RETURN n`;
     let result = await session.run(query, params);
-    
+
     return result.records.length > 0;
   } finally {
     await session.close();
@@ -126,7 +130,6 @@ export const mainSubjectExistsForMini = async (label, properties) => {
     await session.close();
   }
 };
-
 
 export const getMainSubjects = async () => {
   let nodes = await getAllNodes(
@@ -180,20 +183,23 @@ export const addTopicToGraph = async (name, subject, prerequisites) => {
       subject: $subject,
       type: 'topic',
       description: 'to add later',
-      requires: $prereqAsList,
-      links: '',
-      approvals: 0,
-      rejections: 0,
+      good: toInteger(0),
+      alright: toInteger(0),
+      bad: toInteger(0),
       comments: [],
       suggestions: [],
-      resources: [],
       learning_objectives: []
-    });
+    })
+    WITH n
+    CREATE (formData:FormData)
+    MERGE (n)-[:HAS_FORM_DATA]->(formData)
+    SET formData.requires = $prereqAsList;
+
   `;
 
   const params = { name, subject, prereqAsList };
   const results = await runQuery(query, params);
-
+  console.log("results", results)
   // Add relationships for prerequisites if they exist
   return !results
     ? results
@@ -214,7 +220,7 @@ const getHighestOrderFromSubject = async (subjectName) => {
     const result = await session.run(query, params);
     let highestOrder = null;
     result.records.forEach((record) => {
-      const order = record.get('order');
+      const order = record.get("order");
       if (order !== null) {
         const orderValue = order.low !== undefined ? order.low : order;
         if (highestOrder === null || orderValue > highestOrder) {
@@ -229,14 +235,11 @@ const getHighestOrderFromSubject = async (subjectName) => {
   }
 };
 
-
-
-
 async function addRelationshipsToGraph(prerequisites, name, subject) {
-  let startNumber = await getHighestOrderFromSubject(subject)
-  startNumber = startNumber !== null ? startNumber : 0
+  let startNumber = await getHighestOrderFromSubject(subject);
+  startNumber = startNumber !== null ? startNumber : 0;
   prerequisites.forEach(async (prerequisite) => {
-    startNumber = startNumber + 1
+    startNumber = startNumber + 1;
     const query = `
   MATCH (title:Subject{name: $prerequisite}), (subject:Subject{name: $name})
   CREATE (title) - [r:IS_USED_IN{order: $startNumber}] -> (subject);
@@ -373,22 +376,23 @@ export const getMiniSubjectInSubject = async (subject) => {
 };
 
 export const getPaths = async (node, graphData) => {
-  let nodeToUse = (node.name === undefined) ? // asm string at this pt
-    node = graphData.nodes.find((n) => n.name === node) :
-    node
+  let nodeToUse =
+    node.name === undefined // asm string at this pt
+      ? (node = graphData.nodes.find((n) => n.name === node))
+      : node;
 
   if (nodeToUse === undefined) {
-    return [{name: node}]
+    return [{ name: node }];
   }
 
   if (nodeToUse.mainSubject) {
-    return [nodeToUse]
+    return [nodeToUse];
   }
 
   const parentNode = graphData.nodes.find((n) => n.name === nodeToUse.subject);
 
-  if (!parentNode ) {
-    return [nodeToUse]
+  if (!parentNode) {
+    return [nodeToUse];
   }
 
   if (parentNode.mainSubject) {
@@ -408,7 +412,7 @@ export const increaseRatingInGraph = async (topicName, rating) => {
 
   const lowValue = nodeToCheck[rating] ? parseInt(nodeToCheck[rating].low) : 0;
   const newRating = parseInt(lowValue) + 1;
-  
+
   const session = driver.session();
   try {
     const updateQuery = `
@@ -426,7 +430,7 @@ export const increaseRatingInGraph = async (topicName, rating) => {
   } finally {
     await session.close();
   }
-}
+};
 
 export const decreaseRatingInGraph = async (topicName, rating) => {
   const { nodes, relationships } = await getGraphData();
@@ -437,7 +441,7 @@ export const decreaseRatingInGraph = async (topicName, rating) => {
 
   const lowValue = nodeToCheck[rating] ? parseInt(nodeToCheck[rating].low) : 0;
   const newRating = parseInt(lowValue) - 1;
-  
+
   const session = driver.session();
   try {
     const updateQuery = `
@@ -455,4 +459,48 @@ export const decreaseRatingInGraph = async (topicName, rating) => {
   } finally {
     await session.close();
   }
-}
+};
+
+export const deleteNode = async (topicName) => {
+  const session = driver.session();
+
+  try {
+    const deleteQuery = `
+        MATCH (n:Subject {name: $topicName}) -[:HAS_FORM_DATA]->(m)
+        DETACH DELETE (n), (m)
+    `;
+    const deleteParams = { topicName };
+    await session.run(deleteQuery, deleteParams);
+  } catch (error) {
+    console.error("Error deleting node", topicName);
+  } finally {
+    await session.close;
+  }
+};
+
+export const getFormData = async (topicName) => {
+  const session = driver.session();
+
+  try {
+    const formDataQuery = `
+      MATCH (n:Subject{name: $topicName})-[:HAS_FORM_DATA]->(m)
+      RETURN m
+    `;
+    const formDataParams = { topicName };
+
+    const result = await session.run(formDataQuery, formDataParams);
+    const formNodeRecord = result.records[0];
+    if (formNodeRecord) {
+      const formNode = formNodeRecord.get("m").properties;
+      return formNode;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching form data:", error);
+    throw error;
+  } finally {
+    await session.close();
+  }
+};
+

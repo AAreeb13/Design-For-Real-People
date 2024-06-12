@@ -15,6 +15,7 @@ import { initAuthStateListener, auth } from "../database/firebase";
 import TopicEntry from "./components/TopicEntry";
 import Backtrack from "./components/Backtrack";
 import BookmarkMenu from "./pages/BookmarkMenu";
+import TopicEditForm from "./pages/TopicEditForm";
 
 function App() {
   const [graphData, setGraphData] = useState({ nodes: [], links: [] });
@@ -77,6 +78,8 @@ function App() {
         <Routes key={key}>
           <Route path="/" element={<HomePage />} />
           <Route path="/grid-menu" element={<GridMenu />} />
+          <Route path="/bookmarked" element={<BookmarkMenu />} />
+          <Route path="/editTopic/:topicName" element={<TopicEditForm />} />
           <Route
             path="/graph/:subject"
             element={
@@ -93,7 +96,6 @@ function App() {
               <SubgraphRouteWrapper graphData={graphData} userData={userData} />
             }
           />
-          <Route path="/bookmarked" element={<BookmarkMenu />} />
         </Routes>
       </div>
     </Router>
