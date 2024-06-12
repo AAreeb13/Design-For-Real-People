@@ -474,3 +474,30 @@ export const deleteNode = async (topicName) => {
     await session.close;
   }
 };
+
+export const getFormData = async (topicName) => {
+  const session = driver.session();
+
+  try {
+    const formDataQuery = `
+      MATCH (n:Subject{name: $topicName})-[:HAS_FORM_DATA]->(m)
+      RETURN m
+    `;
+    const formDataParams = { topicName };
+
+    const result = await session.run(formDataQuery, formDataParams);
+    const formNodeRecord = result.records[0];
+    if (formNodeRecord) {
+      const formNode = formNodeRecord.get("m").properties;
+      return formNode;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching form data:", error);
+    throw error;
+  } finally {
+    await session.close();
+  }
+};
+

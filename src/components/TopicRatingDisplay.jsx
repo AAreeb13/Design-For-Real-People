@@ -37,6 +37,8 @@ const TopicRatingDisplay = ({ topicName }) => {
 
   const handleCloseOverlay = () => {
     setShowConfirmation(false);
+    const newPath = `/editTopic/${topicName}`
+    window.location.assign(newPath)
   };
 
   const handleEdit = () => {
