@@ -11,6 +11,7 @@ import {
 import "../styles/TopicEntry.css";
 import TopicRatingButtons from "./TopicRatingButtons";
 import TopicRatingDisplay from "./TopicRatingDisplay";
+import SuggestionOverlay from "./SuggestionOverlay";
 
 const TopicEntry = ({ userData, graphData, node }) => {
   const [topicNode, setTopicNode] = useState(null);
@@ -23,6 +24,7 @@ const TopicEntry = ({ userData, graphData, node }) => {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [privledge, setPrivledge] = useState(null);
   const [formNode, setFormNode] = useState(null);
+  const [showSuggestionOverlay, setShowSuggestionOverlay] = useState(false);
 
   useEffect(() => {
     const fetchTopic = async () => {
@@ -38,10 +40,14 @@ const TopicEntry = ({ userData, graphData, node }) => {
             const userDoc = await getCurrentUserDocData(userData.email);
 
             if (userDoc && userDoc.subjectProgress) {
-              setCompleted(userDoc.subjectProgress[fetchedTopic[0].name] || false);
+              setCompleted(
+                userDoc.subjectProgress[fetchedTopic[0].name] || false
+              );
               setPrivledge(userDoc.privledge || null);
               if (userDoc.privledge === "member") {
-                setIsBookmarked(userDoc.bookmarks[fetchedTopic[0].name] || false);
+                setIsBookmarked(
+                  userDoc.bookmarks[fetchedTopic[0].name] || false
+                );
                 setIsMember(userDoc.privledge === "member");
               }
             } else {
@@ -95,6 +101,15 @@ const TopicEntry = ({ userData, graphData, node }) => {
     }
   };
 
+  const handleSuggestTopic = () => {
+    console.log("Suggest Topic button clicked");
+    toggleSuggestionOverlay();
+  };
+
+  const toggleSuggestionOverlay = () => {
+    setShowSuggestionOverlay((prev) => !prev);
+  };
+
   const handleRatingChange = async (rating) => {
     console.log("Rating changed to:", rating);
   };
@@ -110,7 +125,7 @@ const TopicEntry = ({ userData, graphData, node }) => {
   return (
     <div>
       <Backtrack paths={fullPath} />
-      {userEmail && (
+      {privledge === "member" && (
         <div
           style={{
             position: "fixed",
@@ -133,14 +148,26 @@ const TopicEntry = ({ userData, graphData, node }) => {
             {completed ? "Completed ✔️" : "Mark as Completed"}
           </button>
           {privledge === "member" && (
-            <button
-              className={`btn btn-block ${
-                isBookmarked ? "btn-warning" : "btn-outline-warning"
-              }`}
-              onClick={toggleBookmark}
-            >
-              <FaBookmark /> {isBookmarked ? "Bookmarked" : "Bookmark Topic"}
-            </button>
+            <>
+              <button
+                className={`btn btn-block ${
+                  isBookmarked ? "btn-warning" : "btn-outline-warning"
+                }`}
+                onClick={toggleBookmark}
+              >
+                <FaBookmark /> {isBookmarked ? "Bookmarked" : "Bookmark Topic"}
+              </button>
+
+              {showSuggestionOverlay && (
+                <SuggestionOverlay onClose={toggleSuggestionOverlay} topicName={topicNode.name}/>
+              )}
+              <button
+                className="btn btn-block btn-outline-primary"
+                onClick={toggleSuggestionOverlay}
+              >
+                Suggest Topic
+              </button>
+            </>
           )}
         </div>
       )}
@@ -157,13 +184,11 @@ const TopicEntry = ({ userData, graphData, node }) => {
           ))}
         </ul>
 
-        {
-          console.log("formdata", formNode)
-        }
+        {console.log("formdata", formNode)}
 
         <FormDisplay formData={formNode} />
 
-        { privledge === "member" && (
+        {privledge === "member" && (
           <TopicRatingButtons
             onRatingChange={handleRatingChange}
             userEmail={userEmail}
@@ -171,7 +196,7 @@ const TopicEntry = ({ userData, graphData, node }) => {
           />
         )}
         {privledge === "moderator" && (
-          <TopicRatingDisplay topicName={topicNode.name}/>
+          <TopicRatingDisplay topicName={topicNode.name} />
         )}
       </div>
     </div>
@@ -191,12 +216,10 @@ const FormDisplay = ({ formData }) => {
         <div key={key}>
           <h3>{title(key)}:</h3>
           <ul>
-            {typeof value === 'string' ? (
+            {typeof value === "string" ? (
               <li>{value}</li>
             ) : (
-              value.map((item, index) => (
-                <li key={index}>{item}</li>
-              ))
+              value.map((item, index) => <li key={index}>{item}</li>)
             )}
           </ul>
         </div>
@@ -207,9 +230,9 @@ const FormDisplay = ({ formData }) => {
 
 const title = (str) => {
   return str
-          .split(' ')
-          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-          .join(' ');
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
 };
 
 export default TopicEntry;

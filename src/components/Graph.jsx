@@ -3,6 +3,7 @@ import * as d3 from "d3";
 import { useNavigate } from "react-router-dom";
 import {
   getCurrentUserData,
+  getUserPrivledge,
   getUserSubjectProgress,
 } from "../../database/firebase";
 import { getOrder } from "../../database/graphData";
@@ -16,6 +17,7 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
   const [loading, setLoading] = useState(true);
   const [userLoggedIn, setUserLoggedIn] = useState(false);
   const [subjectProgress, setSubjectProgress] = useState({}); 
+  const [privledge, setUserPrivledge] = useState("guest")
   
   let validNodes =
     subject == null
@@ -82,6 +84,7 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       if (user) {
         setUserLoggedIn(true);
         const subjectProgress = await getUserSubjectProgress(user.email);
+        const privledge = await getUserPrivledge(user.email)
         const totalTopicsCount = getTotalNodesForSubject(subject, links, nodes);
         const ourTopicsCount = getNodesCompleteForSubject(
           subject,
@@ -89,6 +92,7 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
           nodes,
           subjectProgress
         );
+        setUserPrivledge(privledge)
         setTotalTopicCount(totalTopicsCount);
         setOurTopicCount(ourTopicsCount);
         setLoading(false);
@@ -402,17 +406,17 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .style("stroke-width", "2px")
       .style("pointer-events", "none");
 
-    if (userLoggedIn) {
+    if (privledge === "member") {
       const progressBar = svg
         .append("rect")
-        .attr("width", 250)
+        .attr("width", 200)
         .attr("height", 20)
         .attr("fill", "#ddd") // Light gray
         .attr("stroke", "#333") // Dark gray
         .attr("stroke-width", 1)
         .attr("rx", 10)
         .attr("ry", 10)
-        .attr("x", (width - 250) / 2)
+        .attr("x", (width + 1100) / 2)
         .attr("y", 10);
 
       const progressBarIndicator = svg
@@ -424,11 +428,11 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
         .attr("stroke-width", 1)
         .attr("rx", 10)
         .attr("ry", 10)
-        .attr("x", (width - 250) / 2)
+        .attr("x", (width + 1100) / 2)
         .attr("y", 10);
 
       const updateProgressBar = (completionPercentage) => {
-        const width = 250 * (completionPercentage / 100);
+        const width = 200 * (completionPercentage / 100);
         progressBarIndicator.attr("width", isNaN(width) ? 0 : width);
       };
 
@@ -436,7 +440,7 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
 
       const completionText = svg
         .append("text")
-        .attr("x", (width - 130) / 2)
+        .attr("x", (width + 1165) / 2)
         .attr("y", 50)
         .attr("font-family", "Arial, sans-serif")
         .attr("font-size", "16px")
@@ -460,8 +464,8 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
     });
 
     const initialTransform = d3.zoomIdentity
-      .translate(width / 3, height / 3)
-      .scale(0.3);
+      .translate(width / 2.75, height / 3)
+      .scale(0.25);
     svg.call(zoom.transform, initialTransform);
 
     const updateText = async () => {
