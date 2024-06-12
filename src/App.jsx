@@ -79,7 +79,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/grid-menu" element={<GridMenu />} />
           <Route path="/bookmarked" element={<BookmarkMenu />} />
-          <Route path="/editTopic/:topicName" element={<TopicEditForm />} />
+          <Route path="/editTopic/:topicName" element={<TopicEditFormWrapper />} />
           <Route
             path="/graph/:subject"
             element={
@@ -100,6 +100,11 @@ function App() {
       </div>
     </Router>
   );
+}
+
+function TopicEditFormWrapper() {
+  const { topicName } = useParams();
+  return <TopicEditForm topicName={topicName} />
 }
 
 function TopicRouteWrapper({ graphData, userData }) {
