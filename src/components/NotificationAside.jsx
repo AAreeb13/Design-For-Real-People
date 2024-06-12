@@ -6,7 +6,7 @@ import { deleteNotification, getCurrentUserData, getNotifications } from "../../
 
 const NotificationAside = () => {
   const [showNotifications, setShowNotifications] = useState(false);
-  const [notifications, setNotifications] = useState();
+  const [notifications, setNotifications] = useState([]);
 	const [userEmail, setUserEmail] = useState(null)
 
 	useEffect(() => {
@@ -17,7 +17,7 @@ const NotificationAside = () => {
 				const userEmail = userData.email
 				const notifications = await getNotifications(userEmail)
 				setUserEmail(userEmail)
-				setNotifications(notifications.map((d, i) => {return {id: i, text: d}}))
+				setNotifications(notifications.map((d, i) => {return {id: i, text: d.text}}))
 			} catch (error) {
 				console.error("Error fetching messages: ", error)
 			}

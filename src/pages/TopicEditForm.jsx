@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { deleteSuggestionFromTopic, getFormData, getNode, updateFormData, updateNode } from "../../database/graphData";
 import "../styles/TopicEditForm.css";
 import Button from 'react-bootstrap/Button';
+import { writeNotification } from "../../database/firebase";
 
 const TopicEditForm = ({ topicName }) => {
   const [topicNode, setTopicNode] = useState(null);
@@ -69,6 +70,10 @@ const TopicEditForm = ({ topicName }) => {
 
       if (successNode && successForm) {
         console.log("Form and Node successfully updated");
+        await writeNotification({
+          text: `Topic content updated: ${topicName}`
+        })
+
         const path = `/topic/${topicName}`;
         window.location.assign(path);
       } else {

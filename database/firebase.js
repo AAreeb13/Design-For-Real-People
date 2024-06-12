@@ -280,7 +280,7 @@ export const deleteNotification = async (userEmail, notificationContent) => {
 
     if (docId && userDocData) {
       const updatedNotifications = userDocData.notifications.filter(
-        (notification) => notification !== notificationContent
+        (notification) => notification.text !== notificationContent
       );
 
       const userDocRef = doc(db, "Users", docId);
@@ -293,6 +293,29 @@ export const deleteNotification = async (userEmail, notificationContent) => {
     }
   } catch (error) {
     console.error("Error deleting notification:", error);
+  }
+};
+
+export const writeNotification = async (notification) => {
+  try {
+    const userQuery = query(collection(db, "Users"));
+    const userQuerySnapshot = await getDocs(userQuery);
+
+    const updatePromises = userQuerySnapshot.docs.map(async (userDoc) => {
+      const userDocRef = doc(db, "Users", userDoc.id);
+      const userData = userDoc.data();
+
+      const updatedNotifications = userData.notifications ? [...userData.notifications, notification] : [notification];
+
+      await updateDoc(userDocRef, {
+        notifications: updatedNotifications,
+      });
+    });
+
+    await Promise.all(updatePromises);
+    console.log("Notification written successfully to all users.");
+  } catch (error) {
+    console.error("Error writing notification:", error);
   }
 };
 
