@@ -273,3 +273,26 @@ export const getNotifications = async (email) => {
   }
 }
 
+export const deleteNotification = async (userEmail, notificationContent) => {
+  try {
+    const docId = await getUserDocumentByUserEmail(userEmail);
+    const userDocData = await getCurrentUserDocData(userEmail);
+
+    if (docId && userDocData) {
+      const updatedNotifications = userDocData.notifications.filter(
+        (notification) => notification !== notificationContent
+      );
+
+      const userDocRef = doc(db, "Users", docId);
+      await updateDoc(userDocRef, {
+        notifications: updatedNotifications,
+      });
+      console.log("Notification deleted successfully.");
+    } else {
+      console.error("User document not found.");
+    }
+  } catch (error) {
+    console.error("Error deleting notification:", error);
+  }
+};
+

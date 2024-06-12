@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import { FaBell } from "react-icons/fa";
 import Button from 'react-bootstrap/Button';
 import "../styles/NotificationAside.css";
-import { getCurrentUserData, getNotifications } from "../../database/firebase";
+import { deleteNotification, getCurrentUserData, getNotifications } from "../../database/firebase";
 
 const NotificationAside = () => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState();
+	const [userEmail, setUserEmail] = useState(null)
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -15,6 +16,7 @@ const NotificationAside = () => {
 				console.log("our userdata is", userData)
 				const userEmail = userData.email
 				const notifications = await getNotifications(userEmail)
+				setUserEmail(userEmail)
 				setNotifications(notifications.map((d, i) => {return {id: i, text: d}}))
 			} catch (error) {
 				console.error("Error fetching messages: ", error)
@@ -25,8 +27,16 @@ const NotificationAside = () => {
 	}, [])
 
 
-  const handleDeleteNotification = (id) => {
-    setNotifications(notifications.filter((notification) => notification.id !== id));
+  const handleDeleteNotification = async (id) => {
+		const notificationNode = notifications.find((notification) => notification.id === id)
+		const notificationText = notificationNode.text
+		
+		if (userEmail !== null) {
+			await deleteNotification(userEmail, notificationText)
+			console.log()
+			setNotifications(notifications.filter((notification) => notification.text !== notificationText))
+		}
+
   };
 
   return (
