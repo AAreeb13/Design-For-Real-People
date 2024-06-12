@@ -262,3 +262,14 @@ export const updateRating = async (userEmail, newRatingName, newRatingValue) => 
     console.error("Error updating rating:", error)
   }
 }
+
+export const getNotifications = async (email) => {
+  try {
+    const userDocData = await getCurrentUserDocData(email);
+    return userDocData.notifications
+  } catch (error) {
+    console.error("Error fetching notifications", error)
+    return false
+  }
+}
+

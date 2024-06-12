@@ -1,15 +1,29 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaBell } from "react-icons/fa";
 import Button from 'react-bootstrap/Button';
 import "../styles/NotificationAside.css";
+import { getCurrentUserData, getNotifications } from "../../database/firebase";
 
 const NotificationAside = () => {
   const [showNotifications, setShowNotifications] = useState(false);
-  const [notifications, setNotifications] = useState([
-    { id: 1, text: "You have a new message" },
-    { id: 2, text: "Your topic suggestion was approved" },
-    { id: 3, text: "alot of text here that should span multiple lines so that the user will either need to see a different ddisplay or this will get dotted out using ..."}
-  ]);
+  const [notifications, setNotifications] = useState();
+
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				const userData = getCurrentUserData()
+				console.log("our userdata is", userData)
+				const userEmail = userData.email
+				const notifications = await getNotifications(userEmail)
+				setNotifications(notifications.map((d, i) => {return {id: i, text: d}}))
+			} catch (error) {
+				console.error("Error fetching messages: ", error)
+			}
+		}
+
+		fetchData()
+	}, [])
+
 
   const handleDeleteNotification = (id) => {
     setNotifications(notifications.filter((notification) => notification.id !== id));
