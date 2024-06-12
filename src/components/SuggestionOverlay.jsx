@@ -1,27 +1,38 @@
 import React, { useState } from "react";
 import "../styles/SuggestionOverlay.css";
+import { addSuggestionToTopic } from "../../database/graphData";
 
-const SuggestionOverlay = ({ onClose }) => {
+const SuggestionOverlay = ({ onClose, topicName }) => {
   const [suggestion, setSuggestion] = useState("");
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [showErrorMessage, setShowErrorMessage] = useState(false);
 
   const handleInputChange = (event) => {
     setSuggestion(event.target.value);
     setShowSuccessMessage(false);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log("Suggestion submitted:", suggestion);
-
-    // todo backend
-
-
-    setSuggestion("");
-    setShowSuccessMessage(true);
-    setTimeout(() => {
-      setShowSuccessMessage(false);
-    }, 3000);
+  
+    try {
+      let result = await addSuggestionToTopic(topicName, suggestion);
+      if (result) {
+        setSuggestion("");
+        setShowSuccessMessage(true);
+        setTimeout(() => {
+          setShowSuccessMessage(false);
+        }, 3000);
+      }
+    } catch (error) {
+      console.error("Error submitting suggestion:", error);
+      setShowErrorMessage(true);
+      setTimeout(() => {
+        setShowErrorMessage(false);
+      }, 3000);
+    }
   };
+  
 
   return (
     <div className="overlay">

@@ -546,3 +546,33 @@ export const updateFormData = async (topicName, newFormData) => {
     await session.close();
   }
 };
+
+
+export const addSuggestionToTopic = async (topicName, suggestion) => {
+  const session = driver.session();
+
+  try {
+    const query = `
+      MATCH (n:Subject {name: $topicName})
+      SET n.suggestions = coalesce(n.suggestions, []) + $suggestion
+      RETURN n
+    `;
+    const params = { topicName, suggestion };
+
+    const result = await session.run(query, params);
+
+    if (result.records.length === 0) {
+      throw new Error("Topic not found or failed to add suggestion");
+    }
+
+    const updatedNode = result.records[0].get("n").properties;
+    console.log(`Suggestion added to topic: ${topicName}`);
+    return updatedNode;
+  } catch (error) {
+    console.error("Error adding suggestion to topic:", error);
+    throw error;
+  } finally {
+    await session.close();
+  }
+};
+
