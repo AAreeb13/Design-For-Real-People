@@ -159,7 +159,7 @@ const TopicEditForm = ({ topicName }) => {
         <div className="form-section">
           <div className="d-flex justify-content-between align-items-center mb-3">
             <Button variant="dark" onClick={() => window.location.assign(`/topic/${topicName}`)} className="our-back-button">Go Back</Button>
-            <Button variant="info" onClick={() => setShowAside(!showAside)}>{showAside ? "Hide Messages" : "Show Messages"}</Button>
+            <Button variant="info" onClick={() => setShowAside(!showAside)}>{showAside ? "Hide Suggestions" : "Show Suggestions"}</Button>
           </div>
           <h1> Editing Topic: {topicName}</h1>
           <h2 style={{ marginTop: "30px", marginBottom: "20px" }}>Required Topic Details</h2>

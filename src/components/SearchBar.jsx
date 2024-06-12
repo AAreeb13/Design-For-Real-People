@@ -25,7 +25,7 @@ const SearchBar = () => {
     if (searchTerm) {
       const filteredNodes = nodes.filter(
         (node) =>
-          node.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+          node?.name?.toLowerCase().includes(searchTerm.toLowerCase()) &&
           (node.type === "topic" || !node.mainSubject)
       );
       setSuggestions(filteredNodes.slice(0, 5));
