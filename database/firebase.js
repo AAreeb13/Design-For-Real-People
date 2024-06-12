@@ -94,7 +94,7 @@ export const updateCompletionStatus = async (
   newStatus
 ) => {
   try {
-    const docId = await getUserDocumentByUserEmail(userEmail); // Get the document ID
+    const docId = await getUserDocumentByUserEmail(userEmail);
     const userDocData = await getCurrentUserDocData(userEmail);
 
     if (docId && userDocData) {
@@ -103,7 +103,7 @@ export const updateCompletionStatus = async (
         [topicKey]: newStatus,
       };
 
-      const userDocRef = doc(db, "Users", docId); // Use the retrieved document ID
+      const userDocRef = doc(db, "Users", docId); 
       await updateDoc(userDocRef, {
         subjectProgress: updatedSubjectProgress,
       });
@@ -116,6 +116,34 @@ export const updateCompletionStatus = async (
   }
 };
 
+export const updateBookmarkStatus = async (
+  userEmail,
+  topicKey,
+  newStatus
+) => {
+  try {
+    const docId = await getUserDocumentByUserEmail(userEmail); 
+    const userDocData = await getCurrentUserDocData(userEmail);
+
+    if (docId && userDocData) {
+      const updatedBookmarks = {
+        ...userDocData.bookmarks,
+        [topicKey]: newStatus,
+      };
+
+      const userDocRef = doc(db, "Users", docId);
+      await updateDoc(userDocRef, {
+        bookmarks: updatedBookmarks,
+      });
+      console.log("Bookmark status updated successfully.");
+    } else {
+      console.error("User document not found.");
+    }
+  } catch (error) {
+    console.error("Error updating bookmark status:", error);
+  }
+}
+
 const getUserDocumentByUserEmail = async (email) => {
   try {
     const userQuery = query(
@@ -125,7 +153,7 @@ const getUserDocumentByUserEmail = async (email) => {
     const userQuerySnapshot = await getDocs(userQuery);
 
     if (!userQuerySnapshot.empty) {
-      return userQuerySnapshot.docs[0].id; // Return the document ID
+      return userQuerySnapshot.docs[0].id;
     } else {
       console.error("User document not found.");
       return null;
@@ -146,6 +174,11 @@ export const getUserSubjectProgress = async (email) => {
   return userDoc.subjectProgress;
 };
 
+export const getUserBookmarks = async (email) => {
+  const userDoc = await getCurrentUserDocData(email);
+  return userDoc.bookmarks;
+}
+
 export const addUserSuggestion = async (suggestion) => {
   try {
     const suggestionData = {
@@ -157,25 +190,22 @@ export const addUserSuggestion = async (suggestion) => {
     const suggestionId = docRef.id;
     console.log("Suggestion added successfully with ID: ", suggestionId);
 
-    // Update the suggestion data with the generated ID
     const updatedSuggestionData = {
       ...suggestionData,
       id: suggestionId,
     };
 
-    // Update the document with the generated ID included
     await updateDoc(docRef, updatedSuggestionData);
 
-    return suggestionId; // Return the ID of the added suggestion
+    return suggestionId;
   } catch (error) {
     console.error("Error adding suggestion:", error);
-    throw error; // Re-throw the error to handle it outside
+    throw error;
   }
 };
 
 export const deleteUserSuggestion = async (suggestionId) => {
   try {
-    console.log("suggestionID", suggestionId)
     const suggestionDocRef = doc(db, "Suggestions", suggestionId);
     await deleteDoc(suggestionDocRef);
     console.log("Suggestion deleted successfully.");
@@ -183,3 +213,52 @@ export const deleteUserSuggestion = async (suggestionId) => {
     console.error("Error deleting suggestion:", error);
   }
 };
+
+export const removeBookmark = async (userEmail, bookmarkTopicName) => {
+  try {
+    const docId = await getUserDocumentByUserEmail(userEmail); 
+    const userDocData = await getCurrentUserDocData(userEmail);
+
+    if (docId && userDocData) {
+      const updatedBookmarks = { ...userDocData.bookmarks };
+      delete updatedBookmarks[bookmarkTopicName];
+
+      const userDocRef = doc(db, "Users", docId);
+      await updateDoc(userDocRef, {
+        bookmarks: updatedBookmarks,
+      });
+      console.log("Bookmark removed successfully.");
+    } else {
+      console.error("User document not found.");
+    }
+  } catch (error) {
+    console.error("Error removing bookmark:", error);
+  }
+};
+
+export const getRating = async (email, topicName) => {
+  const userDoc = await getCurrentUserDocData(email);
+  return userDoc.ratings[topicName];
+}
+
+export const updateRating = async (userEmail, newRatingName, newRatingValue) => {
+  try { 
+    const docId = await getUserDocumentByUserEmail(userEmail); 
+    const userDocData = await getCurrentUserDocData(userEmail);
+
+    if (docId && userDocData) {
+      const updatedRatings = {...userDocData.ratings}
+      updatedRatings[newRatingName] = newRatingValue
+
+      const userDocRef = doc(db, "Users", docId);
+      await updateDoc(userDocRef, {
+        ratings: updatedRatings,
+      })
+      console.log("Ratings updated successfully")
+    } else {
+      console.error("User document not found")
+    }
+  } catch (error) {
+    console.error("Error updating rating:", error)
+  }
+}

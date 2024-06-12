@@ -65,7 +65,7 @@ const SearchBar = () => {
 
   return (
     <div className="search-bar">
-      <form className="d-flex" role="search" onSubmit={handleSubmit}>
+      <form className="d-flex" role="search" onSubmit={handleSubmit} style={{minWidth: "300px"}}>
         <input
           className="form-control me-2"
           type="search"

@@ -7,6 +7,7 @@ import {
 } from "../../database/firebase";
 import { getOrder } from "../../database/graphData";
 
+
 const Graph = ({ nodes, links, subject = null, width, height, style }) => {
   const svgRef = useRef();
   const navigate = useNavigate();
@@ -14,11 +15,16 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
   const [ourTopicCount, setOurTopicCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [userLoggedIn, setUserLoggedIn] = useState(false);
-
-  const validNodes =
+  const [subjectProgress, setSubjectProgress] = useState({}); 
+  
+  let validNodes =
     subject == null
       ? nodes
       : nodes.filter((n) => n.name === subject || n.subject === subject);
+  
+  if (validNodes.length === 0) {
+    validNodes = [{name: subject, type: "subject"}]
+  }
 
   const nodesToUse = validNodes.map((n) => {
     return { name: n.name, type: n.type };
@@ -47,6 +53,34 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       const user = await getCurrentUserData();
       if (user) {
         setUserLoggedIn(true);
+        const progress = await getUserSubjectProgress(user.email);
+        const totalTopicsCount = getTotalNodesForSubject(subject, links, nodes);
+        const ourTopicsCount = getNodesCompleteForSubject(
+          subject,
+          links,
+          nodes,
+          progress
+        );
+        setSubjectProgress(progress);
+        setTotalTopicCount(totalTopicsCount);
+        setOurTopicCount(ourTopicsCount);
+        setLoading(false);
+      } else {
+        setUserLoggedIn(false);
+        setLoading(false);
+      }
+    };
+  
+    fetchData();
+  }, []);
+
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const user = await getCurrentUserData();
+      if (user) {
+        setUserLoggedIn(true);
         const subjectProgress = await getUserSubjectProgress(user.email);
         const totalTopicsCount = getTotalNodesForSubject(subject, links, nodes);
         const ourTopicsCount = getNodesCompleteForSubject(
@@ -63,6 +97,7 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
         setLoading(false);
       }
     };
+    
 
     const svg = d3.select(svgRef.current);
 
@@ -104,10 +139,7 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
           .distance(90) // distance = link length
       )
       .force(
-        "charge",
-        subject == null
-          ? d3.forceManyBody().strength(-5000)
-          : d3.forceManyBody().strength(-250000)
+        "charge", d3.forceManyBody().strength(-400000)  // how far apart are nodes
       )
       .force("center", d3.forceCenter(width / 2, height / 2));
 
@@ -130,6 +162,9 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .append("g")
       .attr("class", "node");
 
+      
+      
+    // Supporting code for rendering topics here
     const highlightLinks = (d) => {
       const highlightedNodes = new Set();
       const highlightRecursive = (currentNode) => {
@@ -146,14 +181,55 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       highlightRecursive(d);
     };
 
-    node
+    const innerComplete = (miniSubjectObj) => {
+      const miniSubjectName = miniSubjectObj.name;
+      const miniSubjectTopics = nodes.filter(
+        (node) => node.subject === miniSubjectName && node.type === "topic"
+      );
+      const childMiniSubjects = nodes.filter(
+        (node) =>
+          node.subject === miniSubjectName &&
+          node.type === "subject"
+      );
+
+      if (childMiniSubjects.length > 0) {
+        for (const childMiniSubject of childMiniSubjects) {
+          if (!innerComplete(childMiniSubject)) {
+            return false; 
+          }
+        }
+      }
+  
+      for (const topic of miniSubjectTopics) {
+        if (!subjectProgress[topic.name]) {
+          return false;
+        }
+      }
+      return true; 
+    };
+
+
+    const colCompleteTopic = "#86e399"
+    const colTodoTopic = "#ff9999"
+
+    const colCompleteMainSubject = "#28a745"
+    const colTodoMainSubject = "#f86d6d"
+    
+    const colCompleteMiniSubject = "#86e399"   // same as topic, but just incase you wish to change later
+    const colTodoMiniSubject = "#ff9999"
+
+
+    // -------------------------------------------------- TOPICS HERE -------------------------------------------------- //
+    
+    node // Topics that are complete
       .append("ellipse")
-      .filter((d) => d.type === "topic")
+      .filter((d) => d.type === "topic" && subjectProgress[d.name])
       .attr("rx", 300) // ellipse width
       .attr("ry", 100) // ellipse height
-      .attr("fill", "#69b3a2") // Light green
-      .attr("stroke", "#333") // Dark gray
+      .attr("fill", colCompleteTopic) 
+      .attr("stroke", "#333") 
       .attr("stroke-width", 2)
+      .style("cursor", "pointer")
       .on("click", (event, d) => {
         navigate("/topic/" + d.name);
       })
@@ -161,39 +237,117 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
         d3.select(this)
           .transition()
           .duration(200)
-          .attr("fill", "#508a7c"); // Dark green
-        // Highlight connected links
-          // Highlight connected links recursively
+          .attr("fill", colTodoTopic); 
           highlightLinks(d);
       })
       .on("mouseout", function (event, d) {
-        d3.select(this)
-          .transition()
-          .duration(200)
-          .attr("fill", "#69b3a2"); // Light green
-        // Reset all links
+      d3.select(this)
+        .transition()
+        .duration(200)
+          .attr("fill", colCompleteTopic); 
         link.attr("stroke", "#999").attr("stroke-width", 15);
       });
 
+
+      node  // topics that are incomplete
+      .append("ellipse")
+      .filter((d) => d.type === "topic" && !subjectProgress[d.name])
+      .attr("rx", 300) // ellipse width
+      .attr("ry", 100) // ellipse height
+      .attr("fill", colTodoTopic)
+      .attr("stroke", "#333") 
+      .attr("stroke-width", 2)
+      .style("cursor", "pointer")
+      .on("click", (event, d) => {
+        navigate("/topic/" + d.name);
+      })
+      .on("mouseover", function (event, d) {
+        d3.select(this)
+          .transition()
+          .duration(200)
+          .attr("fill", colCompleteTopic); 
+
+          highlightLinks(d);
+      })
+      .on("mouseout", function (event, d) {
+      d3.select(this)
+        .transition()
+        .duration(200)
+          .attr("fill", colTodoTopic); 
+        link.attr("stroke", "#999").attr("stroke-width", 15);
+      });
+
+
+
+
+
+    // -------------------------------------------------- MAIN SUBJECTS HERE -------------------------------------------------- //
+
     node
       .append("rect")
-      .filter((d) => d.type === "subject" && d.name === subject)
-      .attr("width", 800) // rectangle width (2x larger)
-      .attr("height", 200) // rectangle height (2x larger)
-      .attr("fill", "#f86d6d") // Light red
-      .attr("stroke", "#333") // Dark gray
+      .filter((d) => d.type === "subject" && d.name === subject && !innerComplete(d))
+      .attr("width", 800)
+      .attr("height", 200) 
+      .attr("fill", colTodoMainSubject) 
+      .attr("stroke", "#333") 
       .attr("stroke-width", 2)
       .attr("x", -400) // to center rectangle
       .attr("y", -100); // to center rectangle
 
     node
       .append("rect")
+      .filter((d) => d.type === "subject" && d.name === subject && innerComplete(d))
+      .attr("width", 800)
+      .attr("height", 200)
+      .attr("fill", colCompleteMainSubject) 
+      .attr("stroke", "#333") 
+      .attr("stroke-width", 2)
+      .attr("x", -400) // to center rectangle
+      .attr("y", -100); // to center rectangle
+
+
+    // -------------------------------------------------- MINI SUBJECTS HERE -------------------------------------------------- //
+    
+    node
+      .append("rect")
       .filter(
-        (d) => d.type === "subject" && (subject == null || d.name !== subject)
+        (d) => d.type === "subject" && (subject == null || d.name !== subject) && !innerComplete(d)
       )
       .attr("width", 500) // rectangle width
       .attr("height", 200) // rectangle height
-      .attr("fill", "#86e399") // Light green
+      .attr("fill", colTodoMiniSubject) 
+      .attr("stroke", "#333") // Dark gray
+      .attr("stroke-width", 2)
+      .attr("x", -250)
+      .attr("y", -100)
+      .style("cursor", "pointer")
+      .on("click", (event, d) => {
+        navigate("/graph/" + d.name);
+      })
+      .on("mouseover", function (event, d) {
+        d3.select(this)
+          .transition()
+          .duration(200)
+          .attr("fill", colCompleteMiniSubject);
+        // Highlight connected links recursively
+        highlightLinks(d);
+      })
+      .on("mouseout", function (event, d) {
+        d3.select(this)
+          .transition()
+          .duration(200)
+          .attr("fill", colTodoMiniSubject); 
+        link.attr("stroke", "#999").attr("stroke-width", 15);
+      });
+
+      node
+      .append("rect")
+      .filter(
+        (d) => d.type === "subject" && (subject == null || d.name !== subject) && innerComplete(d)
+      )
+      .attr("width", 500) // rectangle width
+      .attr("height", 200) // rectangle height
+      .attr("fill", colCompleteMiniSubject)
       .attr("stroke", "#333") // Dark gray
       .attr("stroke-width", 2)
       .attr("x", -250)
@@ -206,33 +360,34 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
         d3.select(this)
           .transition()
           .duration(50)
-          .attr("fill", "#ff9999"); // Light red
-        // Highlight connected links recursively
+          .attr("fill", colTodoMiniSubject); // Light red
         highlightLinks(d);
       })
       .on("mouseout", function (event, d) {
         d3.select(this)
           .transition()
           .duration(50)
-          .attr("fill", "#86e399"); // Light green
+          .attr("fill", colCompleteMiniSubject);
         link.attr("stroke", "#999").attr("stroke-width", 15);
       });
 
+
+
+
+
+    // ALL TEXT HERE FOR NODES
     node
       .append("text")
       .attr("x", 0)
       .attr("y", 0)
       .attr("dy", ".35em")
       .attr("text-anchor", "middle")
-      .attr("font-size", (d) =>
-        subject == null ? "40px" : d.name === subject ? "65px" : "45px"
-      )
-      .attr("fill", "#333") // Dark gray
-      .attr("font-family", "Arial, sans-serif") // Specify font family
-      .style("font-weight", "bold") // Make the font bold
+      .attr("font-size", (d) => subject == null ? "40px" : d.name === subject ? "65px" : "45px")
+      .attr("font-family", "Arial, sans-serif")
+      .style("font-weight", "bold")
       .style("pointer-events", "none")
       .text((d) => d.name);
-
+  
 
     const text = svgGroup
       .selectAll("text.link-order")
@@ -273,8 +428,8 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
         .attr("y", 10);
 
       const updateProgressBar = (completionPercentage) => {
-        const width = 150 * (completionPercentage / 100);
-        progressBarIndicator.attr("width", width);
+        const width = 250 * (completionPercentage / 100);
+        progressBarIndicator.attr("width", isNaN(width) ? 0 : width);
       };
 
       updateProgressBar((ourTopicCount / totalTopicCount) * 100);

@@ -10,9 +10,12 @@ import HomePage from "./pages/HomePage";
 import Graph from "./components/Graph";
 import Navbar from "./components/Navbar";
 import GridMenu from "./pages/GridMenu";
-import { getGraphData } from "../database/graphData";
+import { getGraphData, getPaths } from "../database/graphData";
 import { initAuthStateListener, auth } from "../database/firebase";
 import TopicEntry from "./components/TopicEntry";
+import Backtrack from "./components/Backtrack";
+import BookmarkMenu from "./pages/BookmarkMenu";
+import TopicEditForm from "./pages/TopicEditForm";
 
 function App() {
   const [graphData, setGraphData] = useState({ nodes: [], links: [] });
@@ -75,6 +78,8 @@ function App() {
         <Routes key={key}>
           <Route path="/" element={<HomePage />} />
           <Route path="/grid-menu" element={<GridMenu />} />
+          <Route path="/bookmarked" element={<BookmarkMenu />} />
+          <Route path="/editTopic/:topicName" element={<TopicEditFormWrapper />} />
           <Route
             path="/graph/:subject"
             element={
@@ -83,7 +88,7 @@ function App() {
           />
           <Route
             path="/topic/:node"
-            element={<TopicRouteWrapper userData={userData} />}
+            element={<TopicRouteWrapper graphData={graphData} userData={userData} />}
           />
           <Route
             path="/subgraph/:topicName"
@@ -97,33 +102,56 @@ function App() {
   );
 }
 
-function TopicRouteWrapper({ userData }) {
+function TopicEditFormWrapper() {
+  const { topicName } = useParams();
+  return <TopicEditForm topicName={topicName} />
+}
+
+function TopicRouteWrapper({ graphData, userData }) {
   const { node } = useParams();
 
   useEffect(() => {
     console.log("TopicRouteWrapper userData changed:", userData);
   }, [userData]);
 
-  return <TopicEntry node={node} userData={userData} />;
+  return <TopicEntry node={node} graphData={graphData} userData={userData} />;
 }
 
 function GraphRouteWrapper({ graphData, userData }) {
   const { subject } = useParams();
+  const [paths, setPaths] = useState([]);
+
+  useEffect(() => {
+    const fetchPaths = async () => {
+      try {
+        const paths = await getPaths(subject, graphData);
+        setPaths(paths);
+      } catch (error) {
+        console.error("Error fetching paths:", error);
+      }
+    };
+
+    fetchPaths();
+  }, [subject, graphData]);
 
   useEffect(() => {
     console.log("GraphRouteWrapper userData changed:", userData);
   }, [userData]);
 
   return (
-    <Graph
-      nodes={graphData.nodes}
-      links={graphData.relationships}
-      subject={subject}
-      width={1500}
-      height={600}
-    />
+    <>
+      <Backtrack paths={paths} />
+      <Graph
+        nodes={graphData.nodes}
+        links={graphData.relationships}
+        subject={subject}
+        width={1500}
+        height={600}
+      />
+    </>
   );
 }
+
 
 function SubgraphRouteWrapper({ graphData, userData }) {
   const { topicName } = useParams();

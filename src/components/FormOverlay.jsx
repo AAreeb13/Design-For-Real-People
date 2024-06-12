@@ -134,6 +134,8 @@ const FormOverlay = ({ onClose, formType }) => {
       userId: userId,
       privledge: "member",
       subjectProgress: {},
+      bookmarks: {},
+      ratings: {}
     };
 
     try {

@@ -45,8 +45,6 @@ CREATE (n:Subject{
   subject: 'proofs',
   type: 'topic',
   description: 'The study of limit testing with ratios',
-  requires: ['proofs', 'limits'],
-  links: 'www.example.com',
   good: 23,
   alright: 30,
   bad: 0,
@@ -60,7 +58,6 @@ CREATE (n:Subject{
     'It would be great to see more comparison with other limit tests.',
     'Adding a quiz at the end of the topic would help reinforce learning.'
   ],
-  resources: [],
   learning_objectives: [
     'Understand the fundamental principles of the limit ratio test and its mathematical basis.',
     'Apply the limit ratio test to determine the convergence or divergence of series.',
@@ -68,15 +65,20 @@ CREATE (n:Subject{
     'Analyze and interpret the results of the limit ratio test in the context of real-world problems.',
     'Develop problem-solving skills related to series and limits using the limit ratio test.'
   ]
-});
+})
+WITH n
+CREATE (formData:FormData)
+CREATE (n)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['proofs', 'limits'],
+    formData.links = ['www.example.com'],
+    formData.resources = [];
+
 
 CREATE (n:Subject{
   name: "L'Hopitals Rule",
   subject: 'proofs',
   type: 'topic',
   description: 'An essential technique for evaluating limits that result in indeterminate forms, using derivatives to find the limit.',
-  requires: ['proofs', 'limits', 'differentiation'],
-  links: 'www.example.com',
   good: 23,
   alright: 30,
   bad: 0,
@@ -90,11 +92,6 @@ CREATE (n:Subject{
     'Include a worksheet PDF for practice on typical exam questions.',
     'Consider linking to video tutorials for visual learners.'
   ],
-  resources: [
-    'Step-by-step guide on applying L\'Hopital\'s Rule',
-    'Video tutorial covering different scenarios where the rule is used',
-    'Practice problems worksheet with solutions'
-  ],
   learning_objectives: [
     'Understand the conditions under which L\'Hopital\'s Rule can be applied to evaluate limits.',
     'Apply L\'Hopital\'s Rule to solve problems involving indeterminate forms like 0/0 and ∞/∞.',
@@ -102,7 +99,14 @@ CREATE (n:Subject{
     'Demonstrate proficiency in deriving functions to prepare them for the application of L\'Hopital\'s Rule.',
     'Critically analyze and verify the results obtained using L\'Hopital\'s Rule.'
   ]
-});
+})
+WITH n
+CREATE (formData:FormData)
+CREATE (n)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['proofs', 'limits', 'differentiation'],
+    formData.links = ['www.example.com'],
+    formData.resources = [];
+
 
 
 CREATE (n:Subject{
@@ -110,8 +114,6 @@ CREATE (n:Subject{
   subject: 'differentiation',
   type: 'topic',
   description: 'A fundamental technique for differentiating compositions of functions, essential for calculus students.',
-  requires: ['differentiation'],
-  links: 'www.example.com',
   good: 23,
   alright: 30,
   bad: 0,
@@ -125,11 +127,6 @@ CREATE (n:Subject{
     'Add a section on common mistakes to avoid when using the Chain Rule.',
     'Provide links to online calculators for practice.'
   ],
-  resources: [
-    'Interactive tutorial on the Chain Rule',
-    'List of practice problems with detailed solutions',
-    'Video explanation of the Chain Rule and its applications'
-  ],
   learning_objectives: [
     'Understand the mathematical foundation and rationale behind the Chain Rule.',
     'Apply the Chain Rule to compute derivatives of composite functions.',
@@ -137,7 +134,18 @@ CREATE (n:Subject{
     "Explore the Chain Rule's applications in physics and engineering for practical insight.",
     'Develop fluency in integrating the Chain Rule with other differentiation rules.'
   ]
-});
+})
+WITH n
+CREATE (formData:FormData)
+CREATE (n)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['differentiation'],
+    formData.links = ['www.example.com'],
+    formData.resources = [
+      'Interactive tutorial on the Chain Rule',
+      'List of practice problems with detailed solutions',
+      'Video explanation of the Chain Rule and its applications'
+    ];
+
 
 
 CREATE (n:Subject{
@@ -145,8 +153,6 @@ CREATE (n:Subject{
   subject: 'differentiation',
   type: 'topic',
   description: 'A key differentiation rule used to compute the derivative of the product of two functions, vital for students of calculus.',
-  requires: ['differentiation'],
-  links: 'www.example.com',
   good: 23,
   alright: 30,
   bad: 0,
@@ -160,11 +166,6 @@ CREATE (n:Subject{
     'Provide a cheat sheet for quick reference to this and other differentiation rules.',
     'Host a webinar or live Q&A session to address common questions about the Product Rule.'
   ],
-  resources: [
-    'Detailed video tutorial on the Product Rule',
-    'Set of practice exercises tailored to different difficulty levels',
-    'Infographic summarizing the Product Rule and its usage'
-  ],
   learning_objectives: [
     'Understand the derivation and proof of the Product Rule.',
     'Apply the Product Rule to differentiate products of polynomial, exponential, and trigonometric functions.',
@@ -172,16 +173,25 @@ CREATE (n:Subject{
     'Develop problem-solving skills by tackling diverse problems that incorporate the Product Rule.',
     'Assess and verify the accuracy of derivatives calculated using the Product Rule.'
   ]
-});
+})
+WITH n
+CREATE (formData:FormData)
+CREATE (n)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['differentiation'],
+    formData.links = ['www.example.com'],
+    formData.resources = [
+      'Detailed video tutorial on the Product Rule',
+      'Set of practice exercises tailored to different difficulty levels',
+      'Infographic summarizing the Product Rule and its usage'
+    ];
+
 
 
 CREATE (n:Subject{
-  name: 'integration by parts',
+  name: 'Integration by Parts',
   subject: 'integration',
   type: 'topic',
   description: 'A fundamental technique derived from the product rule of differentiation, used to integrate products of functions.',
-  requires: ['integration'],
-  links: 'www.example.com',
   good: 23,
   alright: 30,
   bad: 0,
@@ -195,11 +205,6 @@ CREATE (n:Subject{
     'Include a video series that covers difficult integrals using this technique.',
     'Create a detailed guide on when to use integration by parts versus substitution.'
   ],
-  resources: [
-    'Step-by-step guide on Integration by Parts',
-    'Video tutorials covering various examples, from basic to complex',
-    'Compilation of exercises with solutions for practice'
-  ],
   learning_objectives: [
     'Understand the derivation of Integration by Parts from the product rule of differentiation.',
     'Apply Integration by Parts to compute integrals involving products of functions, particularly polynomials and trigonometric functions.',
@@ -207,7 +212,18 @@ CREATE (n:Subject{
     'Develop strategies for selecting the appropriate parts in the formula to simplify integration problems.',
     'Master the technique to solve integrals efficiently and verify their correctness.'
   ]
-});
+})
+WITH n
+CREATE (formData:FormData)
+CREATE (n)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['integration'],
+    formData.links = ['www.example.com'],
+    formData.resources = [
+      'Step-by-step guide on Integration by Parts',
+      'Video tutorials covering various examples, from basic to complex',
+      'Compilation of exercises with solutions for practice'
+    ];
+
 
 
 CREATE (n:Subject{
@@ -215,8 +231,6 @@ CREATE (n:Subject{
   subject: 'calculus',
   type: 'topic',
   description: 'Exploration of functions, which are special types of relations that assign each input exactly one output.',
-  requires: ['basic algebra'],
-  links: 'www.example.com',
   good: 23,
   alright: 30,
   bad: 0,
@@ -240,7 +254,18 @@ CREATE (n:Subject{
     'Analyze the behavior of functions through graphical representations.',
     'Master the application of functions in describing and solving real-world phenomena.'
   ]
-});
+})
+WITH n
+CREATE (formData:FormData)
+CREATE (n)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['basic algebra'],
+    formData.links = ['www.example.com'],
+    formData.resources = [
+      'Detailed guide on different types of functions and their properties',
+      'Interactive applet for exploring the graphical representation of functions',
+      'Video lectures on functions in mathematics and their practical applications'
+    ];
+
 
 
 CREATE (n:Subject{
@@ -255,8 +280,6 @@ CREATE (n:Subject{
   subject: 'integration preliminaries',
   type: 'topic',
   description: 'Learn how to integrate constants such as 1, 2, e, pi, etc., fundamental for understanding basic integration techniques.',
-  requires: ['integration preliminaries'],
-  links: 'www.example.com',
   good: 23,
   alright: 30,
   bad: 0,
@@ -274,15 +297,23 @@ CREATE (n:Subject{
     'Understand the process of integrating a constant function over an interval.',
     'Apply constant integration to solve practical problems in calculus.'
   ]
-});
+})
+WITH n
+CREATE (formData:FormData)
+CREATE (n)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['integration preliminaries'],
+    formData.links = ['www.example.com'],
+    formData.resources = [
+      'Video tutorial on integrating constants',
+      'Integration exercises with solutions'
+    ];
+
 
 CREATE (n:Subject{
   name: 'integrating a positive power',
   subject: 'integration preliminaries',
   type: 'topic',
   description: 'Explore how to integrate terms like x, x^2, x^3, essential for mastering polynomial integration.',
-  requires: ['integration preliminaries'],
-  links: 'www.example.com',
   good: 23,
   alright: 30,
   bad: 0,
@@ -300,15 +331,23 @@ CREATE (n:Subject{
     'Learn the technique of integrating polynomial functions.',
     'Develop skills to integrate higher power polynomials with ease.'
   ]
-});
+})
+WITH n
+CREATE (formData:FormData)
+CREATE (n)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['integration preliminaries'],
+    formData.links = ['www.example.com'],
+    formData.resources = [
+      'Step-by-step guide to polynomial integration',
+      'Practice problems focusing on polynomial terms'
+    ];
+
 
 CREATE (n:Subject{
   name: 'integrating a negative power',
   subject: 'integration preliminaries',
   type: 'topic',
   description: 'Understand the methods for integrating terms like x^-1, x^-2, which are pivotal for dealing with rational functions.',
-  requires: ['integration preliminaries'],
-  links: 'www.example.com',
   good: 23,
   alright: 30,
   bad: 0,
@@ -326,7 +365,17 @@ CREATE (n:Subject{
     'Master the integration of functions involving negative powers.',
     'Apply integration techniques to rational functions in various contexts.'
   ]
-});
+})
+WITH n
+CREATE (formData:FormData)
+CREATE (n)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['integration preliminaries'],
+    formData.links = ['www.example.com'],
+    formData.resources = [
+      'Tutorial on rational function integration',
+      'Worksheet on negative exponents'
+    ];
+
 
 
 CREATE (n:Subject{
@@ -334,8 +383,6 @@ CREATE (n:Subject{
   subject: 'integration preliminaries',
   type: 'topic',
   description: 'Learn to integrate terms such as x^0.5, x^3.5, crucial for handling non-integer exponents in calculus.',
-  requires: ['integration preliminaries'],
-  links: 'www.example.com',
   good: 23,
   alright: 30,
   bad: 0,
@@ -353,7 +400,17 @@ CREATE (n:Subject{
     'Understand the principles of integrating fractional power functions.',
     'Confidently compute integrals involving fractional exponents.'
   ]
-});
+})
+WITH n
+CREATE (formData:FormData)
+CREATE (n)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['integration preliminaries'],
+    formData.links = ['www.example.com'],
+    formData.resources = [
+      'Comprehensive guide on fractional power integration',
+      'Examples and exercises involving fractional exponents'
+    ];
+
 
 
 CREATE (n:Subject{
@@ -361,8 +418,6 @@ CREATE (n:Subject{
   subject: 'integration preliminaries',
   type: 'topic',
   description: 'Focus on integrating terms such as 1/x, essential for logarithmic integration and advanced calculus applications.',
-  requires: ['integration preliminaries'],
-  links: 'www.example.com',
   good: 23,
   alright: 30,
   bad: 0,
@@ -380,32 +435,45 @@ CREATE (n:Subject{
     'Learn to integrate functions with variables in the denominator.',
     'Develop the ability to apply logarithmic integration in practical scenarios.'
   ]
-});
+})
+WITH n
+CREATE (formData:FormData)
+CREATE (n)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['integration preliminaries'],
+    formData.links = ['www.example.com'],
+    formData.resources = [
+      'Tutorial on logarithmic integration',
+      'Problem sets involving integrals of denominator variables'
+    ];
+
 
 
 CREATE (n:Subject{
-	name: 'integration by inspection',
-	subject: 'integration',
-	type: 'topic',
-	description: 'Reverse chain rule',
-	requires: ['integration'],
-	links: 'www.example.com',
+  name: 'integration by inspection',
+  subject: 'integration',
+  type: 'topic',
+  description: 'Reverse chain rule',
   good: 23,
   alright: 30,
   bad: 0,
-	comments: [],
-	suggestions: [],
-	resources: [],
-	learning_objectives: []
-});
+  comments: [],
+  suggestions: [],
+  resources: [],
+  learning_objectives: []
+})
+WITH n
+CREATE (formData:FormData)
+CREATE (n)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['integration'],
+    formData.links = ['www.example.com'],
+    formData.resources = [];
+
 
 CREATE (n:Subject{
   name: 'Lengths, Volumes, and Surfaces',
   subject: 'integration',
   type: 'topic',
   description: 'Introduction to using integration to calculate lengths, areas, volumes, and surface areas, foundational for applications in physics and engineering.',
-  requires: ['integration'],
-  links: 'www.example.com',
   good: 23,
   alright: 30,
   bad: 0,
@@ -426,7 +494,14 @@ CREATE (n:Subject{
     'Apply these techniques to solve real-world problems in science and engineering.',
     'Develop spatial reasoning and mathematical visualization skills.'
   ]
-});
+})
+WITH n
+CREATE (formData:FormData)
+CREATE (n)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['integration'],
+    formData.links = ['www.example.com'],
+    formData.resources = [];
+
 
 
 CREATE (n:Subject{
@@ -434,8 +509,6 @@ CREATE (n:Subject{
   subject: 'integration',
   type: 'topic',
   description: 'Techniques for integrating functions expressed in polar coordinates, crucial for dealing with circular and spiral forms.',
-  requires: ['integration'],
-  links: 'www.example.com',
   good: 23,
   alright: 30,
   bad: 0,
@@ -456,7 +529,14 @@ CREATE (n:Subject{
     'Perform integration over areas and volumes defined in polar coordinates.',
     'Utilize these methods in practical applications involving radial geometries.'
   ]
-});
+})
+WITH n
+CREATE (formData:FormData)
+CREATE (n)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['integration'],
+    formData.links = ['www.example.com'],
+    formData.resources = [];
+
 
 
 CREATE (n:Subject{
@@ -471,8 +551,6 @@ CREATE (n:Subject{
   subject: 'sequences and series',
   type: 'topic',
   description: 'A mathematical tool used to decompose periodic functions into sums of simpler, sinusoidal functions. Essential for applications in signal processing, physics, and engineering.',
-  requires: ['integration', 'differential equations'],
-  links: 'www.example.com',
   good: 23,
   alright: 30,
   bad: 0,
@@ -496,7 +574,14 @@ CREATE (n:Subject{
     'Explore applications of Fourier series in solving practical problems in engineering and physics.',
     'Develop proficiency in using Fourier series in computational tasks and signal analysis.'
   ]
-});
+})
+WITH n
+CREATE (formData:FormData)
+CREATE (n)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['integration', 'differential equations'],
+    formData.links = ['www.example.com'],
+    formData.resources = [];
+
 
 
 CREATE (n:Subject{
@@ -504,8 +589,6 @@ CREATE (n:Subject{
   subject: 'differentiation',
   type: 'topic',
   description: 'A powerful mathematical tool that transforms a time-domain function into a complex frequency-domain representation, integrating concepts from calculus and complex numbers. Widely used in engineering and physics to solve differential equations.',
-  requires: ['integration', 'differentiation', 'complex numbers'],
-  links: 'www.example.com',
   good: 23,
   alright: 30,
   bad: 0,
@@ -529,7 +612,14 @@ CREATE (n:Subject{
     'Master the inverse Laplace transform for converting frequency-domain functions back to time-domain functions.',
     'Explore the broader implications of Laplace transforms in systems analysis and signal processing.'
   ]
-});
+})
+WITH n
+CREATE (formData:FormData)
+CREATE (n)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['integration', 'differentiation', 'complex numbers'],
+    formData.links = ['www.example.com'],
+    formData.resources = [];
+
 
 
 CREATE (n:Subject{
@@ -537,8 +627,6 @@ CREATE (n:Subject{
   subject: 'differentiation',
   type: 'topic',
   description: 'A mathematical transformation used to convert a time-domain signal into its corresponding frequency-domain representation, employing integral calculus to output a new function that describes frequency content.',
-  requires: ['integration'],
-  links: 'www.example.com',
   good: 23,
   alright: 30,
   bad: 0,
@@ -561,7 +649,14 @@ CREATE (n:Subject{
     'Develop the ability to use Fourier Transform in practical signal processing tasks.',
     'Explore advanced applications of Fourier Transform in modern technologies and scientific research.'
   ]
-});
+})
+WITH n
+CREATE (formData:FormData)
+CREATE (n)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['integration'],
+    formData.links = ['www.example.com'],
+    formData.resources = [];
+
 
 
 CREATE (n:Subject{
@@ -569,8 +664,6 @@ CREATE (n:Subject{
   subject: 'differential equations',
   type: 'topic',
   description: 'Study and solution of equations involving derivatives of functions, focusing on relationships that involve rates of change and the variables over which they are functions.',
-  requires: ['integration'],
-  links: 'www.example.com',
   good: 23,
   alright: 30,
   bad: 0,
@@ -594,7 +687,14 @@ CREATE (n:Subject{
     'Develop skills in using software tools for the numerical solution of ODEs.',
     'Analyze the stability and behavior of solutions to ODEs in different contexts.'
   ]
-});
+})
+WITH n
+CREATE (formData:FormData)
+CREATE (n)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['integration'],
+    formData.links = ['www.example.com'],
+    formData.resources = [];
+
 
 
 CREATE (n:Subject{
@@ -609,8 +709,6 @@ CREATE (n1:Subject{
   subject: 'differential equations',
   type: 'topic',
   description: 'Focuses on solving equations that involve only the first derivative of a function. These are fundamental in modeling systems with a single rate of change.',
-  requires: ['integration'],
-  links: 'www.example.com',
   good: 23,
   alright: 30,
   bad: 0,
@@ -618,15 +716,20 @@ CREATE (n1:Subject{
   suggestions: ['Interactive simulations for dynamic systems modeled by these equations.', 'Workshops on analytical solutions versus numerical methods.'],
   resources: ['Comprehensive guide on first-order differential equations', 'Video tutorials explaining methods of solving linear and nonlinear first-order ODEs'],
   learning_objectives: ['Understand the mathematical formulation of first-order differential equations.', 'Apply methods to solve linear and separable equations in various contexts.', 'Analyze real-world systems using first-order differential equations.']
-});
+})
+WITH n1
+CREATE (formData:FormData)
+CREATE (n1)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['integration'],
+    formData.links = ['www.example.com'],
+    formData.resources = [];
+
 
 CREATE (n2:Subject{
   name: 'Second Order Differential Equations',
   subject: 'differential equations',
   type: 'topic',
   description: 'Deals with equations that include derivatives up to the second level, crucial for understanding phenomena involving accelerations and forces.',
-  requires: ['integration'],
-  links: 'www.example.com',
   good: 23,
   alright: 30,
   bad: 0,
@@ -634,15 +737,20 @@ CREATE (n2:Subject{
   suggestions: ['Series of problem-solving sessions with focus on mechanical vibrations.', 'Online calculator tools for characteristic equation solutions.'],
   resources: ['Textbook sections on harmonic motion and electrical circuits', 'Series of step-by-step problem-solving videos'],
   learning_objectives: ['Master the characteristic methods for homogeneous equations.', 'Solve non-homogeneous second-order differential equations using various techniques.', 'Apply these equations to physical systems like springs and circuits.']
-});
+})
+WITH n2
+CREATE (formData:FormData)
+CREATE (n2)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['integration'],
+    formData.links = ['www.example.com'],
+    formData.resources = [];
+
 
 CREATE (n3:Subject{
   name: 'Qualitative Analysis',
   subject: 'calculus',
   type: 'topic',
   description: 'Involves the use of heuristics to analyze data, focusing on the interpretation of results rather than exact solutions.',
-  requires: ['integration'],
-  links: 'www.example.com',
   good: 23,
   alright: 30,
   bad: 0,
@@ -651,6 +759,13 @@ CREATE (n3:Subject{
   resources: ['E-books on data-driven decision making', 'Video courses on qualitative techniques in various industries'],
   learning_objectives: ['Understand various qualitative methods and their applications.', 'Develop skills to interpret complex datasets.', 'Integrate qualitative analysis with quantitative methods for comprehensive insights.']
 })
+WITH n3
+CREATE (formData:FormData)
+CREATE (n3)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['integration'],
+    formData.links = ['www.example.com'],
+    formData.resources = [];
+
 
 
 CREATE (n1:Subject{
@@ -658,8 +773,6 @@ CREATE (n1:Subject{
   subject: 'calculus',
   type: 'topic',
   description: 'Studies the conditions under which small changes in the parameters of a system cause a qualitative or topological change in its behavior, leading to the splitting into branches.',
-  requires: ['integration'],
-  links: 'www.example.com',
   good: 23,
   alright: 30,
   bad: 0,
@@ -680,15 +793,20 @@ CREATE (n1:Subject{
     'Identify different types of bifurcations and their implications in various systems.',
     'Apply bifurcation analysis to study stability and changes in dynamical systems.'
   ]
-});
+})
+WITH n1
+CREATE (formData:FormData)
+CREATE (n1)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['integration'],
+    formData.links = ['www.example.com'],
+    formData.resources = [];
+
 
 CREATE (n2:Subject{
   name: 'Multivariate Calculus',
   subject: 'integration',
   type: 'topic',
   description: 'Explores advanced topics in calculus involving multiple variables, including partial differentiation and multiple integration, essential for fields like engineering, physics, and economics.',
-  requires: ['integration', 'differentiation'],
-  links: 'www.example.com',
   good: 23,
   alright: 30,
   bad: 0,
@@ -709,7 +827,14 @@ CREATE (n2:Subject{
     'Understand and apply gradient, divergence, and curl in vector calculus.',
     'Utilize multivariate calculus techniques to solve real-world problems in physics, engineering, and beyond.'
   ]
-});
+})
+WITH n2
+CREATE (formData:FormData)
+CREATE (n2)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['integration', 'differentiation'],
+    formData.links = ['www.example.com'],
+    formData.resources = [];
+
 
 
 // ------------------   Probability here   ------------------ //
@@ -722,82 +847,172 @@ CREATE (n:Subject{
 });
 
 
-CREATE 
-(n1:Subject{
+CREATE (n1:Subject{
   name: 'mean',
   subject: 'probability and statistics',
   type: 'topic',
   description: 'The study of averages, fundamental in understanding the central tendency of data sets.',
-  requires: ['probability and statistics'],
-  links: 'www.example.com',
   good: 23,
   alright: 30,
   bad: 0,
-  comments: ['Essential concept for all fields of statistical analysis.', 'Would like more examples using real-world data.'],
-  suggestions: ['Interactive tools to calculate mean for various data sets.', 'Webinars on statistical means in different contexts.'],
-  resources: ['Guide on calculating and interpreting the mean.', 'Video tutorials on mean calculation in Excel and Python.'],
-  learning_objectives: ['Understand the concept of mean and its calculation.', 'Apply the mean to summarize data sets in real-world scenarios.', 'Analyze how the mean compares to other measures of central tendency like median and mode.']
-}),
-(n2:Subject{
+  comments: [
+    'Essential concept for all fields of statistical analysis.',
+    'Would like more examples using real-world data.'
+  ],
+  suggestions: [
+    'Interactive tools to calculate mean for various data sets.',
+    'Webinars on statistical means in different contexts.'
+  ],
+  resources: [
+    'Guide on calculating and interpreting the mean.',
+    'Video tutorials on mean calculation in Excel and Python.'
+  ],
+  learning_objectives: [
+    'Understand the concept of mean and its calculation.',
+    'Apply the mean to summarize data sets in real-world scenarios.',
+    'Analyze how the mean compares to other measures of central tendency like median and mode.'
+  ]
+})
+WITH n1
+CREATE (formData:FormData)
+CREATE (n1)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['probability and statistics'],
+    formData.links = ['www.example.com'],
+    formData.resources = [];
+
+
+CREATE (n2:Subject{
   name: 'variance',
   subject: 'probability and statistics',
   type: 'topic',
   description: 'The study of dispersion, measuring how spread out the numbers are in a data set.',
-  requires: ['probability and statistics'],
-  links: 'www.example.com',
   good: 23,
   alright: 30,
   bad: 0,
-  comments: ['Helpful for understanding data variability.', 'Needs clearer examples for financial and scientific data.'],
-  suggestions: ['Case studies on variance in stock market analysis.', 'Detailed guides on variance calculation for different types of data.'],
-  resources: ['Step-by-step videos on computing variance.', 'Interactive quizzes to practice variance calculation.'],
-  learning_objectives: ['Master the calculation of variance.', 'Apply variance analysis to assess data spread and variability.', 'Distinguish between population and sample variance.']
-}),
-(n3:Subject{
+  comments: [
+    'Helpful for understanding data variability.',
+    'Needs clearer examples for financial and scientific data.'
+  ],
+  suggestions: [
+    'Case studies on variance in stock market analysis.',
+    'Detailed guides on variance calculation for different types of data.'
+  ],
+  resources: [
+    'Step-by-step videos on computing variance.',
+    'Interactive quizzes to practice variance calculation.'
+  ],
+  learning_objectives: [
+    'Master the calculation of variance.',
+    'Apply variance analysis to assess data spread and variability.',
+    'Distinguish between population and sample variance.'
+  ]
+})
+WITH n2
+CREATE (formData:FormData)
+CREATE (n2)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['probability and statistics'],
+    formData.links = ['www.example.com'],
+    formData.resources = [];
+
+
+CREATE (n3:Subject {
   name: 'standard deviation',
   subject: 'probability and statistics',
   type: 'topic',
   description: 'A measure of the amount of variation or dispersion of a set of values, a widely used data variability measure.',
-  requires: ['variance'],
-  links: 'www.example.com',
   good: 23,
   alright: 30,
   bad: 0,
-  comments: ['Crucial for risk assessment in finance.', 'More applications in quality control would be beneficial.'],
-  suggestions: ['Workshops on using standard deviation in quality assurance.', 'Simulation tools to demonstrate effects of standard deviation in process control.'],
-  resources: ['Tutorial on standard deviation and its applications.', 'Case studies illustrating standard deviation in business and science.'],
-  learning_objectives: ['Understand the relationship between standard deviation and variance.', 'Calculate standard deviation for different data sets.', 'Utilize standard deviation to measure uncertainty and risk in various contexts.']
-}),
-(n4:Subject{
+  comments: [
+    'Crucial for risk assessment in finance.',
+    'More applications in quality control would be beneficial.'
+  ],
+  suggestions: [
+    'Workshops on using standard deviation in quality assurance.',
+    'Simulation tools to demonstrate effects of standard deviation in process control.'
+  ],
+  learning_objectives: [
+    'Understand the relationship between standard deviation and variance.',
+    'Calculate standard deviation for different data sets.',
+    'Utilize standard deviation to measure uncertainty and risk in various contexts.'
+  ]
+})
+WITH n3
+CREATE (formData:FormData)
+CREATE (n3)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['variance'],
+    formData.links = ['www.example.com'],
+    formData.resources = ['Tutorial on standard deviation and its applications.', 'Case studies illustrating standard deviation in business and science.'];
+
+
+CREATE (n4:Subject{
   name: 'skewness',
   subject: 'probability and statistics',
   type: 'topic',
   description: 'The study of asymmetry in a statistical distribution, a crucial measure to understand the distribution\'s shape.',
-  requires: ['probability and statistics'],
-  links: 'www.example.com',
   good: 23,
   alright: 30,
   bad: 0,
-  comments: ['Important for data distribution analysis.', 'Examples from psychology and health sciences are needed.'],
-  suggestions: ['Visual tools to demonstrate skewness in different distributions.', 'Training on interpreting skewness results.'],
-  resources: ['Videos explaining skewness and its calculation.', 'Interactive modules to explore the effects of skewness on statistical interpretation.'],
-  learning_objectives: ['Comprehend skewness and its implications.', 'Analyze and interpret skewness in real data sets.', 'Correlate skewness with real-world phenomena and its impact on averages and other statistics.']
-}),
-(n5:Subject{
+  comments: [
+    'Important for data distribution analysis.',
+    'Examples from psychology and health sciences are needed.'
+  ],
+  suggestions: [
+    'Visual tools to demonstrate skewness in different distributions.',
+    'Training on interpreting skewness results.'
+  ],
+  resources: [
+    'Videos explaining skewness and its calculation.',
+    'Interactive modules to explore the effects of skewness on statistical interpretation.'
+  ],
+  learning_objectives: [
+    'Comprehend skewness and its implications.',
+    'Analyze and interpret skewness in real data sets.',
+    'Correlate skewness with real-world phenomena and its impact on averages and other statistics.'
+  ]
+})
+WITH n4
+CREATE (formData:FormData)
+CREATE (n4)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['probability and statistics'],
+    formData.links = ['www.example.com'],
+    formData.resources = n4.resources;
+
+
+
+CREATE (n5:Subject{
   name: 'moment generating function',
   subject: 'probability and statistics',
   type: 'topic',
   description: 'A mathematical function that summarizes all moments of a probability distribution, used to derive mean, variance, standard deviation, and skewness.',
-  requires: ['probability and statistics', 'mean', 'standard deviation', 'skewness'],
-  links: 'www.example.com',
   good: 23,
   alright: 30,
   bad: 0,
-  comments: ['Complex but incredibly powerful tool for statistical analysis.', 'Would be helpful to include software implementation examples.'],
-  suggestions: ['Workshops on practical applications using moment generating functions.', 'Integration of software tools like R and Python in tutorials.'],
-  resources: ['Comprehensive guides on the theory and use of moment generating functions.', 'Software tutorials for implementing moment generating functions in statistical calculations.'],
-  learning_objectives: ['Understand the definition and properties of moment generating functions.', 'Utilize moment generating functions to compute moments of distributions.', 'Explore the applications of moment generating functions in statistical analysis and risk assessment.']
-});
+  comments: [
+    'Complex but incredibly powerful tool for statistical analysis.',
+    'Would be helpful to include software implementation examples.'
+  ],
+  suggestions: [
+    'Workshops on practical applications using moment generating functions.',
+    'Integration of software tools like R and Python in tutorials.'
+  ],
+  resources: [
+    'Comprehensive guides on the theory and use of moment generating functions.',
+    'Software tutorials for implementing moment generating functions in statistical calculations.'
+  ],
+  learning_objectives: [
+    'Understand the definition and properties of moment generating functions.',
+    'Utilize moment generating functions to compute moments of distributions.',
+    'Explore the applications of moment generating functions in statistical analysis and risk assessment.'
+  ]
+})
+WITH n5
+CREATE (formData:FormData)
+CREATE (n5)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['probability and statistics', 'mean', 'standard deviation', 'skewness'],
+    formData.links = ['www.example.com'],
+    formData.resources = [];
+
 
 
 
@@ -835,8 +1050,6 @@ CREATE (n:Subject{
   subject: 'matrix theory',
   type: 'topic',
   description: 'Fundamental concepts in matrix theory, critical for understanding many applications of linear algebra.',
-  requires: ['matrix theory'],
-  links: 'www.example.com',
   good: 23,
   alright: 30,
   bad: 0,
@@ -861,15 +1074,20 @@ CREATE (n:Subject{
     'Explore applications of eigenvalues and eigenvectors in various fields.',
     'Develop skills to solve practical problems involving eigenvalues and eigenvectors.'
   ]
-});
+})
+WITH n
+CREATE (formData:FormData)
+CREATE (n)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['matrix theory'],
+    formData.links = ['www.example.com'],
+    formData.resources = [];
+
 
 CREATE (n:Subject{
   name: 'Determinants',
   subject: 'matrix theory',
   type: 'topic',
   description: 'A key concept in matrix theory, used to determine the solvability of a system of linear equations.',
-  requires: ['matrix theory'],
-  links: 'www.example.com',
   good: 23,
   alright: 30,
   bad: 0,
@@ -894,15 +1112,20 @@ CREATE (n:Subject{
     'Explore the use of determinants in different mathematical and practical contexts.',
     'Develop proficiency in calculating determinants of matrices.'
   ]
-});
+})
+WITH n
+CREATE (formData:FormData)
+CREATE (n)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['matrix theory'],
+    formData.links = ['www.example.com'],
+    formData.resources = [];
+
 
 CREATE (n:Subject{
   name: 'Inner Product Spaces',
   subject: 'vector spaces',
   type: 'topic',
   description: 'An introduction to inner product spaces, essential for advanced studies in linear algebra and its applications.',
-  requires: ['vector spaces'],
-  links: 'www.example.com',
   good: 23,
   alright: 30,
   bad: 0,
@@ -927,45 +1150,55 @@ CREATE (n:Subject{
     'Explore the geometric interpretation and applications of inner product spaces.',
     'Develop skills in manipulating and working within inner product spaces.'
   ]
-});
+})
+WITH n
+CREATE (formData:FormData)
+CREATE (n)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['vector spaces'],
+    formData.links = ['www.example.com'],
+    formData.resources = [];
+
 
 CREATE (n:Subject{
-	name: 'basis and dimension',
-	subject: 'vector spaces',
-	type: 'topic',
-	description: 'Understanding the basis of a vector space and its dimension, foundational concepts in linear algebra.',
-	requires: ['vector spaces'],
-	links: 'www.example.com',
+  name: 'basis and dimension',
+  subject: 'vector spaces',
+  type: 'topic',
+  description: 'Understanding the basis of a vector space and its dimension, foundational concepts in linear algebra.',
   good: 23,
   alright: 30,
   bad: 0,
-	comments: [
+  comments: [
     'Excellent coverage of basis and dimension with intuitive examples.',
     'The applications to various fields are very insightful.'
   ],
-	suggestions: [
+  suggestions: [
     'Include more challenging problems to deepen understanding.',
     'Provide additional resources for further reading.'
   ],
-	resources: [
+  resources: [
     'Comprehensive guide to basis and dimension',
     'Practice problems with step-by-step solutions',
     'Video tutorials on basis and dimension'
   ],
-	learning_objectives: [
+  learning_objectives: [
     'Understand the concepts of basis and dimension in vector spaces.',
     'Learn methods to find the basis and dimension of a given vector space.',
     'Explore applications of these concepts in different fields of study.'
   ]
-});
+})
+WITH n
+CREATE (formData:FormData)
+CREATE (n)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['vector spaces'],
+    formData.links = ['www.example.com'],
+    formData.resources = [];
+
 
 CREATE (n:Subject{
   name: 'linear operators',
   subject: 'linear transformations',
   type: 'topic',
   description: 'An in-depth look at linear operators, their properties, and applications in linear algebra.',
-  requires: ['linear transformations'],
-  links: 'www.example.com',
   good: 23,
   alright: 30,
   bad: 0,
@@ -987,7 +1220,13 @@ CREATE (n:Subject{
     'Apply linear operators to solve practical problems.',
     'Explore applications of linear operators in various fields, including quantum mechanics and data science.'
   ]
-});
+})
+WITH n
+CREATE (formData:FormData)
+CREATE (n)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['linear transformations'],
+    formData.links = ['www.example.com'],
+    formData.resources = [];
 
 
 // ------------------  Algebra here   ------------------ //
@@ -1018,8 +1257,6 @@ CREATE (n:Subject{
   subject: 'basic algebra',
   type: 'topic',
   description: 'Study of polynomial equations, including methods for solving and analyzing their properties.',
-  requires: ['basic algebra'],
-  links: 'www.example.com',
   good: 23,
   alright: 30,
   bad: 0,
@@ -1042,15 +1279,20 @@ CREATE (n:Subject{
     'Explore applications of polynomial equations in various fields.',
     'Develop problem-solving skills through practice problems.'
   ]
-});
+})
+WITH n
+CREATE (formData:FormData)
+CREATE (n)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['basic algebra'],
+    formData.links = ['www.example.com'],
+    formData.resources = [];
+
 
 CREATE (n:Subject{
   name: 'group theory',
   subject: 'abstract algebra',
   type: 'topic',
   description: 'Introduction to group theory, a fundamental area in abstract algebra.',
-  requires: ['abstract algebra'],
-  links: 'www.example.com',
   good: 23,
   alright: 30,
   bad: 0,
@@ -1073,15 +1315,20 @@ CREATE (n:Subject{
     'Explore real-world applications of group theory in various fields.',
     'Develop skills in working with groups and solving related problems.'
   ]
-});
+})
+WITH n
+CREATE (formData:FormData)
+CREATE (n)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['abstract algebra'],
+    formData.links = ['www.example.com'],
+    formData.resources = [];
+
 
 CREATE (n:Subject{
   name: 'ring theory',
   subject: 'abstract algebra',
   type: 'topic',
   description: 'Study of rings, another key concept in abstract algebra, focusing on their properties and applications.',
-  requires: ['abstract algebra'],
-  links: 'www.example.com',
   good: 23,
   alright: 30,
   bad: 0,
@@ -1104,45 +1351,55 @@ CREATE (n:Subject{
     'Explore applications of ring theory in different fields.',
     'Develop proficiency in manipulating and understanding rings.'
   ]
-});
+})
+WITH n
+CREATE (formData:FormData)
+CREATE (n)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['abstract algebra'],
+    formData.links = ['www.example.com'],
+    formData.resources = [];
+
 
 CREATE (n:Subject{
-	name: 'field theory',
-	subject: 'abstract algebra',
-	type: 'topic',
-	description: 'Introduction to field theory, including the study of fields and their properties.',
-	requires: ['abstract algebra'],
-	links: 'www.example.com',
+  name: 'field theory',
+  subject: 'abstract algebra',
+  type: 'topic',
+  description: 'Introduction to field theory, including the study of fields and their properties.',
   good: 23,
   alright: 30,
   bad: 0,
-	comments: [
+  comments: [
     'Great introduction to field theory with clear examples.',
     'Would love to see more real-world applications discussed.'
   ],
-	suggestions: [
+  suggestions: [
     'Include more visual aids to illustrate concepts.',
     'Provide additional resources for further reading.'
   ],
-	resources: [
+  resources: [
     'Comprehensive guide to field theory',
     'Practice problems with step-by-step solutions',
     'Video tutorials on field theory'
   ],
-	learning_objectives: [
+  learning_objectives: [
     'Understand the definition and properties of fields.',
     'Learn methods for working with fields and solving related problems.',
     'Explore applications of field theory in different fields of study.'
   ]
-});
+})
+WITH n
+CREATE (formData:FormData)
+CREATE (n)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['abstract algebra'],
+    formData.links = ['www.example.com'],
+    formData.resources = [];
+
 
 CREATE (n:Subject{
   name: 'linear equations',
   subject: 'linear algebra',
   type: 'topic',
   description: 'Study of linear equations, including methods for solving systems of linear equations.',
-  requires: ['linear algebra'],
-  links: 'www.example.com',
   good: 23,
   alright: 30,
   bad: 0,
@@ -1164,7 +1421,14 @@ CREATE (n:Subject{
     'Learn methods for solving systems of linear equations.',
     'Explore applications of linear equations in various fields.'
   ]
-});
+})
+WITH n
+CREATE (formData:FormData)
+CREATE (n)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['linear algebra'],
+    formData.links = ['www.example.com'],
+    formData.resources = [];
+
 
 
 // ------------------  Discrete Mathematics here   ------------------ //
@@ -1201,8 +1465,6 @@ CREATE (n:Subject{
   subject: 'graph theory',
   type: 'topic',
   description: 'Study of connectivity in graphs, including algorithms for determining connectivity and its applications.',
-  requires: ['graph theory'],
-  links: 'www.example.com',
   good: 23,
   alright: 30,
   bad: 0,
@@ -1224,15 +1486,20 @@ CREATE (n:Subject{
     'Learn algorithms for determining connectivity in graphs.',
     'Explore applications of graph connectivity in various fields.'
   ]
-});
+})
+WITH n
+CREATE (formData:FormData)
+CREATE (n)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['graph theory'],
+    formData.links = ['www.example.com'],
+    formData.resources = [];
+
 
 CREATE (n:Subject{
   name: 'Permutations and Combinations',
   subject: 'combinatorics',
   type: 'topic',
   description: 'Study of permutations and combinations, including methods for counting and generating them.',
-  requires: ['combinatorics'],
-  links: 'www.example.com',
   good: 23,
   alright: 30,
   bad: 0,
@@ -1254,15 +1521,20 @@ CREATE (n:Subject{
     'Learn methods for counting and generating permutations and combinations.',
     'Explore applications of permutations and combinations in various fields.'
   ]
-});
+})
+WITH n
+CREATE (formData:FormData)
+CREATE (n)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['combinatorics'],
+    formData.links = ['www.example.com'],
+    formData.resources = [];
+
 
 CREATE (n:Subject{
   name: 'Propositional Logic',
   subject: 'logic',
   type: 'topic',
   description: 'Introduction to propositional logic, including truth tables, logical equivalences, and applications.',
-  requires: ['logic'],
-  links: 'www.example.com',
   good: 23,
   alright: 30,
   bad: 0,
@@ -1284,45 +1556,55 @@ CREATE (n:Subject{
     'Learn methods for analyzing and simplifying propositional expressions.',
     'Explore applications of propositional logic in computer science and mathematics.'
   ]
-});
+})
+WITH n
+CREATE (formData:FormData)
+CREATE (n)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['logic'],
+    formData.links = ['www.example.com'],
+    formData.resources = [];
+
 
 CREATE (n:Subject{
-	name: 'Set Theory',
-	subject: 'logic',
-	type: 'topic',
-	description: 'Study of sets and their properties, including set operations, relations, and functions.',
-	requires: ['logic'],
-	links: 'www.example.com',
+  name: 'Set Theory',
+  subject: 'logic',
+  type: 'topic',
+  description: 'Study of sets and their properties, including set operations, relations, and functions.',
   good: 23,
   alright: 30,
   bad: 0,
-	comments: [
+  comments: [
     'Clear explanation of set theory concepts.',
     'The section on set operations is particularly helpful.'
   ],
-	suggestions: [
+  suggestions: [
     'Include more advanced topics like cardinality and transfinite numbers.',
     'Provide interactive exercises for practice.'
   ],
-	resources: [
+  resources: [
     'Comprehensive guide to set theory concepts',
     'Practice problems with step-by-step solutions',
     'Video tutorials on set theory and its applications'
   ],
-	learning_objectives: [
+  learning_objectives: [
     'Understand the basic concepts of set theory.',
     'Learn methods for working with sets, relations, and functions.',
     'Explore applications of set theory in various fields.'
   ]
-});
+})
+WITH n
+CREATE (formData:FormData)
+CREATE (n)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['logic'],
+    formData.links = ['www.example.com'],
+    formData.resources = [];
+
 
 CREATE (n:Subject{
   name: 'Shortest Path Algorithms',
   subject: 'graph theory',
   type: 'topic',
   description: 'Study of algorithms for finding the shortest paths in graphs, including Dijkstra\'s algorithm and Floyd-Warshall algorithm.',
-  requires: ['graph theory'],
-  links: 'www.example.com',
   good: 23,
   alright: 30,
   bad: 0,
@@ -1344,7 +1626,14 @@ CREATE (n:Subject{
     'Learn algorithms for finding shortest paths, including Dijkstra\'s algorithm and Floyd-Warshall algorithm.',
     'Explore applications of shortest path algorithms in various fields.'
   ]
-});
+})
+WITH n
+CREATE (formData:FormData)
+CREATE (n)-[:HAS_FORM_DATA]->(formData)
+SET formData.requires = ['graph theory'],
+    formData.links = ['www.example.com'],
+    formData.resources = [];
+
 
 
 // -------------------------------------------------- RELATIONSHIPS HERE -------------------------------------------------- //
