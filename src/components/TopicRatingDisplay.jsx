@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { BsEmojiSmile, BsEmojiNeutral, BsEmojiFrown } from "react-icons/bs";
 import { RiDeleteBin6Line, RiEdit2Line } from "react-icons/ri";
-import { getNode } from "../../database/graphData";
+import { deleteNode, getNode } from "../../database/graphData";
+import ConfirmationOverlay from "../components/ConfirmationOverlay";
 import '../styles/TopicRatingDisplay.css'; 
 
 const TopicRatingDisplay = ({ topicName }) => {
   const [topicNode, setTopicNode] = useState(null);
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   useEffect(() => {
     const fetchTopicNode = async () => {
@@ -21,13 +23,25 @@ const TopicRatingDisplay = ({ topicName }) => {
   }, [topicName]);
 
   const handleDelete = () => {
-    console.log("Delete button clicked for topic:", topicName);
+    setShowConfirmation(true);
+  };
 
+  const handleConfirmDelete = async () => {
+    setShowConfirmation(false);
+    const subject = topicNode.subject
+    console.log("Deleting topic: ", topicName);
+    await deleteNode(topicName);
+    const newPath = `/graph/${subject}`
+    window.location.assign(newPath);  
+  };
+
+  const handleCloseOverlay = () => {
+    setShowConfirmation(false);
   };
 
   const handleEdit = () => {
-    console.log("Edit button clicked for topic:", topicName);
-
+    console.log("Opening form to edit topic:", topicName);
+    // Add your edit logic here
   };
 
   if (!topicNode) {
@@ -62,6 +76,12 @@ const TopicRatingDisplay = ({ topicName }) => {
         <RiEdit2Line size={30} className="icon" />
         <span className="button-text">Edit</span>
       </button>
+
+      <ConfirmationOverlay
+        open={showConfirmation}
+        onClose={handleCloseOverlay}
+        onConfirm={handleConfirmDelete}
+      />
     </div>
   );
 };
