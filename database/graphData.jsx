@@ -576,3 +576,28 @@ export const addSuggestionToTopic = async (topicName, suggestion) => {
   }
 };
 
+export const deleteSuggestionFromTopic = async (topicName, suggestion) => {
+  const session = driver.session();
+
+  try {
+    const query = `
+      MATCH (n:Subject {name: $topicName})
+      SET n.suggestions = [s IN n.suggestions WHERE s <> $suggestion]
+      RETURN n.suggestions AS suggestions
+    `;
+
+    const result = await session.run(query, { topicName, suggestion });
+    session.close();
+
+    if (result.records.length === 0) {
+      throw new Error(`Topic with name ${topicName} not found.`);
+    }
+
+    return result.records[0].get('suggestions');
+  } catch (error) {
+    console.error("Error deleting suggestion from topic:", error);
+    throw error;
+  }
+};
+
+

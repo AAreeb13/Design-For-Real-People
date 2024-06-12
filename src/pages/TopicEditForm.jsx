@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getFormData, getNode, updateFormData, updateNode } from "../../database/graphData";
+import { deleteSuggestionFromTopic, getFormData, getNode, updateFormData, updateNode } from "../../database/graphData";
 import "../styles/TopicEditForm.css";
 import Button from 'react-bootstrap/Button';
 
@@ -81,9 +81,23 @@ const TopicEditForm = ({ topicName }) => {
     }
   };
 
-  const handleDeleteMessage = (id) => {
-    setMessages(messages.filter(message => message.id !== id));
+  const handleDeleteMessage = async (id) => {
+    try {
+      const messageToDelete = messages.find(message => message.id === id);
+  
+      if (!messageToDelete) {
+        console.error(`Message with id ${id} not found.`);
+        return;
+      }
+      await deleteSuggestionFromTopic(topicName, messageToDelete.text);
+  
+      setMessages(prevMessages => prevMessages.filter(message => message.id !== id));
+    } catch (error) {
+      console.error("Error deleting message:", error);
+      alert("An error occurred while deleting the message. Please try again later.");
+    }
   };
+  
 
   const renderFormElement = (label, value, isTopicNode) => {
     const topicNodePropsToUse = ["name", "subject", "description", "learning_objectives"];
@@ -157,7 +171,7 @@ const TopicEditForm = ({ topicName }) => {
         {showAside && (
           <aside className="message-aside">
             <div className="d-flex justify-content-end">
-              <h2 style={{marginRight: "auto"}}>Messages</h2>
+              <h2 style={{marginRight: "auto"}}>Suggestions</h2>
               <Button variant="info" onClick={() => setShowAside(false)}>Close</Button>
             </div>
             {messages.map(message => (
