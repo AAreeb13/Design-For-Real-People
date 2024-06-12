@@ -4,6 +4,7 @@ import { RiDeleteBin6Line, RiEdit2Line } from "react-icons/ri";
 import { deleteNode, getNode } from "../../database/graphData";
 import ConfirmationOverlay from "../components/ConfirmationOverlay";
 import '../styles/TopicRatingDisplay.css'; 
+import { writeNotification } from "../../database/firebase";
 
 const TopicRatingDisplay = ({ topicName }) => {
   const [topicNode, setTopicNode] = useState(null);
@@ -31,6 +32,9 @@ const TopicRatingDisplay = ({ topicName }) => {
     const subject = topicNode.subject
     console.log("Deleting topic: ", topicName);
     await deleteNode(topicName);
+    await writeNotification({
+      text: `Topic deleted: ${topicName}`
+    })
     const newPath = `/graph/${subject}`
     window.location.assign(newPath);  
   };
