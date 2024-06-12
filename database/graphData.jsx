@@ -183,20 +183,23 @@ export const addTopicToGraph = async (name, subject, prerequisites) => {
       subject: $subject,
       type: 'topic',
       description: 'to add later',
-      requires: $prereqAsList,
-      links: '',
-      approvals: 0,
-      rejections: 0,
+      good: toInteger(0),
+      alright: toInteger(0),
+      bad: toInteger(0),
       comments: [],
       suggestions: [],
-      resources: [],
       learning_objectives: []
-    });
+    })
+    WITH n
+    CREATE (formData:FormData)
+    MERGE (n)-[:HAS_FORM_DATA]->(formData)
+    SET formData.requires = $prereqAsList;
+
   `;
 
   const params = { name, subject, prereqAsList };
   const results = await runQuery(query, params);
-
+  console.log("results", results)
   // Add relationships for prerequisites if they exist
   return !results
     ? results
@@ -463,8 +466,8 @@ export const deleteNode = async (topicName) => {
 
   try {
     const deleteQuery = `
-        MATCH (n:Subject {name: $topicName})
-        DETACH DELETE (n)
+        MATCH (n:Subject {name: $topicName}) -[:HAS_FORM_DATA]->(m)
+        DETACH DELETE (n), (m)
     `;
     const deleteParams = { topicName };
     await session.run(deleteQuery, deleteParams);

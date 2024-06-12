@@ -74,10 +74,10 @@ const TopicRatingDisplay = ({ topicName }) => {
         </div>
       </div>
 
-      <button className="btn btn-outline-secondary edit-button" onClick={handleEdit}>
+      {/* <button className="btn btn-outline-secondary edit-button" onClick={handleEdit}>
         <RiEdit2Line size={30} className="icon" />
         <span className="button-text">Edit</span>
-      </button>
+      </button> */}
 
       <ConfirmationOverlay
         open={showConfirmation}
