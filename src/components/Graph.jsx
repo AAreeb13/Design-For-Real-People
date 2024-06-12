@@ -460,8 +460,8 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
     });
 
     const initialTransform = d3.zoomIdentity
-      .translate(width / 3, height / 3)
-      .scale(0.3);
+      .translate(width / 2.75, height / 3)
+      .scale(0.25);
     svg.call(zoom.transform, initialTransform);
 
     const updateText = async () => {
