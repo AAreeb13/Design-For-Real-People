@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaBookmark } from "react-icons/fa";
 import Backtrack from "./Backtrack";
-import { getGraphData, getPaths } from "../../database/graphData";
+import { getGraphData, getPaths, getFormData } from "../../database/graphData";
 import {
   getCurrentUserData,
   getCurrentUserDocData,
@@ -21,7 +21,8 @@ const TopicEntry = ({ userData, graphData, node }) => {
   const [fullPath, setFullPath] = useState([]);
   const [isMember, setIsMember] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
-  const [privledge, setprivledge] = useState(null);
+  const [privledge, setPrivledge] = useState(null);
+  const [formNode, setFormNode] = useState(null);
 
   useEffect(() => {
     const fetchTopic = async () => {
@@ -29,6 +30,7 @@ const TopicEntry = ({ userData, graphData, node }) => {
         const fetchedTopic = await getTopic(node);
         if (fetchedTopic.length > 0) {
           setTopicNode(fetchedTopic[0]);
+          setFormNode(await getFormData(fetchedTopic[0].name));
           const userData = await getCurrentUserData();
           if (userData) {
             setUserEmail(userData.email);
@@ -36,14 +38,10 @@ const TopicEntry = ({ userData, graphData, node }) => {
             const userDoc = await getCurrentUserDocData(userData.email);
 
             if (userDoc && userDoc.subjectProgress) {
-              setCompleted(
-                userDoc.subjectProgress[fetchedTopic[0].name] || false
-              );
-              setprivledge(userDoc.privledge || null);
+              setCompleted(userDoc.subjectProgress[fetchedTopic[0].name] || false);
+              setPrivledge(userDoc.privledge || null);
               if (userDoc.privledge === "member") {
-                setIsBookmarked(
-                  userDoc.bookmarks[fetchedTopic[0].name] || false
-                );
+                setIsBookmarked(userDoc.bookmarks[fetchedTopic[0].name] || false);
                 setIsMember(userDoc.privledge === "member");
               }
             } else {
@@ -105,7 +103,7 @@ const TopicEntry = ({ userData, graphData, node }) => {
     return <div>{error}</div>;
   }
 
-  if (!topicNode) {
+  if (!topicNode || !formNode) {
     return <div>Loading...</div>;
   }
 
@@ -159,19 +157,12 @@ const TopicEntry = ({ userData, graphData, node }) => {
           ))}
         </ul>
 
-        <h3>Prerequisites:</h3>
-        <ul>
-          {topicNode.requires.map((o, index) => (
-            <li key={index}>{o}</li>
-          ))}
-        </ul>
+        {
+          console.log("formdata", formNode)
+        }
 
-        <h3>Resources:</h3>
-        <ul>
-          {topicNode.resources.map((o, index) => (
-            <li key={index}>{o}</li>
-          ))}
-        </ul>
+        <FormDisplay formData={formNode} />
+
         { privledge === "member" && (
           <TopicRatingButtons
             onRatingChange={handleRatingChange}
@@ -191,6 +182,34 @@ const getTopic = async (name) => {
   console.log("we got here");
   const { nodes, relationships } = await getGraphData();
   return nodes.filter((n) => n.name === name);
+};
+
+const FormDisplay = ({ formData }) => {
+  return (
+    <div>
+      {Object.entries(formData).map(([key, value]) => (
+        <div key={key}>
+          <h3>{title(key)}:</h3>
+          <ul>
+            {typeof value === 'string' ? (
+              <li>{value}</li>
+            ) : (
+              value.map((item, index) => (
+                <li key={index}>{item}</li>
+              ))
+            )}
+          </ul>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const title = (str) => {
+  return str
+          .split(' ')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ');
 };
 
 export default TopicEntry;
