@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getFormData, getNode } from "../../database/graphData";
+import { getFormData, getNode, updateFormData, updateNode } from "../../database/graphData";
 import "../styles/TopicEditForm.css";
 import Button from 'react-bootstrap/Button'; 
 
@@ -22,48 +22,108 @@ const TopicEditForm = ({ topicName }) => {
     fetchTopicData();
   }, [topicName]);
 
-  const handleInputChange = (e, label, isTopicNode) => {
-    const newValue = e.target.value;
-    if (isTopicNode) {
-      setTopicNode(prevState => ({
-        ...prevState,
-        [label]: newValue
-      }));
-    } else {
-      setFormData(prevState => ({
-        ...prevState,
-        [label]: newValue
-      }));
-    }
-  };
+	const handleInputChange = (e, label, isTopicNode) => {
+		const newValue = e.target.value;
+		let processedValue = newValue;
+	
+	
+		if (isTopicNode) {
+			setTopicNode((prevState) => ({
+				...prevState,
+				[label]: processedValue,
+			}));
+		} else {
+			setFormData((prevState) => ({
+				...prevState,
+				[label]: processedValue,
+			}));
+		}
+	};
 
-  const renderFormElement = (label, value, isTopicNode) => {
-    const topicNodePropsToUse = ["name", "subject", "description", "learning_objectives"];
+	const handleSubmit = async () => {
+    try {
+        const processedTopicNode = { ...topicNode };
+        const processedFormData = { ...formData };
 
-    if (isTopicNode) {
-      if (topicNodePropsToUse.includes(label)) {
-        return (
-          <div key={label} className="form-group">
-            <label className="form-label">{label === "learning_objectives" ? "Learning Objectives" : asTitle(label)}: </label>
-            {label === "name" || label === "subject" ? (
-              <input type="text" value={value} onChange={(e) => handleInputChange(e, label, true)} className="form-control disabled-input" disabled />
-            ) : label === "description" || label === "learning_objectives" ? (
-              <textarea value={value} onChange={(e) => handleInputChange(e, label, true)} className="form-control" rows="5" />
-            ) : (
-              <input type="text" value={value} onChange={(e) => handleInputChange(e, label, true)} className="form-control" />
-            )}
-          </div>
-        );
-      }
-    } else {
-      return (
-        <div key={label} className="form-group">
-          <label className="form-label">{asTitle(label)}: </label>
-          <input type="text" value={value} onChange={(e) => handleInputChange(e, label, false)} className="form-control" />
-        </div>
-      );
+        Object.keys(processedTopicNode).forEach((key) => {
+            if (key === "learning_objectives" && typeof processedTopicNode[key] === 'string') {
+                processedTopicNode[key] = processedTopicNode[key].split('\n').map(line => line.trim());
+            }
+        });
+
+        Object.keys(processedFormData).forEach((key) => {
+            if (typeof processedFormData[key] === 'string') {
+                processedFormData[key] = processedFormData[key].split('\n').map(line => line.trim());
+            }
+        });
+
+        const allFormData = { ...processedTopicNode, ...processedFormData };
+
+        console.log("Form submitted:", allFormData);
+
+        const successNode = await updateNode(topicName, processedTopicNode);
+        const successForm = await updateFormData(topicName, processedFormData);
+
+        if (successNode && successForm) {
+            console.log("Form and Node successfully updated");
+						const path = `/topic/${topicName}`
+						window.location.assign(path)
+        } else {
+            console.error("Error updating form or node");
+            alert("Error updating form or node. Please try again later.");
+        }
+    } catch (error) {
+        console.error("Error handling form submission:", error);
+        alert("An error occurred while handling the form submission. Please try again later.");
     }
-  };
+};
+
+
+	
+
+	const renderFormElement = (label, value, isTopicNode) => {
+		const topicNodePropsToUse = ["name", "subject", "description", "learning_objectives"];
+	
+		if (isTopicNode) {
+			if (topicNodePropsToUse.includes(label)) {
+				let processedValue = value;
+	
+				// Join items with a newline if it's a list
+				if (Array.isArray(value)) {
+					processedValue = value.join('\n');
+				}
+	
+				return (
+					<div key={label} className="form-group">
+						<label className="form-label">{label === "learning_objectives" ? "Learning Objectives" : asTitle(label)}: </label>
+						{label === "name" || label === "subject" ? (
+							<input type="text" value={value} onChange={(e) => handleInputChange(e, label, true)} className="form-control disabled-input" disabled />
+						) : label === "description" || label === "learning_objectives" ? (
+							<textarea value={processedValue} onChange={(e) => handleInputChange(e, label, true)} className="form-control" rows="5" />
+						) : (
+							<input type="text" value={processedValue} onChange={(e) => handleInputChange(e, label, true)} className="form-control" />
+						)}
+					</div>
+				);
+			}
+		} else {
+			// Join items with a newline if it's a list
+			let processedValue = value;
+			if (Array.isArray(value)) {
+				processedValue = value.join(`\n`);
+			}
+	
+			return (
+				<div key={label} className="form-group">
+					<label className="form-label">{asTitle(label)}: </label>
+					<textarea type="text" value={processedValue} onChange={(e) => handleInputChange(e, label, false)} className="form-control" rows="5"/>
+				</div>
+			);
+		}
+	};
+	
+	
+	
 
   const renderForm = () => {
     if (!topicNode || !formData) return null;
@@ -88,7 +148,7 @@ const TopicEditForm = ({ topicName }) => {
         {formDataElements}
         <div className="d-flex justify-content-between align-items-center mb-3">
           <div></div>
-          <Button variant="success" className="our-submit-button float-right">Submit</Button> 
+          <Button variant="success" className="our-submit-button float-right" onClick={handleSubmit}>Submit</Button> 
         </div>
       </div>
     );
@@ -100,6 +160,5 @@ const TopicEditForm = ({ topicName }) => {
 const asTitle = (str) => {
   return str.replace(/\b\w/g, char => char.toUpperCase());
 }
-
 
 export default TopicEditForm;

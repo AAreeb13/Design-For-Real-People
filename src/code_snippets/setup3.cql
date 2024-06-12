@@ -70,7 +70,7 @@ WITH n
 CREATE (formData:FormData)
 CREATE (n)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['proofs', 'limits'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = [];
 
 
@@ -104,7 +104,7 @@ WITH n
 CREATE (formData:FormData)
 CREATE (n)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['proofs', 'limits', 'differentiation'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = [];
 
 
@@ -139,7 +139,7 @@ WITH n
 CREATE (formData:FormData)
 CREATE (n)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['differentiation'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = [
       'Interactive tutorial on the Chain Rule',
       'List of practice problems with detailed solutions',
@@ -178,7 +178,7 @@ WITH n
 CREATE (formData:FormData)
 CREATE (n)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['differentiation'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = [
       'Detailed video tutorial on the Product Rule',
       'Set of practice exercises tailored to different difficulty levels',
@@ -217,7 +217,7 @@ WITH n
 CREATE (formData:FormData)
 CREATE (n)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['integration'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = [
       'Step-by-step guide on Integration by Parts',
       'Video tutorials covering various examples, from basic to complex',
@@ -259,7 +259,7 @@ WITH n
 CREATE (formData:FormData)
 CREATE (n)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['basic algebra'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = [
       'Detailed guide on different types of functions and their properties',
       'Interactive applet for exploring the graphical representation of functions',
@@ -302,7 +302,7 @@ WITH n
 CREATE (formData:FormData)
 CREATE (n)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['integration preliminaries'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = [
       'Video tutorial on integrating constants',
       'Integration exercises with solutions'
@@ -336,7 +336,7 @@ WITH n
 CREATE (formData:FormData)
 CREATE (n)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['integration preliminaries'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = [
       'Step-by-step guide to polynomial integration',
       'Practice problems focusing on polynomial terms'
@@ -370,7 +370,7 @@ WITH n
 CREATE (formData:FormData)
 CREATE (n)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['integration preliminaries'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = [
       'Tutorial on rational function integration',
       'Worksheet on negative exponents'
@@ -405,7 +405,7 @@ WITH n
 CREATE (formData:FormData)
 CREATE (n)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['integration preliminaries'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = [
       'Comprehensive guide on fractional power integration',
       'Examples and exercises involving fractional exponents'
@@ -440,7 +440,7 @@ WITH n
 CREATE (formData:FormData)
 CREATE (n)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['integration preliminaries'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = [
       'Tutorial on logarithmic integration',
       'Problem sets involving integrals of denominator variables'
@@ -465,7 +465,7 @@ WITH n
 CREATE (formData:FormData)
 CREATE (n)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['integration'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = [];
 
 
@@ -499,7 +499,7 @@ WITH n
 CREATE (formData:FormData)
 CREATE (n)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['integration'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = [];
 
 
@@ -534,7 +534,7 @@ WITH n
 CREATE (formData:FormData)
 CREATE (n)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['integration'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = [];
 
 
@@ -579,7 +579,7 @@ WITH n
 CREATE (formData:FormData)
 CREATE (n)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['integration', 'differential equations'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = [];
 
 
@@ -617,7 +617,7 @@ WITH n
 CREATE (formData:FormData)
 CREATE (n)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['integration', 'differentiation', 'complex numbers'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = [];
 
 
@@ -654,7 +654,7 @@ WITH n
 CREATE (formData:FormData)
 CREATE (n)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['integration'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = [];
 
 
@@ -692,7 +692,7 @@ WITH n
 CREATE (formData:FormData)
 CREATE (n)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['integration'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = [];
 
 
@@ -721,7 +721,7 @@ WITH n1
 CREATE (formData:FormData)
 CREATE (n1)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['integration'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = [];
 
 
@@ -742,7 +742,7 @@ WITH n2
 CREATE (formData:FormData)
 CREATE (n2)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['integration'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = [];
 
 
@@ -763,7 +763,7 @@ WITH n3
 CREATE (formData:FormData)
 CREATE (n3)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['integration'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = [];
 
 
@@ -798,7 +798,7 @@ WITH n1
 CREATE (formData:FormData)
 CREATE (n1)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['integration'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = [];
 
 
@@ -832,7 +832,7 @@ WITH n2
 CREATE (formData:FormData)
 CREATE (n2)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['integration', 'differentiation'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = [];
 
 
@@ -877,7 +877,7 @@ WITH n1
 CREATE (formData:FormData)
 CREATE (n1)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['probability and statistics'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = [];
 
 
@@ -911,7 +911,7 @@ WITH n2
 CREATE (formData:FormData)
 CREATE (n2)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['probability and statistics'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = [];
 
 
@@ -941,7 +941,7 @@ WITH n3
 CREATE (formData:FormData)
 CREATE (n3)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['variance'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = ['Tutorial on standard deviation and its applications.', 'Case studies illustrating standard deviation in business and science.'];
 
 
@@ -975,7 +975,7 @@ WITH n4
 CREATE (formData:FormData)
 CREATE (n4)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['probability and statistics'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = n4.resources;
 
 
@@ -1010,7 +1010,7 @@ WITH n5
 CREATE (formData:FormData)
 CREATE (n5)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['probability and statistics', 'mean', 'standard deviation', 'skewness'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = [];
 
 
@@ -1079,7 +1079,7 @@ WITH n
 CREATE (formData:FormData)
 CREATE (n)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['matrix theory'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = [];
 
 
@@ -1117,7 +1117,7 @@ WITH n
 CREATE (formData:FormData)
 CREATE (n)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['matrix theory'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = [];
 
 
@@ -1155,7 +1155,7 @@ WITH n
 CREATE (formData:FormData)
 CREATE (n)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['vector spaces'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = [];
 
 
@@ -1190,7 +1190,7 @@ WITH n
 CREATE (formData:FormData)
 CREATE (n)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['vector spaces'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = [];
 
 
@@ -1225,7 +1225,7 @@ WITH n
 CREATE (formData:FormData)
 CREATE (n)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['linear transformations'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = [];
 
 
@@ -1284,7 +1284,7 @@ WITH n
 CREATE (formData:FormData)
 CREATE (n)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['basic algebra'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = [];
 
 
@@ -1320,7 +1320,7 @@ WITH n
 CREATE (formData:FormData)
 CREATE (n)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['abstract algebra'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = [];
 
 
@@ -1356,7 +1356,7 @@ WITH n
 CREATE (formData:FormData)
 CREATE (n)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['abstract algebra'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = [];
 
 
@@ -1391,7 +1391,7 @@ WITH n
 CREATE (formData:FormData)
 CREATE (n)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['abstract algebra'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = [];
 
 
@@ -1426,7 +1426,7 @@ WITH n
 CREATE (formData:FormData)
 CREATE (n)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['linear algebra'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = [];
 
 
@@ -1491,7 +1491,7 @@ WITH n
 CREATE (formData:FormData)
 CREATE (n)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['graph theory'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = [];
 
 
@@ -1526,7 +1526,7 @@ WITH n
 CREATE (formData:FormData)
 CREATE (n)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['combinatorics'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = [];
 
 
@@ -1561,7 +1561,7 @@ WITH n
 CREATE (formData:FormData)
 CREATE (n)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['logic'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = [];
 
 
@@ -1596,7 +1596,7 @@ WITH n
 CREATE (formData:FormData)
 CREATE (n)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['logic'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = [];
 
 
@@ -1631,7 +1631,7 @@ WITH n
 CREATE (formData:FormData)
 CREATE (n)-[:HAS_FORM_DATA]->(formData)
 SET formData.requires = ['graph theory'],
-    formData.links = 'www.example.com',
+    formData.links = ['www.example.com'],
     formData.resources = [];
 
 

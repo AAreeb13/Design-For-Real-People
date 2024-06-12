@@ -504,3 +504,45 @@ export const getFormData = async (topicName) => {
   }
 };
 
+
+export const updateNode = async (topicName, newTopicNode) => {
+  const session = driver.session();
+
+  try {
+    const updateQuery = `
+      MATCH (n:Subject {name: $topicName})
+      SET n += $newTopicNode
+      RETURN n
+    `;
+    const updateParams = { topicName, newTopicNode };
+    const result = await session.run(updateQuery, updateParams);
+
+    return result.records[0].get("n").properties;
+  } catch (error) {
+    console.error("Error updating node:", error);
+    throw error;
+  } finally {
+    await session.close();
+  }
+};
+
+export const updateFormData = async (topicName, newFormData) => {
+  const session = driver.session();
+
+  try {
+    const updateQuery = `
+      MATCH (n:Subject {name: $topicName})-[:HAS_FORM_DATA]->(m)
+      SET m += $newFormData
+      RETURN m
+    `;
+    const updateParams = { topicName, newFormData };
+    const result = await session.run(updateQuery, updateParams);
+
+    return result.records[0].get("m").properties;
+  } catch (error) {
+    console.error("Error updating form data:", error);
+    throw error;
+  } finally {
+    await session.close();
+  }
+};
