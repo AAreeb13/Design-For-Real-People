@@ -6,26 +6,7 @@ import Button from 'react-bootstrap/Button';
 const TopicEditForm = ({ topicName }) => {
   const [topicNode, setTopicNode] = useState(null);
   const [formData, setFormData] = useState(null);
-  const [messages, setMessages] = useState([
-    { id: 1, text: "Dummy message 1" },
-    { id: 2, text: "Dummy message 2" },
-    { id: 3, text: "Dummy message 3" },
-    { id: 1, text: "Dummy message 1" },
-    { id: 2, text: "Dummy message 2" },
-    { id: 3, text: "Dummy message 3" },
-    { id: 3, text: "Dummy message 3" },
-    { id: 1, text: "Dummy message 1" },
-    { id: 2, text: "Dummy message 2" },
-    { id: 3, text: "Dummy message 3" },
-    { id: 3, text: "Dummy message 3" },
-    { id: 1, text: "Dummy message 1" },
-    { id: 2, text: "Dummy message 2" },
-    { id: 3, text: "Dummy message 3" },
-    { id: 3, text: "Dummy message 3" },
-    { id: 1, text: "Dummy message 1" },
-    { id: 2, text: "Dummy message 2" },
-    { id: 3, text: "Dummy message 3" },
-  ]);
+  const [messages, setMessages] = useState([]);
   const [showAside, setShowAside] = useState(false);
 
   useEffect(() => {
@@ -34,6 +15,8 @@ const TopicEditForm = ({ topicName }) => {
         const fetchedTopicNode = await getNode(topicName);
         const fetchedFormData = await getFormData(topicName);
         setTopicNode(fetchedTopicNode);
+        console.log("fetchedNode", fetchedTopicNode)
+        setMessages(fetchedTopicNode.suggestions.map((d, i) => {return {text: d, id: i}}))
         setFormData(fetchedFormData);
       } catch (error) {
         console.error("Error fetching topic data:", error);
@@ -109,7 +92,7 @@ const TopicEditForm = ({ topicName }) => {
       if (topicNodePropsToUse.includes(label)) {
         let processedValue = value;
 
-        // Join items with a newline if it's a list
+
         if (Array.isArray(value)) {
           processedValue = value.join('\n');
         }
@@ -128,7 +111,7 @@ const TopicEditForm = ({ topicName }) => {
         );
       }
     } else {
-      // Join items with a newline if it's a list
+
       let processedValue = value;
       if (Array.isArray(value)) {
         processedValue = value.join(`\n`);
