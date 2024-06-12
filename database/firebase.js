@@ -262,3 +262,60 @@ export const updateRating = async (userEmail, newRatingName, newRatingValue) => 
     console.error("Error updating rating:", error)
   }
 }
+
+export const getNotifications = async (email) => {
+  try {
+    const userDocData = await getCurrentUserDocData(email);
+    return userDocData.notifications
+  } catch (error) {
+    console.error("Error fetching notifications", error)
+    return false
+  }
+}
+
+export const deleteNotification = async (userEmail, notificationContent) => {
+  try {
+    const docId = await getUserDocumentByUserEmail(userEmail);
+    const userDocData = await getCurrentUserDocData(userEmail);
+
+    if (docId && userDocData) {
+      const updatedNotifications = userDocData.notifications.filter(
+        (notification) => notification.text !== notificationContent
+      );
+
+      const userDocRef = doc(db, "Users", docId);
+      await updateDoc(userDocRef, {
+        notifications: updatedNotifications,
+      });
+      console.log("Notification deleted successfully.");
+    } else {
+      console.error("User document not found.");
+    }
+  } catch (error) {
+    console.error("Error deleting notification:", error);
+  }
+};
+
+export const writeNotification = async (notification) => {
+  try {
+    const userQuery = query(collection(db, "Users"));
+    const userQuerySnapshot = await getDocs(userQuery);
+
+    const updatePromises = userQuerySnapshot.docs.map(async (userDoc) => {
+      const userDocRef = doc(db, "Users", userDoc.id);
+      const userData = userDoc.data();
+
+      const updatedNotifications = userData.notifications ? [...userData.notifications, notification] : [notification];
+
+      await updateDoc(userDocRef, {
+        notifications: updatedNotifications,
+      });
+    });
+
+    await Promise.all(updatePromises);
+    console.log("Notification written successfully to all users.");
+  } catch (error) {
+    console.error("Error writing notification:", error);
+  }
+};
+

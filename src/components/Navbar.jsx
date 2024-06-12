@@ -11,6 +11,7 @@ import {
 import { FaBookmark } from "react-icons/fa";
 import "../styles/Navbar.css";
 import SuggestedTopicsOverlay from "./SuggestedTopicsOverlay";
+import NotificationAside from "./NotificationAside";
 
 const MyNavbar = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -94,6 +95,8 @@ const MyNavbar = () => {
 
           <SearchBar />
 
+          {privilegeLevel === "member" && <NotificationAside />}
+          
           {!isLoggedIn ? (
             <LoggedOutButtons handleOpenForm={handleOpenForm} />
           ) : (
