@@ -3,6 +3,7 @@ import * as d3 from "d3";
 import { useNavigate } from "react-router-dom";
 import {
   getCurrentUserData,
+  getUserPrivledge,
   getUserSubjectProgress,
 } from "../../database/firebase";
 import { getOrder } from "../../database/graphData";
@@ -16,6 +17,7 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
   const [loading, setLoading] = useState(true);
   const [userLoggedIn, setUserLoggedIn] = useState(false);
   const [subjectProgress, setSubjectProgress] = useState({}); 
+  const [privledge, setUserPrivledge] = useState("guest")
   
   let validNodes =
     subject == null
@@ -82,6 +84,7 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       if (user) {
         setUserLoggedIn(true);
         const subjectProgress = await getUserSubjectProgress(user.email);
+        const privledge = await getUserPrivledge(user.email)
         const totalTopicsCount = getTotalNodesForSubject(subject, links, nodes);
         const ourTopicsCount = getNodesCompleteForSubject(
           subject,
@@ -89,6 +92,7 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
           nodes,
           subjectProgress
         );
+        setUserPrivledge(privledge)
         setTotalTopicCount(totalTopicsCount);
         setOurTopicCount(ourTopicsCount);
         setLoading(false);
@@ -402,7 +406,7 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .style("stroke-width", "2px")
       .style("pointer-events", "none");
 
-    if (userLoggedIn) {
+    if (privledge === "member") {
       const progressBar = svg
         .append("rect")
         .attr("width", 200)

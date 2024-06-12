@@ -110,7 +110,7 @@ const TopicEntry = ({ userData, graphData, node }) => {
   return (
     <div>
       <Backtrack paths={fullPath} />
-      {userEmail && (
+      {privledge === "member" && (
         <div
           style={{
             position: "fixed",
