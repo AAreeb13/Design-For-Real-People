@@ -37,13 +37,11 @@ const TopicRatingDisplay = ({ topicName }) => {
 
   const handleCloseOverlay = () => {
     setShowConfirmation(false);
-    const newPath = `/editTopic/${topicName}`
-    window.location.assign(newPath)
   };
 
   const handleEdit = () => {
-    console.log("Opening form to edit topic:", topicName);
-    // Add your edit logic here
+    const newPath = `/editTopic/${topicName}`
+    window.location.assign(newPath)
   };
 
   if (!topicNode) {
