@@ -6,8 +6,8 @@ import {
   getUserPrivledge,
   getUserSubjectProgress,
 } from "../../database/firebase";
-import { getOrder } from "../../database/graphData";
-
+import { getOrder, updateRelationshipOrder } from "../../database/graphData";
+import "../styles/Graph.css"
 
 const Graph = ({ nodes, links, subject = null, width, height, style }) => {
   const svgRef = useRef();
@@ -16,16 +16,16 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
   const [ourTopicCount, setOurTopicCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [userLoggedIn, setUserLoggedIn] = useState(false);
-  const [subjectProgress, setSubjectProgress] = useState({}); 
-  const [privledge, setUserPrivledge] = useState("guest")
-  
+  const [subjectProgress, setSubjectProgress] = useState({});
+  const [privledge, setUserPrivledge] = useState("guest");
+
   let validNodes =
     subject == null
       ? nodes
       : nodes.filter((n) => n.name === subject || n.subject === subject);
-  
+
   if (validNodes.length === 0) {
-    validNodes = [{name: subject, type: "subject"}]
+    validNodes = [{ name: subject, type: "subject" }];
   }
 
   const nodesToUse = validNodes.map((n) => {
@@ -34,9 +34,13 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
 
   let linksToUse = links.map((link) => {
     if (link.source == null) {
-      return { source: link.source.source, target: link.source.target };
+      return {
+        source: link.source.source,
+        target: link.source.target,
+        order: link.source.order !== undefined ? links.source.order : 0,
+      };
     }
-    return { source: link.source, target: link.target };
+    return { source: link.source, target: link.target, order: link.order !== undefined ? link.order : "NaN" };
   });
 
   const nodeNameList = nodesToUse.map((n) => n.name);
@@ -72,11 +76,9 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
         setLoading(false);
       }
     };
-  
+
     fetchData();
   }, []);
-
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -84,7 +86,7 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       if (user) {
         setUserLoggedIn(true);
         const subjectProgress = await getUserSubjectProgress(user.email);
-        const privledge = await getUserPrivledge(user.email)
+        const privledge = await getUserPrivledge(user.email);
         const totalTopicsCount = getTotalNodesForSubject(subject, links, nodes);
         const ourTopicsCount = getNodesCompleteForSubject(
           subject,
@@ -92,7 +94,7 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
           nodes,
           subjectProgress
         );
-        setUserPrivledge(privledge)
+        setUserPrivledge(privledge);
         setTotalTopicCount(totalTopicsCount);
         setOurTopicCount(ourTopicsCount);
         setLoading(false);
@@ -101,7 +103,6 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
         setLoading(false);
       }
     };
-    
 
     const svg = d3.select(svgRef.current);
 
@@ -112,7 +113,8 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
         svgGroup.attr("transform", event.transform);
       });
 
-    svg.call(zoom);
+      svg.call(zoom).on("dblclick.zoom", null);
+
 
     svg.selectAll("*").remove();
 
@@ -143,7 +145,8 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
           .distance(90) // distance = link length
       )
       .force(
-        "charge", d3.forceManyBody().strength(-400000)  // how far apart are nodes
+        "charge",
+        d3.forceManyBody().strength(-400000) // how far apart are nodes
       )
       .force("center", d3.forceCenter(width / 2, height / 2));
 
@@ -166,8 +169,6 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .append("g")
       .attr("class", "node");
 
-      
-      
     // Supporting code for rendering topics here
     const highlightLinks = (d) => {
       const highlightedNodes = new Set();
@@ -191,75 +192,67 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
         (node) => node.subject === miniSubjectName && node.type === "topic"
       );
       const childMiniSubjects = nodes.filter(
-        (node) =>
-          node.subject === miniSubjectName &&
-          node.type === "subject"
+        (node) => node.subject === miniSubjectName && node.type === "subject"
       );
 
       if (childMiniSubjects.length > 0) {
         for (const childMiniSubject of childMiniSubjects) {
           if (!innerComplete(childMiniSubject)) {
-            return false; 
+            return false;
           }
         }
       }
-  
+
       for (const topic of miniSubjectTopics) {
         if (!subjectProgress[topic.name]) {
           return false;
         }
       }
-      return true; 
+      return true;
     };
 
+    const colCompleteTopic = "#86e399";
+    const colTodoTopic = "#ff9999";
 
-    const colCompleteTopic = "#86e399"
-    const colTodoTopic = "#ff9999"
+    const colCompleteMainSubject = "#28a745";
+    const colTodoMainSubject = "#f86d6d";
 
-    const colCompleteMainSubject = "#28a745"
-    const colTodoMainSubject = "#f86d6d"
-    
-    const colCompleteMiniSubject = "#86e399"   // same as topic, but just incase you wish to change later
-    const colTodoMiniSubject = "#ff9999"
-
+    const colCompleteMiniSubject = "#86e399"; // same as topic, but just incase you wish to change later
+    const colTodoMiniSubject = "#ff9999";
 
     // -------------------------------------------------- TOPICS HERE -------------------------------------------------- //
-    
+
     node // Topics that are complete
       .append("ellipse")
       .filter((d) => d.type === "topic" && subjectProgress[d.name])
       .attr("rx", 300) // ellipse width
       .attr("ry", 100) // ellipse height
-      .attr("fill", colCompleteTopic) 
-      .attr("stroke", "#333") 
+      .attr("fill", colCompleteTopic)
+      .attr("stroke", "#333")
       .attr("stroke-width", 2)
       .style("cursor", "pointer")
       .on("click", (event, d) => {
         navigate("/topic/" + d.name);
       })
       .on("mouseover", function (event, d) {
+        d3.select(this).transition().duration(200).attr("fill", colTodoTopic);
+        highlightLinks(d);
+      })
+      .on("mouseout", function (event, d) {
         d3.select(this)
           .transition()
           .duration(200)
-          .attr("fill", colTodoTopic); 
-          highlightLinks(d);
-      })
-      .on("mouseout", function (event, d) {
-      d3.select(this)
-        .transition()
-        .duration(200)
-          .attr("fill", colCompleteTopic); 
+          .attr("fill", colCompleteTopic);
         link.attr("stroke", "#999").attr("stroke-width", 15);
       });
 
-
-      node  // topics that are incomplete
+    node // topics that are incomplete
       .append("ellipse")
       .filter((d) => d.type === "topic" && !subjectProgress[d.name])
       .attr("rx", 300) // ellipse width
       .attr("ry", 100) // ellipse height
       .attr("fill", colTodoTopic)
-      .attr("stroke", "#333") 
+      .attr("stroke", "#333")
       .attr("stroke-width", 2)
       .style("cursor", "pointer")
       .on("click", (event, d) => {
@@ -269,57 +262,56 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
         d3.select(this)
           .transition()
           .duration(200)
-          .attr("fill", colCompleteTopic); 
+          .attr("fill", colCompleteTopic);
 
-          highlightLinks(d);
+        highlightLinks(d);
       })
       .on("mouseout", function (event, d) {
-      d3.select(this)
-        .transition()
-        .duration(200)
-          .attr("fill", colTodoTopic); 
+        d3.select(this).transition().duration(200).attr("fill", colTodoTopic);
         link.attr("stroke", "#999").attr("stroke-width", 15);
       });
-
-
-
-
 
     // -------------------------------------------------- MAIN SUBJECTS HERE -------------------------------------------------- //
 
     node
       .append("rect")
-      .filter((d) => d.type === "subject" && d.name === subject && !innerComplete(d))
-      .attr("width", 800)
-      .attr("height", 200) 
-      .attr("fill", colTodoMainSubject) 
-      .attr("stroke", "#333") 
-      .attr("stroke-width", 2)
-      .attr("x", -400) // to center rectangle
-      .attr("y", -100); // to center rectangle
-
-    node
-      .append("rect")
-      .filter((d) => d.type === "subject" && d.name === subject && innerComplete(d))
+      .filter(
+        (d) => d.type === "subject" && d.name === subject && !innerComplete(d)
+      )
       .attr("width", 800)
       .attr("height", 200)
-      .attr("fill", colCompleteMainSubject) 
-      .attr("stroke", "#333") 
+      .attr("fill", colTodoMainSubject)
+      .attr("stroke", "#333")
       .attr("stroke-width", 2)
       .attr("x", -400) // to center rectangle
       .attr("y", -100); // to center rectangle
 
-
-    // -------------------------------------------------- MINI SUBJECTS HERE -------------------------------------------------- //
-    
     node
       .append("rect")
       .filter(
-        (d) => d.type === "subject" && (subject == null || d.name !== subject) && !innerComplete(d)
+        (d) => d.type === "subject" && d.name === subject && innerComplete(d)
+      )
+      .attr("width", 800)
+      .attr("height", 200)
+      .attr("fill", colCompleteMainSubject)
+      .attr("stroke", "#333")
+      .attr("stroke-width", 2)
+      .attr("x", -400) // to center rectangle
+      .attr("y", -100); // to center rectangle
+
+    // -------------------------------------------------- MINI SUBJECTS HERE -------------------------------------------------- //
+
+    node
+      .append("rect")
+      .filter(
+        (d) =>
+          d.type === "subject" &&
+          (subject == null || d.name !== subject) &&
+          !innerComplete(d)
       )
       .attr("width", 500) // rectangle width
       .attr("height", 200) // rectangle height
-      .attr("fill", colTodoMiniSubject) 
+      .attr("fill", colTodoMiniSubject)
       .attr("stroke", "#333") // Dark gray
       .attr("stroke-width", 2)
       .attr("x", -250)
@@ -340,14 +332,17 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
         d3.select(this)
           .transition()
           .duration(200)
-          .attr("fill", colTodoMiniSubject); 
+          .attr("fill", colTodoMiniSubject);
         link.attr("stroke", "#999").attr("stroke-width", 15);
       });
 
-      node
+    node
       .append("rect")
       .filter(
-        (d) => d.type === "subject" && (subject == null || d.name !== subject) && innerComplete(d)
+        (d) =>
+          d.type === "subject" &&
+          (subject == null || d.name !== subject) &&
+          innerComplete(d)
       )
       .attr("width", 500) // rectangle width
       .attr("height", 200) // rectangle height
@@ -375,10 +370,6 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
         link.attr("stroke", "#999").attr("stroke-width", 15);
       });
 
-
-
-
-
     // ALL TEXT HERE FOR NODES
     node
       .append("text")
@@ -386,27 +377,120 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .attr("y", 0)
       .attr("dy", ".35em")
       .attr("text-anchor", "middle")
-      .attr("font-size", (d) => subject == null ? "40px" : d.name === subject ? "65px" : "45px")
+      .attr("font-size", (d) =>
+        subject == null ? "40px" : d.name === subject ? "65px" : "45px"
+      )
       .attr("font-family", "Arial, sans-serif")
       .style("font-weight", "bold")
       .style("pointer-events", "none")
       .text((d) => d.name);
-  
 
-    const text = svgGroup
+
+    let text = null;
+
+    // TEXT ORDERINGS HERE
+    if (privledge === "moderator") {
+      text = svgGroup
+        .selectAll("text.link-order")
+        .data(linksToUse)
+        .enter()
+        .append("text")
+        .attr("class", "link-order")
+        .attr("font-size", "160px")
+        .attr("fill", "#ff0000") // Red
+        .style("font-weight", "bold")
+        .style("stroke", "#000000") // Black
+        .style("stroke-width", "7.5px")
+        .style("pointer-events", "auto")
+        .text((d) => d.order)
+        .on("click", function (event, d) {
+          const textElement = d3.select(this);
+          const parent = d3.select(this.parentNode);
+    
+          textElement.style("display", "none");
+    
+          const inputBox = parent
+            .append("foreignObject")
+            .attr("x", textElement.attr("x"))
+            .attr("y", textElement.attr("y") - 180)
+            .attr("width", 500)
+            .attr("height", 300)
+            .append("xhtml:div")
+            .attr("class", "input-group")
+            .style("width", "400px")
+            .style("height", "200px")
+            .append("xhtml:input")
+            .attr("type", "text")
+            .attr("class", "form-control")
+            .style("font-size", "160px")
+            .attr("value", d.order)
+            .on("blur", async function () {
+              const newValue = this.value;
+              d.order = newValue;
+    
+              const updateSuccess = await updateRelationshipOrder(
+                d.source.name,
+                d.target.name,
+                newValue
+              );
+    
+              if (updateSuccess) {
+                parent.select("foreignObject").remove();
+    
+                textElement.text(newValue).style("display", null);
+              } else {
+                console.error("Failed to update the order in the database.");
+              }
+            })
+            .on("keydown", function (event) {
+              if (event.key === "Enter") {
+                this.blur();
+              }
+            });
+    
+          inputBox.node().focus();
+        });
+    } else {
+      text = svgGroup
       .selectAll("text.link-order")
       .data(linksToUse)
       .enter()
       .append("text")
       .attr("class", "link-order")
-      .attr("font-size", "140px")
+      .attr("font-size", "160px") 
       .attr("fill", "#ff0000") // Red
       .style("font-weight", "bold")
       .style("stroke", "#000000") // Black
-      .style("stroke-width", "2px")
-      .style("pointer-events", "none");
+      .style("stroke-width", "7.5px") 
+      .style("pointer-events", "none")
+      .text((d) => d.order);
+    }
+  
+      svgGroup.selectAll("text.link-order")
+      .data(linksToUse)
+      .enter()
+      .append("text")
+      .attr("class", "link-order hovered-text") 
+      .attr("font-size", "160px")
+      .attr("fill", "#ff0000") 
+      .style("font-weight", "bold")
+      .style("stroke", "#000000")
+      .style("stroke-width", "7.5px")
+      .text((d) => d.order);
+    
+    // Add hover effect with D3.js
+    svgGroup.selectAll("text.link-order")
+      .on("mouseover", function () {
+        d3.select(this).classed("hovered-text", true); 
+      })
+      .on("mouseout", function () {
+        d3.select(this).classed("hovered-text", false);
+      });
+  
 
-    if (privledge === "member") {
+    
+    
+      if (privledge === "member") {
       const progressBar = svg
         .append("rect")
         .attr("width", 200)
@@ -455,13 +539,14 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
         .attr("y1", (d) => d.source.y)
         .attr("x2", (d) => d.target.x)
         .attr("y2", (d) => d.target.y);
-
+    
       text
         .attr("x", (d) => (d.source.x + d.target.x) / 2)
         .attr("y", (d) => (d.source.y + d.target.y) / 2);
-
+    
       node.attr("transform", (d) => `translate(${d.x},${d.y})`);
     });
+    
 
     const initialTransform = d3.zoomIdentity
       .translate(width / 2.75, height / 3)
@@ -469,8 +554,7 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
     svg.call(zoom.transform, initialTransform);
 
     const updateText = async () => {
-      const promises = linksToUse.map((d) => getOrder(d));
-      const orders = await Promise.all(promises);
+      const orders = linksToUse.map((d) => d.order);
 
       text.text((d, i) => orders[i]);
     };
@@ -537,9 +621,7 @@ const getTopicsFromSubject = (subject, links, nodes) => {
 const getMiniSubjectFromSubject = (subject, links, nodes) => {
   return nodes.filter(
     (node) =>
-      node.subject === subject &&
-      node.type === "subject" &&
-      !node.mainSubject
+      node.subject === subject && node.type === "subject" && !node.mainSubject
   );
 };
 
