@@ -252,6 +252,26 @@ async function addRelationshipsToGraph(prerequisites, name, subject) {
   return true;
 }
 
+export async function updateRelationshipOrder(source, target, newOrder) {
+  const session = driver.session();
+  const query = `
+    MATCH (n:Subject {name: $source})-[r:IS_USED_IN]->(m:Subject {name: $target})
+    SET r.order = toInteger($newOrder)
+    RETURN r
+  `;
+  const params = { source, target, newOrder };
+
+  try {
+    const result = await session.run(query, params);
+    return result.records.length > 0;
+  } catch (error) {
+    console.error("Error updating relationship order:", error);
+    return false;
+  } finally {
+    await session.close();
+  }
+}
+
 const getAllNodes = async (query) => {
   const session = driver.session();
   try {
