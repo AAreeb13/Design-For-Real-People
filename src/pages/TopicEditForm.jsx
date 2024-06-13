@@ -16,8 +16,7 @@ const TopicEditForm = ({ topicName }) => {
         const fetchedTopicNode = await getNode(topicName);
         const fetchedFormData = await getFormData(topicName);
         setTopicNode(fetchedTopicNode);
-        console.log("fetchedNode", fetchedTopicNode)
-        setMessages(fetchedTopicNode.suggestions.map((d, i) => {return {text: d, id: i}}))
+        console.log("fetchedNode", fetchedTopicNode);
         setFormData(fetchedFormData);
       } catch (error) {
         console.error("Error fetching topic data:", error);
@@ -25,6 +24,23 @@ const TopicEditForm = ({ topicName }) => {
     };
 
     fetchTopicData();
+  }, [topicName]);
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const fetchedTopicNode = await getNode(topicName);
+        setMessages(fetchedTopicNode.suggestions.map((d, i) => ({ text: d, id: i })));
+      } catch (error) {
+        console.error("Error fetching notifications:", error);
+      }
+    };
+
+    fetchNotifications();
+
+    const interval = setInterval(fetchNotifications, 3000);
+
+    return () => clearInterval(interval);
   }, [topicName]);
 
   const handleInputChange = (e, label, isTopicNode) => {
@@ -72,7 +88,7 @@ const TopicEditForm = ({ topicName }) => {
         console.log("Form and Node successfully updated");
         await writeNotification({
           text: `Topic content updated: ${topicName}`
-        })
+        });
 
         const path = `/topic/${topicName}`;
         window.location.assign(path);
@@ -89,20 +105,19 @@ const TopicEditForm = ({ topicName }) => {
   const handleDeleteMessage = async (id) => {
     try {
       const messageToDelete = messages.find(message => message.id === id);
-  
+
       if (!messageToDelete) {
         console.error(`Message with id ${id} not found.`);
         return;
       }
       await deleteSuggestionFromTopic(topicName, messageToDelete.text);
-  
+
       setMessages(prevMessages => prevMessages.filter(message => message.id !== id));
     } catch (error) {
       console.error("Error deleting message:", error);
       alert("An error occurred while deleting the message. Please try again later.");
     }
   };
-  
 
   const renderFormElement = (label, value, isTopicNode) => {
     const topicNodePropsToUse = ["name", "subject", "description", "learning_objectives"];
@@ -110,7 +125,6 @@ const TopicEditForm = ({ topicName }) => {
     if (isTopicNode) {
       if (topicNodePropsToUse.includes(label)) {
         let processedValue = value;
-
 
         if (Array.isArray(value)) {
           processedValue = value.join('\n');
@@ -130,7 +144,6 @@ const TopicEditForm = ({ topicName }) => {
         );
       }
     } else {
-
       let processedValue = value;
       if (Array.isArray(value)) {
         processedValue = value.join(`\n`);
@@ -176,7 +189,7 @@ const TopicEditForm = ({ topicName }) => {
         {showAside && (
           <aside className="message-aside">
             <div className="d-flex justify-content-end">
-              <h2 style={{marginRight: "auto"}}>Suggestions</h2>
+              <h2 style={{ marginRight: "auto" }}>Suggestions</h2>
               <Button variant="info" onClick={() => setShowAside(false)}>Close</Button>
             </div>
             {messages.map(message => (
@@ -199,4 +212,3 @@ const asTitle = (str) => {
 }
 
 export default TopicEditForm;
-
