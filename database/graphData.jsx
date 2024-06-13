@@ -550,7 +550,7 @@ export const updateFormData = async (topicName, newFormData) => {
   try {
     const updateQuery = `
       MATCH (n:Subject {name: $topicName})-[:HAS_FORM_DATA]->(m)
-      SET m += $newFormData
+      SET m = $newFormData
       RETURN m
     `;
     const updateParams = { topicName, newFormData };
