@@ -199,7 +199,7 @@ export const addTopicToGraph = async (name, subject, prerequisites) => {
 
   const params = { name, subject, prereqAsList };
   const results = await runQuery(query, params);
-  console.log("results", results)
+  console.log("results", results);
   // Add relationships for prerequisites if they exist
   return !results
     ? results
@@ -504,7 +504,6 @@ export const getFormData = async (topicName) => {
   }
 };
 
-
 export const updateNode = async (topicName, newTopicNode) => {
   const session = driver.session();
 
@@ -546,7 +545,6 @@ export const updateFormData = async (topicName, newFormData) => {
     await session.close();
   }
 };
-
 
 export const addSuggestionToTopic = async (topicName, suggestion) => {
   const session = driver.session();
@@ -593,11 +591,9 @@ export const deleteSuggestionFromTopic = async (topicName, suggestion) => {
       throw new Error(`Topic with name ${topicName} not found.`);
     }
 
-    return result.records[0].get('suggestions');
+    return result.records[0].get("suggestions");
   } catch (error) {
     console.error("Error deleting suggestion from topic:", error);
     throw error;
   }
 };
-
-

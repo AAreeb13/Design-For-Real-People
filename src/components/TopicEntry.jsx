@@ -64,6 +64,10 @@ const TopicEntry = ({ userData, graphData, node }) => {
     };
 
     fetchTopic();
+
+    const interval = setInterval(fetchTopic, 3000);
+
+    return () => clearInterval(interval);
   }, [node]);
 
   useEffect(() => {
@@ -159,7 +163,10 @@ const TopicEntry = ({ userData, graphData, node }) => {
               </button>
 
               {showSuggestionOverlay && (
-                <SuggestionOverlay onClose={toggleSuggestionOverlay} topicName={topicNode.name}/>
+                <SuggestionOverlay
+                  onClose={toggleSuggestionOverlay}
+                  topicName={topicNode.name}
+                />
               )}
               <button
                 className="btn btn-block btn-outline-primary"

@@ -96,7 +96,7 @@ const MyNavbar = () => {
           <SearchBar />
 
           {privilegeLevel === "member" && <NotificationAside />}
-          
+
           {!isLoggedIn ? (
             <LoggedOutButtons handleOpenForm={handleOpenForm} />
           ) : (

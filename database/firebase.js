@@ -67,14 +67,13 @@ export const getSuggestionData = async () => {
     suggestionQuerySnapshot.forEach((doc) => {
       suggestions.push(doc.data());
     });
-    console.log("suggestions", suggestions)
+    console.log("suggestions", suggestions);
     return suggestions;
   } catch (error) {
     console.error("Error fetching suggestions:", error);
     return [];
   }
 };
-
 
 export const initAuthStateListener = () => {
   onAuthStateChanged(auth, (user) => {
@@ -103,7 +102,7 @@ export const updateCompletionStatus = async (
         [topicKey]: newStatus,
       };
 
-      const userDocRef = doc(db, "Users", docId); 
+      const userDocRef = doc(db, "Users", docId);
       await updateDoc(userDocRef, {
         subjectProgress: updatedSubjectProgress,
       });
@@ -116,13 +115,9 @@ export const updateCompletionStatus = async (
   }
 };
 
-export const updateBookmarkStatus = async (
-  userEmail,
-  topicKey,
-  newStatus
-) => {
+export const updateBookmarkStatus = async (userEmail, topicKey, newStatus) => {
   try {
-    const docId = await getUserDocumentByUserEmail(userEmail); 
+    const docId = await getUserDocumentByUserEmail(userEmail);
     const userDocData = await getCurrentUserDocData(userEmail);
 
     if (docId && userDocData) {
@@ -142,7 +137,7 @@ export const updateBookmarkStatus = async (
   } catch (error) {
     console.error("Error updating bookmark status:", error);
   }
-}
+};
 
 const getUserDocumentByUserEmail = async (email) => {
   try {
@@ -177,7 +172,7 @@ export const getUserSubjectProgress = async (email) => {
 export const getUserBookmarks = async (email) => {
   const userDoc = await getCurrentUserDocData(email);
   return userDoc.bookmarks;
-}
+};
 
 export const addUserSuggestion = async (suggestion) => {
   try {
@@ -216,7 +211,7 @@ export const deleteUserSuggestion = async (suggestionId) => {
 
 export const removeBookmark = async (userEmail, bookmarkTopicName) => {
   try {
-    const docId = await getUserDocumentByUserEmail(userEmail); 
+    const docId = await getUserDocumentByUserEmail(userEmail);
     const userDocData = await getCurrentUserDocData(userEmail);
 
     if (docId && userDocData) {
@@ -239,39 +234,43 @@ export const removeBookmark = async (userEmail, bookmarkTopicName) => {
 export const getRating = async (email, topicName) => {
   const userDoc = await getCurrentUserDocData(email);
   return userDoc.ratings[topicName];
-}
+};
 
-export const updateRating = async (userEmail, newRatingName, newRatingValue) => {
-  try { 
-    const docId = await getUserDocumentByUserEmail(userEmail); 
+export const updateRating = async (
+  userEmail,
+  newRatingName,
+  newRatingValue
+) => {
+  try {
+    const docId = await getUserDocumentByUserEmail(userEmail);
     const userDocData = await getCurrentUserDocData(userEmail);
 
     if (docId && userDocData) {
-      const updatedRatings = {...userDocData.ratings}
-      updatedRatings[newRatingName] = newRatingValue
+      const updatedRatings = { ...userDocData.ratings };
+      updatedRatings[newRatingName] = newRatingValue;
 
       const userDocRef = doc(db, "Users", docId);
       await updateDoc(userDocRef, {
         ratings: updatedRatings,
-      })
-      console.log("Ratings updated successfully")
+      });
+      console.log("Ratings updated successfully");
     } else {
-      console.error("User document not found")
+      console.error("User document not found");
     }
   } catch (error) {
-    console.error("Error updating rating:", error)
+    console.error("Error updating rating:", error);
   }
-}
+};
 
 export const getNotifications = async (email) => {
   try {
     const userDocData = await getCurrentUserDocData(email);
-    return userDocData.notifications
+    return userDocData.notifications;
   } catch (error) {
-    console.error("Error fetching notifications", error)
-    return false
+    console.error("Error fetching notifications", error);
+    return false;
   }
-}
+};
 
 export const deleteNotification = async (userEmail, notificationContent) => {
   try {
@@ -305,7 +304,9 @@ export const writeNotification = async (notification) => {
       const userDocRef = doc(db, "Users", userDoc.id);
       const userData = userDoc.data();
 
-      const updatedNotifications = userData.notifications ? [...userData.notifications, notification] : [notification];
+      const updatedNotifications = userData.notifications
+        ? [...userData.notifications, notification]
+        : [notification];
 
       await updateDoc(userDocRef, {
         notifications: updatedNotifications,
@@ -318,4 +319,3 @@ export const writeNotification = async (notification) => {
     console.error("Error writing notification:", error);
   }
 };
-

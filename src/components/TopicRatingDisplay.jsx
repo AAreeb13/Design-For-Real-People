@@ -3,7 +3,7 @@ import { BsEmojiSmile, BsEmojiNeutral, BsEmojiFrown } from "react-icons/bs";
 import { RiDeleteBin6Line, RiEdit2Line } from "react-icons/ri";
 import { deleteNode, getNode } from "../../database/graphData";
 import ConfirmationOverlay from "../components/ConfirmationOverlay";
-import '../styles/TopicRatingDisplay.css'; 
+import "../styles/TopicRatingDisplay.css";
 import { writeNotification } from "../../database/firebase";
 
 const TopicRatingDisplay = ({ topicName }) => {
@@ -29,14 +29,14 @@ const TopicRatingDisplay = ({ topicName }) => {
 
   const handleConfirmDelete = async () => {
     setShowConfirmation(false);
-    const subject = topicNode.subject
+    const subject = topicNode.subject;
     console.log("Deleting topic: ", topicName);
     await deleteNode(topicName);
     await writeNotification({
-      text: `Topic deleted: ${topicName}`
-    })
-    const newPath = `/graph/${subject}`
-    window.location.assign(newPath);  
+      text: `Topic deleted: ${topicName}`,
+    });
+    const newPath = `/graph/${subject}`;
+    window.location.assign(newPath);
   };
 
   const handleCloseOverlay = () => {
@@ -44,8 +44,8 @@ const TopicRatingDisplay = ({ topicName }) => {
   };
 
   const handleEdit = () => {
-    const newPath = `/editTopic/${topicName}`
-    window.location.assign(newPath)
+    const newPath = `/editTopic/${topicName}`;
+    window.location.assign(newPath);
   };
 
   if (!topicNode) {
@@ -59,24 +59,47 @@ const TopicRatingDisplay = ({ topicName }) => {
         <span className="button-text">Delete</span>
       </button>
 
-      <div className="rating-icons" style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "20px" }}>
+      <div
+        className="rating-icons"
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: "20px",
+        }}
+      >
         <div style={{ color: "green" }}>
           <BsEmojiSmile size={50} />
-          <span style={{ display: "block", textAlign: "center", color: "black" }}>{topicNode.good.low}</span>
+          <span
+            style={{ display: "block", textAlign: "center", color: "black" }}
+          >
+            {topicNode.good.low}
+          </span>
         </div>
 
         <div style={{ color: "yellow" }}>
           <BsEmojiNeutral size={50} />
-          <span style={{ display: "block", textAlign: "center", color: "black" }}>{topicNode.alright.low}</span>
+          <span
+            style={{ display: "block", textAlign: "center", color: "black" }}
+          >
+            {topicNode.alright.low}
+          </span>
         </div>
 
         <div style={{ color: "red" }}>
           <BsEmojiFrown size={50} />
-          <span style={{ display: "block", textAlign: "center", color: "black" }}>{topicNode.bad.low}</span>
+          <span
+            style={{ display: "block", textAlign: "center", color: "black" }}
+          >
+            {topicNode.bad.low}
+          </span>
         </div>
       </div>
 
-      <button className="btn btn-outline-secondary edit-button" onClick={handleEdit}>
+      <button
+        className="btn btn-outline-secondary edit-button"
+        onClick={handleEdit}
+      >
         <RiEdit2Line size={30} className="icon" />
         <span className="button-text">Edit</span>
       </button>

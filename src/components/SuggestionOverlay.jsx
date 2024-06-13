@@ -14,7 +14,7 @@ const SuggestionOverlay = ({ onClose, topicName }) => {
 
   const handleSubmit = async () => {
     console.log("Suggestion submitted:", suggestion);
-  
+
     try {
       let result = await addSuggestionToTopic(topicName, suggestion);
       if (result) {
@@ -32,14 +32,15 @@ const SuggestionOverlay = ({ onClose, topicName }) => {
       }, 3000);
     }
   };
-  
 
   return (
     <div className="overlay">
       <div className="overlay-content">
         <div className="overlay-header">
           <h2>Suggest Topic</h2>
-          <button className="close-btn" onClick={onClose}>x</button>
+          <button className="close-btn" onClick={onClose}>
+            x
+          </button>
         </div>
         <div className="input-group mb-3">
           <input
@@ -58,7 +59,9 @@ const SuggestionOverlay = ({ onClose, topicName }) => {
           Submit
         </button>
         {showSuccessMessage && (
-          <div className="success-message">Suggestion submitted successfully!</div>
+          <div className="success-message">
+            Suggestion submitted successfully!
+          </div>
         )}
       </div>
     </div>
