@@ -200,7 +200,6 @@ export const addTopicToGraph = async (name, subject, prerequisites) => {
   const params = { name, subject, prereqAsList };
   const results = await runQuery(query, params);
   console.log("results", results);
-  // Add relationships for prerequisites if they exist
   return !results
     ? results
     : prereqAsList.length <= 0
@@ -242,7 +241,7 @@ async function addRelationshipsToGraph(prerequisites, name, subject) {
     startNumber = startNumber + 1;
     const query = `
   MATCH (title:Subject{name: $prerequisite}), (subject:Subject{name: $name})
-  CREATE (title) - [r:IS_USED_IN{order: $startNumber}] -> (subject);
+  CREATE (title) - [r:IS_USED_IN{order: toInteger($startNumber)}] -> (subject);
   `;
     const params = { prerequisite, startNumber, name };
     const results = await runQuery(query, params);

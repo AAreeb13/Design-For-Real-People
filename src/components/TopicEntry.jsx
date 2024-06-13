@@ -135,7 +135,7 @@ const TopicEntry = ({ userData, graphData, node }) => {
             position: "fixed",
             top: "10px",
             right: "10px",
-            zIndex: "9999",
+            zIndex: "1000",
             marginTop: "80px",
             display: "flex",
             flexDirection: "column",
