@@ -14,13 +14,15 @@ import { getGraphData, getPaths } from "../database/graphData";
 import { initAuthStateListener, auth } from "../database/firebase";
 import TopicEntry from "./components/TopicEntry";
 import Backtrack from "./components/Backtrack";
+import BookmarkMenu from "./pages/BookmarkMenu";
+import TopicEditForm from "./pages/TopicEditForm";
 
 function App() {
   const [graphData, setGraphData] = useState({ nodes: [], links: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [userData, setUserData] = useState(null);
-  const [key, setKey] = useState(0); // to force re-render
+  const [key, setKey] = useState(0); 
 
   let oldData = null;
 
@@ -40,9 +42,9 @@ function App() {
   };
 
   useEffect(() => {
-    fetchData(); // Fetch data initially
+    fetchData(); 
 
-    const intervalId = setInterval(fetchData, 5000); // Fetch data every 5 seconds
+    const intervalId = setInterval(fetchData, 5000); 
 
     return () => {
       clearInterval(intervalId);
@@ -54,7 +56,7 @@ function App() {
 
     const unsubscribe = auth.onAuthStateChanged((user) => {
       setUserData(user);
-      setKey((prevKey) => prevKey + 1); // forced re-render
+      setKey((prevKey) => prevKey + 1); 
       console.log(user ? "User data: " + user : "No user is signed in");
     });
 
@@ -76,6 +78,11 @@ function App() {
         <Routes key={key}>
           <Route path="/" element={<HomePage />} />
           <Route path="/grid-menu" element={<GridMenu />} />
+          <Route path="/bookmarked" element={<BookmarkMenu />} />
+          <Route
+            path="/editTopic/:topicName"
+            element={<TopicEditFormWrapper />}
+          />
           <Route
             path="/graph/:subject"
             element={
@@ -84,7 +91,9 @@ function App() {
           />
           <Route
             path="/topic/:node"
-            element={<TopicRouteWrapper graphData={graphData} userData={userData} />}
+            element={
+              <TopicRouteWrapper graphData={graphData} userData={userData} />
+            }
           />
           <Route
             path="/subgraph/:topicName"
@@ -96,6 +105,11 @@ function App() {
       </div>
     </Router>
   );
+}
+
+function TopicEditFormWrapper() {
+  const { topicName } = useParams();
+  return <TopicEditForm topicName={topicName} />;
 }
 
 function TopicRouteWrapper({ graphData, userData }) {
@@ -143,7 +157,6 @@ function GraphRouteWrapper({ graphData, userData }) {
   );
 }
 
-
 function SubgraphRouteWrapper({ graphData, userData }) {
   const { topicName } = useParams();
   const node = graphData.nodes.find((n) => n.name === topicName);
@@ -169,9 +182,9 @@ function isEqualData(oldData, data) {
     nodes: oldData.nodes,
     relationships: oldData.relationships.map((n) => {
       if (n.source.name != null) {
-        return { source: n.source.name, target: n.target.name };
+        return { source: n.source.name, target: n.target.name, order: n.order };
       } else {
-        return { source: n.source, target: n.target };
+        return { source: n.source, target: n.target, order: n.order };
       }
     }),
   };
@@ -191,12 +204,14 @@ function isEqualData(oldData, data) {
     (rel, index) => {
       return (
         rel.source === data.relationships[index].source &&
-        rel.target === data.relationships[index].target
+        rel.target === data.relationships[index].target &&
+        rel.order === data.relationships[index].order
       );
     }
   );
 
   return nodesEqual && relationshipsEqual;
 }
+
 
 export default App;

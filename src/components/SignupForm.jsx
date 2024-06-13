@@ -2,7 +2,7 @@ import React from "react";
 import "../styles/FormOverlay.css";
 
 const SignupForm = ({ formData, handleChange, handleSubmit }) => (
-  <form onSubmit={handleSubmit}>
+  <form onSubmit={handleSubmit} className="signup-form">
     <div className="form-group">
       <label htmlFor="email">Email</label>
       <input
@@ -21,9 +21,10 @@ const SignupForm = ({ formData, handleChange, handleSubmit }) => (
         type="password"
         name="password"
         className="form-control"
-        placeholder="Enter password"
+        placeholder="Enter password (at least 6 characters)"
         value={formData.password}
         onChange={handleChange}
+        minLength="6"
         required
       />
     </div>

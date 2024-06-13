@@ -108,11 +108,11 @@ const FormOverlay = ({ onClose, formType }) => {
           prerequisites: formData.prerequisites.split(","),
           subject: formData.subject,
           theme: formData.theme,
-          type: formData.type
-        }
+          type: formData.type,
+        };
         isValid = addUserSuggestion(suggestion);
       } else {
-        console.error("unknown formtype: " + formType)
+        console.error("unknown formtype: " + formType);
       }
     }
 
@@ -134,6 +134,9 @@ const FormOverlay = ({ onClose, formType }) => {
       userId: userId,
       privledge: "member",
       subjectProgress: {},
+      bookmarks: {},
+      ratings: {},
+      notifications: [],
     };
 
     try {

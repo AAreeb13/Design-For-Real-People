@@ -19,13 +19,17 @@ const SearchBar = () => {
     };
 
     fetchGraphData();
+
+    const interval = setInterval(fetchGraphData, 3000);
+
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
     if (searchTerm) {
       const filteredNodes = nodes.filter(
         (node) =>
-          node.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+          node?.name?.toLowerCase().includes(searchTerm.toLowerCase()) &&
           (node.type === "topic" || !node.mainSubject)
       );
       setSuggestions(filteredNodes.slice(0, 5));
@@ -65,7 +69,12 @@ const SearchBar = () => {
 
   return (
     <div className="search-bar">
-      <form className="d-flex" role="search" onSubmit={handleSubmit}>
+      <form
+        className="d-flex"
+        role="search"
+        onSubmit={handleSubmit}
+        style={{ minWidth: "300px" }}
+      >
         <input
           className="form-control me-2"
           type="search"
