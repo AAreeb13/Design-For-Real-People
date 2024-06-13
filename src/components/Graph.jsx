@@ -470,21 +470,21 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .data(linksToUse)
       .enter()
       .append("text")
-      .attr("class", "link-order hovered-text") // Add the class for the text
+      .attr("class", "link-order hovered-text") 
       .attr("font-size", "160px")
-      .attr("fill", "#ff0000") // Initial color (red)
+      .attr("fill", "#ff0000") 
       .style("font-weight", "bold")
-      .style("stroke", "#000000") // Black stroke
+      .style("stroke", "#000000")
       .style("stroke-width", "7.5px")
       .text((d) => d.order);
     
     // Add hover effect with D3.js
     svgGroup.selectAll("text.link-order")
       .on("mouseover", function () {
-        d3.select(this).classed("hovered-text", true); // Apply the hovered-text class on hover
+        d3.select(this).classed("hovered-text", true); 
       })
       .on("mouseout", function () {
-        d3.select(this).classed("hovered-text", false); // Remove the class on mouseout
+        d3.select(this).classed("hovered-text", false);
       });
   
 
