@@ -17,7 +17,7 @@ const MyNavbar = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [formType, setFormType] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [privilegeLevel, setPrivilegeLevel] = useState("guest");
+  const [privilegeLevel, setPrivilegeLevel] = useState(null);
   const [showSuggestedTopics, setShowSuggestedTopics] = useState(false);
   const [suggestedNum, setSuggestedNum] = useState(0);
 
@@ -44,20 +44,19 @@ const MyNavbar = () => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       setIsLoggedIn(!!user);
       fetchPrivilegeAndSuggestions(user);
-
-      const intervalId = setInterval(() => {
-        if (user && privilegeLevel === "moderator") {
-          fetchPrivilegeAndSuggestions(user);
-        }
-      }, 3000);
-
-      return () => {
-        clearInterval(intervalId);
-        unsubscribe();
-      };
     });
 
-    return unsubscribe;
+    const intervalId = setInterval(async () => {
+      const user = auth.currentUser;
+      if (user && privilegeLevel === "moderator") {
+        fetchPrivilegeAndSuggestions(user);
+      }
+    }, 3000);
+
+    return () => {
+      clearInterval(intervalId);
+      unsubscribe();
+    };
   }, [privilegeLevel]);
 
   const handleLogout = () => {
@@ -91,6 +90,10 @@ const MyNavbar = () => {
   const getSuggestedTopics = async () => {
     return await getSuggestionData();
   };
+
+  if (privilegeLevel === null) {
+    return null;
+  }
 
   return (
     <div>
