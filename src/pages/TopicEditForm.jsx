@@ -28,7 +28,6 @@ const TopicEditForm = ({ topicName }) => {
         console.error("Error fetching topic data:", error);
       }
     };
-
     fetchTopicData();
   }, [topicName]);
 
