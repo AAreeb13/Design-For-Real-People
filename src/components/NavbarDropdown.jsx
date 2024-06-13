@@ -29,6 +29,10 @@ const NavbarDropdown = () => {
     };
 
     fetchSubjects();
+    
+    const interval = setInterval(fetchSubjects, 3000); 
+
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -50,15 +54,13 @@ const NavbarDropdown = () => {
             Explore Our Topics{" "}
           </Link>
           <ul className={`dropdown-menu ${isDropdownOpen ? "show" : ""}`}>
-            {subjects.slice(0, 5).map((subject, index) => {
-              return (
-                <li key={index}>
-                  <Link className="dropdown-item" to={`/graph/${subject.name}`}>
-                    {subject.name}
-                  </Link>
-                </li>
-              );
-            })}
+            {subjects.slice(0, 5).map((subject, index) => (
+              <li key={index}>
+                <Link className="dropdown-item" to={`/graph/${subject.name}`}>
+                  {subject.name}
+                </Link>
+              </li>
+            ))}
           </ul>
         </li>
       </ul>
