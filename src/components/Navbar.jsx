@@ -19,23 +19,46 @@ const MyNavbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [privilegeLevel, setPrivilegeLevel] = useState("guest");
   const [showSuggestedTopics, setShowSuggestedTopics] = useState(false);
+  const [suggestedNum, setSuggestedNum] = useState(0);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async (user) => {
-      setIsLoggedIn(!!user);
+    const fetchPrivilegeAndSuggestions = async (user) => {
       if (user) {
         try {
           const privilege = await getUserPrivledge(user.email);
           setPrivilegeLevel(privilege);
+
+          if (privilege === "moderator") {
+            const suggestions = await getSuggestionData();
+            setSuggestedNum(suggestions.length);
+          }
         } catch (error) {
           console.error("Error fetching user privilege:", error);
         }
       } else {
         setPrivilegeLevel("guest");
+        setSuggestedNum(0);
       }
+    };
+
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      setIsLoggedIn(!!user);
+      fetchPrivilegeAndSuggestions(user);
+
+      const intervalId = setInterval(() => {
+        if (user && privilegeLevel === "moderator") {
+          fetchPrivilegeAndSuggestions(user);
+        }
+      }, 3000);
+
+      return () => {
+        clearInterval(intervalId);
+        unsubscribe();
+      };
     });
+
     return unsubscribe;
-  }, []);
+  }, [privilegeLevel]);
 
   const handleLogout = () => {
     auth
@@ -86,6 +109,7 @@ const MyNavbar = () => {
             <>
               <SeeSuggestedTopics
                 handleShowSuggestedTopics={handleShowSuggestedTopics}
+                suggestedNum={suggestedNum}
               />
               <TopicAdder handleOpenForm={handleOpenForm} />
             </>
@@ -168,7 +192,7 @@ const TopicSuggester = ({ handleOpenForm }) => (
   </div>
 );
 
-const SeeSuggestedTopics = ({ handleShowSuggestedTopics }) => (
+const SeeSuggestedTopics = ({ handleShowSuggestedTopics, suggestedNum }) => (
   <div className="collapse navbar-collapse">
     <ul className="navbar-nav mr-auto">
       <li className="nav-item see-suggested-topics-container">
@@ -178,13 +202,11 @@ const SeeSuggestedTopics = ({ handleShowSuggestedTopics }) => (
         >
           View Suggested Topics
         </button>
-        <span className="badge suggested-topics-badge">{10}</span>
+        <span className="badge suggested-topics-badge">{suggestedNum}</span>
       </li>
     </ul>
   </div>
 );
-
-
 
 const TopicAdder = ({ handleOpenForm }) => (
   <div className="collapse navbar-collapse">
