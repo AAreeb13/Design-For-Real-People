@@ -7,6 +7,7 @@ import {
   getUserSubjectProgress,
 } from "../../database/firebase";
 import { getOrder, updateRelationshipOrder } from "../../database/graphData";
+import "../styles/Graph.css"
 
 const Graph = ({ nodes, links, subject = null, width, height, style }) => {
   const svgRef = useRef();
@@ -112,7 +113,8 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
         svgGroup.attr("transform", event.transform);
       });
 
-    svg.call(zoom);
+      svg.call(zoom).on("dblclick.zoom", null);
+
 
     svg.selectAll("*").remove();
 
@@ -394,7 +396,7 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
         .enter()
         .append("text")
         .attr("class", "link-order")
-        .attr("font-size", "140px")
+        .attr("font-size", "160px")
         .attr("fill", "#ff0000") // Red
         .style("font-weight", "bold")
         .style("stroke", "#000000") // Black
@@ -410,7 +412,7 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
           const inputBox = parent
             .append("foreignObject")
             .attr("x", textElement.attr("x"))
-            .attr("y", textElement.attr("y"))
+            .attr("y", textElement.attr("y") - 180)
             .attr("width", 500)
             .attr("height", 300)
             .append("xhtml:div")
@@ -420,7 +422,7 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
             .append("xhtml:input")
             .attr("type", "text")
             .attr("class", "form-control")
-            .style("font-size", "140px")
+            .style("font-size", "160px")
             .attr("value", d.order)
             .on("blur", async function () {
               const newValue = this.value;
@@ -455,7 +457,7 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .enter()
       .append("text")
       .attr("class", "link-order")
-      .attr("font-size", "140px") 
+      .attr("font-size", "160px") 
       .attr("fill", "#ff0000") // Red
       .style("font-weight", "bold")
       .style("stroke", "#000000") // Black
@@ -464,6 +466,26 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .text((d) => d.order);
     }
   
+      svgGroup.selectAll("text.link-order")
+      .data(linksToUse)
+      .enter()
+      .append("text")
+      .attr("class", "link-order hovered-text") // Add the class for the text
+      .attr("font-size", "160px")
+      .attr("fill", "#ff0000") // Initial color (red)
+      .style("font-weight", "bold")
+      .style("stroke", "#000000") // Black stroke
+      .style("stroke-width", "7.5px")
+      .text((d) => d.order);
+    
+    // Add hover effect with D3.js
+    svgGroup.selectAll("text.link-order")
+      .on("mouseover", function () {
+        d3.select(this).classed("hovered-text", true); // Apply the hovered-text class on hover
+      })
+      .on("mouseout", function () {
+        d3.select(this).classed("hovered-text", false); // Remove the class on mouseout
+      });
   
 
     
