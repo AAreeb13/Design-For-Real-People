@@ -18,7 +18,7 @@ const GridMenu = () => {
 
     fetchSubjects();
 
-    const interval = setInterval(fetchSubjects, 3000); 
+    const interval = setInterval(fetchSubjects, 3000);
 
     return () => clearInterval(interval);
   }, []);
@@ -28,7 +28,7 @@ const GridMenu = () => {
   }
 
   const themes = [...new Set(subjects.map((subject) => subject.theme))];
-  
+
   return (
     <div className="col grid-container">
       {themes.map((theme) => (

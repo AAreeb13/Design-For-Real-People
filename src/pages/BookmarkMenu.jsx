@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "../styles/BookmarkMenu.css";
-import { getCurrentUserData, getUserBookmarks, removeBookmark } from "../../database/firebase";
+import {
+  getCurrentUserData,
+  getUserBookmarks,
+  removeBookmark,
+} from "../../database/firebase";
 import { getGraphData } from "../../database/graphData";
 
 const BookmarkMenu = () => {
@@ -13,11 +17,11 @@ const BookmarkMenu = () => {
     const fetchBookmarks = async () => {
       try {
         const userData = await getCurrentUserData();
-        
+
         if (userData) {
           const bookmarkedNames = await getUserBookmarks(userData.email);
           const { nodes } = await getGraphData();
-          const items = nodes.filter((node) => bookmarkedNames[node.name])
+          const items = nodes.filter((node) => bookmarkedNames[node.name]);
           setBookmarkedItems(items);
         }
       } catch (err) {
@@ -35,7 +39,9 @@ const BookmarkMenu = () => {
       const userData = await getCurrentUserData();
       if (userData) {
         await removeBookmark(userData.email, itemName);
-        setBookmarkedItems((prevItems) => prevItems.filter((item) => item.name !== itemName));
+        setBookmarkedItems((prevItems) =>
+          prevItems.filter((item) => item.name !== itemName)
+        );
       }
     } catch (err) {
       console.error("Failed to remove bookmark:", err);
@@ -65,13 +71,13 @@ const BookmarkMenu = () => {
               <p>{item.description}</p>
             </div>
             <div className="bookmarked-buttons">
-              <button 
+              <button
                 className="btn btn-primary"
                 onClick={() => handleGoto(item.name)}
               >
                 Go to Topic
               </button>
-              <button 
+              <button
                 className="btn btn-danger"
                 onClick={() => handleDelete(item.name)}
               >

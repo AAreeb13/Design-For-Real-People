@@ -79,7 +79,10 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/grid-menu" element={<GridMenu />} />
           <Route path="/bookmarked" element={<BookmarkMenu />} />
-          <Route path="/editTopic/:topicName" element={<TopicEditFormWrapper />} />
+          <Route
+            path="/editTopic/:topicName"
+            element={<TopicEditFormWrapper />}
+          />
           <Route
             path="/graph/:subject"
             element={
@@ -88,7 +91,9 @@ function App() {
           />
           <Route
             path="/topic/:node"
-            element={<TopicRouteWrapper graphData={graphData} userData={userData} />}
+            element={
+              <TopicRouteWrapper graphData={graphData} userData={userData} />
+            }
           />
           <Route
             path="/subgraph/:topicName"
@@ -104,7 +109,7 @@ function App() {
 
 function TopicEditFormWrapper() {
   const { topicName } = useParams();
-  return <TopicEditForm topicName={topicName} />
+  return <TopicEditForm topicName={topicName} />;
 }
 
 function TopicRouteWrapper({ graphData, userData }) {
@@ -151,7 +156,6 @@ function GraphRouteWrapper({ graphData, userData }) {
     </>
   );
 }
-
 
 function SubgraphRouteWrapper({ graphData, userData }) {
   const { topicName } = useParams();

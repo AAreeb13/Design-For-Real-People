@@ -23,7 +23,7 @@ const SuggestedTopicsOverlay = ({ open, onClose }) => {
 
     if (open) {
       fetchSuggestedTopics();
-      const interval = setInterval(fetchSuggestedTopics, 3000); 
+      const interval = setInterval(fetchSuggestedTopics, 3000);
 
       return () => clearInterval(interval);
     }

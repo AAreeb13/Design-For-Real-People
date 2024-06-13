@@ -29,8 +29,8 @@ const NavbarDropdown = () => {
     };
 
     fetchSubjects();
-    
-    const interval = setInterval(fetchSubjects, 3000); 
+
+    const interval = setInterval(fetchSubjects, 3000);
 
     return () => clearInterval(interval);
   }, []);
