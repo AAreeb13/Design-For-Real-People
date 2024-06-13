@@ -34,9 +34,9 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
 
   let linksToUse = links.map((link) => {
     if (link.source == null) {
-      return { source: link.source.source, target: link.source.target };
+      return { source: link.source.source, target: link.source.target, order: link.source.order};
     }
-    return { source: link.source, target: link.target };
+    return { source: link.source, target: link.target, order: link.order };
   });
 
   const nodeNameList = nodesToUse.map((n) => n.name);
@@ -469,8 +469,7 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
     svg.call(zoom.transform, initialTransform);
 
     const updateText = async () => {
-      const promises = linksToUse.map((d) => getOrder(d));
-      const orders = await Promise.all(promises);
+      const orders = linksToUse.map((d) => d.order);
 
       text.text((d, i) => orders[i]);
     };
