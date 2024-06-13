@@ -16,7 +16,7 @@ const NotificationAside = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userData = getCurrentUserData();
+        const userData = await getCurrentUserData();
         if (userData) {
           const userEmail = userData.email;
           const notifications = await getNotifications(userEmail);
@@ -71,21 +71,23 @@ const NotificationAside = () => {
               Close
             </Button>
           </div>
-          {notifications.length > 0 ? (
-            notifications.map((notification) => (
-              <div key={notification.id} className="notification-message">
-                <span>{notification.text}</span>
-                <button
-                  className="delete-button"
-                  onClick={() => handleDeleteNotification(notification.id)}
-                >
-                  x
-                </button>
-              </div>
-            ))
-          ) : (
-            <div>No new notifications</div>
-          )}
+          <div className="notification-list">
+            {notifications.length > 0 ? (
+              notifications.map((notification) => (
+                <div key={notification.id} className="notification-message">
+                  <span>{notification.text}</span>
+                  <button
+                    className="delete-button"
+                    onClick={() => handleDeleteNotification(notification.id)}
+                  >
+                    x
+                  </button>
+                </div>
+              ))
+            ) : (
+              <div>No new notifications</div>
+            )}
+          </div>
         </aside>
       )}
     </>

@@ -6,7 +6,8 @@ import {
   getUserPrivledge,
   getUserSubjectProgress,
 } from "../../database/firebase";
-import { getOrder } from "../../database/graphData";
+import { getOrder, updateRelationshipOrder } from "../../database/graphData";
+import "../styles/Graph.css"
 
 const Graph = ({ nodes, links, subject = null, width, height, style }) => {
   const svgRef = useRef();
@@ -36,10 +37,10 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       return {
         source: link.source.source,
         target: link.source.target,
-        order: link.source.order,
+        order: link.source.order !== undefined ? links.source.order : 0,
       };
     }
-    return { source: link.source, target: link.target, order: link.order };
+    return { source: link.source, target: link.target, order: link.order !== undefined ? link.order : "NaN" };
   });
 
   const nodeNameList = nodesToUse.map((n) => n.name);
@@ -112,7 +113,8 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
         svgGroup.attr("transform", event.transform);
       });
 
-    svg.call(zoom);
+      svg.call(zoom).on("dblclick.zoom", null);
+
 
     svg.selectAll("*").remove();
 
@@ -383,20 +385,112 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .style("pointer-events", "none")
       .text((d) => d.name);
 
-    const text = svgGroup
+
+    let text = null;
+
+    // TEXT ORDERINGS HERE
+    if (privledge === "moderator") {
+      text = svgGroup
+        .selectAll("text.link-order")
+        .data(linksToUse)
+        .enter()
+        .append("text")
+        .attr("class", "link-order")
+        .attr("font-size", "160px")
+        .attr("fill", "#ff0000") // Red
+        .style("font-weight", "bold")
+        .style("stroke", "#000000") // Black
+        .style("stroke-width", "7.5px")
+        .style("pointer-events", "auto")
+        .text((d) => d.order)
+        .on("click", function (event, d) {
+          const textElement = d3.select(this);
+          const parent = d3.select(this.parentNode);
+    
+          textElement.style("display", "none");
+    
+          const inputBox = parent
+            .append("foreignObject")
+            .attr("x", textElement.attr("x"))
+            .attr("y", textElement.attr("y") - 180)
+            .attr("width", 500)
+            .attr("height", 300)
+            .append("xhtml:div")
+            .attr("class", "input-group")
+            .style("width", "400px")
+            .style("height", "200px")
+            .append("xhtml:input")
+            .attr("type", "text")
+            .attr("class", "form-control")
+            .style("font-size", "160px")
+            .attr("value", d.order)
+            .on("blur", async function () {
+              const newValue = this.value;
+              d.order = newValue;
+    
+              const updateSuccess = await updateRelationshipOrder(
+                d.source.name,
+                d.target.name,
+                newValue
+              );
+    
+              if (updateSuccess) {
+                parent.select("foreignObject").remove();
+    
+                textElement.text(newValue).style("display", null);
+              } else {
+                console.error("Failed to update the order in the database.");
+              }
+            })
+            .on("keydown", function (event) {
+              if (event.key === "Enter") {
+                this.blur();
+              }
+            });
+    
+          inputBox.node().focus();
+        });
+    } else {
+      text = svgGroup
       .selectAll("text.link-order")
       .data(linksToUse)
       .enter()
       .append("text")
       .attr("class", "link-order")
-      .attr("font-size", "140px")
+      .attr("font-size", "160px") 
       .attr("fill", "#ff0000") // Red
       .style("font-weight", "bold")
       .style("stroke", "#000000") // Black
-      .style("stroke-width", "2px")
-      .style("pointer-events", "none");
+      .style("stroke-width", "7.5px") 
+      .style("pointer-events", "none")
+      .text((d) => d.order);
+    }
+  
+      svgGroup.selectAll("text.link-order")
+      .data(linksToUse)
+      .enter()
+      .append("text")
+      .attr("class", "link-order hovered-text") 
+      .attr("font-size", "160px")
+      .attr("fill", "#ff0000") 
+      .style("font-weight", "bold")
+      .style("stroke", "#000000")
+      .style("stroke-width", "7.5px")
+      .text((d) => d.order);
+    
+    // Add hover effect with D3.js
+    svgGroup.selectAll("text.link-order")
+      .on("mouseover", function () {
+        d3.select(this).classed("hovered-text", true); 
+      })
+      .on("mouseout", function () {
+        d3.select(this).classed("hovered-text", false);
+      });
+  
 
-    if (privledge === "member") {
+    
+    
+      if (privledge === "member") {
       const progressBar = svg
         .append("rect")
         .attr("width", 200)
@@ -445,13 +539,14 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
         .attr("y1", (d) => d.source.y)
         .attr("x2", (d) => d.target.x)
         .attr("y2", (d) => d.target.y);
-
+    
       text
         .attr("x", (d) => (d.source.x + d.target.x) / 2)
         .attr("y", (d) => (d.source.y + d.target.y) / 2);
-
+    
       node.attr("transform", (d) => `translate(${d.x},${d.y})`);
     });
+    
 
     const initialTransform = d3.zoomIdentity
       .translate(width / 2.75, height / 3)
