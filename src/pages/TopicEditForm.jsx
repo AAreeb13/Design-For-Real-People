@@ -16,8 +16,7 @@ const TopicEditForm = ({ topicName }) => {
         const fetchedTopicNode = await getNode(topicName);
         const fetchedFormData = await getFormData(topicName);
         setTopicNode(fetchedTopicNode);
-        console.log("fetchedNode", fetchedTopicNode)
-        setMessages(fetchedTopicNode.suggestions.map((d, i) => { return { text: d, id: i } }));
+        console.log("fetchedNode", fetchedTopicNode);
         setFormData(fetchedFormData);
       } catch (error) {
         console.error("Error fetching topic data:", error);
@@ -25,8 +24,21 @@ const TopicEditForm = ({ topicName }) => {
     };
 
     fetchTopicData();
+  }, [topicName]);
 
-    const interval = setInterval(fetchTopicData, 3000);
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const fetchedTopicNode = await getNode(topicName);
+        setMessages(fetchedTopicNode.suggestions.map((d, i) => ({ text: d, id: i })));
+      } catch (error) {
+        console.error("Error fetching notifications:", error);
+      }
+    };
+
+    fetchNotifications();
+
+    const interval = setInterval(fetchNotifications, 3000);
 
     return () => clearInterval(interval);
   }, [topicName]);
@@ -76,7 +88,7 @@ const TopicEditForm = ({ topicName }) => {
         console.log("Form and Node successfully updated");
         await writeNotification({
           text: `Topic content updated: ${topicName}`
-        })
+        });
 
         const path = `/topic/${topicName}`;
         window.location.assign(path);
