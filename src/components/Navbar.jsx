@@ -171,17 +171,20 @@ const TopicSuggester = ({ handleOpenForm }) => (
 const SeeSuggestedTopics = ({ handleShowSuggestedTopics }) => (
   <div className="collapse navbar-collapse">
     <ul className="navbar-nav mr-auto">
-      <li className="nav-item">
+      <li className="nav-item see-suggested-topics-container">
         <button
           className="btn btn-warning see-suggested-topics-style"
           onClick={handleShowSuggestedTopics}
         >
           View Suggested Topics
         </button>
+        <span className="badge suggested-topics-badge">{10}</span>
       </li>
     </ul>
   </div>
 );
+
+
 
 const TopicAdder = ({ handleOpenForm }) => (
   <div className="collapse navbar-collapse">
