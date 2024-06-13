@@ -7,36 +7,37 @@ import { deleteNotification, getCurrentUserData, getNotifications } from "../../
 const NotificationAside = () => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState([]);
-	const [userEmail, setUserEmail] = useState(null)
+  const [userEmail, setUserEmail] = useState(null);
 
-	useEffect(() => {
-		const fetchData = async () => {
-			try {
-				const userData = getCurrentUserData()
-				console.log("our userdata is", userData)
-				const userEmail = userData.email
-				const notifications = await getNotifications(userEmail)
-				setUserEmail(userEmail)
-				setNotifications(notifications.map((d, i) => {return {id: i, text: d.text}}))
-			} catch (error) {
-				console.error("Error fetching messages: ", error)
-			}
-		}
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const userData = getCurrentUserData();
+        if (userData) {
+          const userEmail = userData.email;
+          const notifications = await getNotifications(userEmail);
+          setUserEmail(userEmail);
+          setNotifications(notifications.map((d, i) => ({ id: i, text: d.text })));
+        }
+      } catch (error) {
+        console.error("Error fetching messages: ", error);
+      }
+    };
 
-		fetchData()
-	}, [])
+    fetchData(); 
+    const interval = setInterval(fetchData, 3000); 
 
+    return () => clearInterval(interval);
+  }, []);
 
   const handleDeleteNotification = async (id) => {
-		const notificationNode = notifications.find((notification) => notification.id === id)
-		const notificationText = notificationNode.text
-		
-		if (userEmail !== null) {
-			await deleteNotification(userEmail, notificationText)
-			console.log()
-			setNotifications(notifications.filter((notification) => notification.text !== notificationText))
-		}
+    const notificationNode = notifications.find((notification) => notification.id === id);
+    const notificationText = notificationNode.text;
 
+    if (userEmail !== null) {
+      await deleteNotification(userEmail, notificationText);
+      setNotifications(notifications.filter((notification) => notification.text !== notificationText));
+    }
   };
 
   return (
