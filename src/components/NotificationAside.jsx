@@ -59,6 +59,11 @@ const NotificationAside = () => {
         onClick={() => setShowNotifications(!showNotifications)}
       >
         <FaBell />
+        {notifications.length > 0 && (
+          <span className="badge suggested-topics-badge">
+            {notifications.length}
+          </span>
+        )}
       </div>
       {showNotifications && (
         <aside className="notification-aside">

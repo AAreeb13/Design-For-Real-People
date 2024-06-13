@@ -74,9 +74,11 @@
   margin-left: 10%;
 }
 
-.suggest-topic-style {
-  margin-left: 40px;
+.see-suggested-topics-style {
+  position: relative;
+  margin-right: 20px;
 }
+
 
 .dis-button {
   margin-right: 100px;
@@ -86,3 +88,37 @@
 .our-login {
   margin-left: 15%;
 }
+
+.button-with-badge {
+  position: relative;
+  display: inline-block;
+}
+
+.button-with-badge {
+  position: relative;
+  display: inline-block;
+}
+
+.badge {
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  margin-left: 110px;
+  padding: 5px 8px;
+  display: inline-block;
+  min-width: 20px;
+  min-height: 20px;
+  text-align: center;
+  font-size: 12px;
+  position: relative;
+  top: -75px;  
+  right: -56px;  
+  z-index: 1000;
+}
+
+.see-suggested-topics-container {
+  height: 50px;
+}
+
+
+
