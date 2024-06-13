@@ -184,7 +184,12 @@ const TopicEditForm = ({ topicName }) => {
 
         return (
           <div key={label} className="form-group">
-            <label className="form-label">{asTitle(label)}:</label>
+            <label
+              className={`form-label ${editableLabel === label ? "editable-label" : ""}`}
+              onClick={() => handleLabelClick(label)}
+            >
+              {asTitle(label)}:
+            </label>
             <textarea
               value={processedValue}
               onChange={(e) => handleInputChange(e, label, true)}
@@ -212,7 +217,7 @@ const TopicEditForm = ({ topicName }) => {
             />
           ) : (
             <label
-              className="form-label"
+              className={`form-label editable-label`}
               onClick={() => handleLabelClick(label)}
             >
               {asTitle(label)}:
