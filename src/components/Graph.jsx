@@ -6,7 +6,7 @@ import {
   getUserPrivledge,
   getUserSubjectProgress,
 } from "../../database/firebase";
-import { getOrder } from "../../database/graphData";
+import { getOrder, updateRelationshipOrder } from "../../database/graphData";
 
 const Graph = ({ nodes, links, subject = null, width, height, style }) => {
   const svgRef = useRef();
@@ -418,15 +418,19 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
           .attr("type", "text")
           .attr("value", d.order)
           .attr("style", "width: 400px; height: 200px; font-size: 140px;")
-          .on("blur", function() {
+          .on("blur", async function() {
             const newValue = this.value;
             d.order = newValue;
     
-            parent.select("foreignObject").remove();
-    
-            textElement.text(newValue).style("display", null);
-            
-            // todo backend
+            const updateSuccess = await updateRelationshipOrder(d.source.name, d.target.name, newValue);
+
+            if (updateSuccess) {
+              parent.select("foreignObject").remove();
+          
+              textElement.text(newValue).style("display", null);
+            } else {
+              console.error("Failed to update the order in the database.");
+            }
           })
           .on("keydown", function(event) {
             if (event.key === "Enter") {
