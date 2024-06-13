@@ -383,20 +383,63 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .style("pointer-events", "none")
       .text((d) => d.name);
 
-    const text = svgGroup
-      .selectAll("text.link-order")
-      .data(linksToUse)
-      .enter()
-      .append("text")
-      .attr("class", "link-order")
-      .attr("font-size", "140px")
-      .attr("fill", "#ff0000") // Red
-      .style("font-weight", "bold")
-      .style("stroke", "#000000") // Black
-      .style("stroke-width", "2px")
-      .style("pointer-events", "none");
 
-    if (privledge === "member") {
+
+    // TEXT ORDERINGS HERE
+
+    const text = svgGroup
+    .selectAll("text.link-order")
+    .data(linksToUse)
+    .enter()
+    .append("text")
+    .attr("class", "link-order")
+    .attr("font-size", "140px") 
+    .attr("fill", "#ff0000") // Red
+    .style("font-weight", "bold")
+    .style("stroke", "#000000") // Black
+    .style("stroke-width", "7.5px") 
+    .style("pointer-events", "auto")
+    .text((d) => d.order)
+    .on("click", function(event, d) {
+      const textElement = d3.select(this);
+      const parent = d3.select(this.parentNode);
+  
+      textElement.style("display", "none");
+  
+      const inputBox = parent
+        .append("foreignObject")
+        .attr("x", textElement.attr("x") - 10) 
+        .attr("y", textElement.attr("y") - 10)
+        .attr("width", 500)
+        .attr("height", 300)
+        .append("xhtml:input")
+        .attr("type", "text")
+        .attr("value", d.order)
+        .attr("style", "width: 400px; height: 200px; font-size: 140px;")
+        .on("blur", function() {
+          const newValue = this.value;
+          d.order = newValue;
+  
+          parent.select("foreignObject").remove();
+  
+          textElement.text(newValue).style("display", null);
+          
+          // todo backend
+        })
+        .on("keydown", function(event) {
+          if (event.key === "Enter") {
+            this.blur();
+          }
+        });
+  
+      inputBox.node().focus();
+    });
+  
+  
+
+    
+    
+      if (privledge === "member") {
       const progressBar = svg
         .append("rect")
         .attr("width", 200)
@@ -445,13 +488,14 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
         .attr("y1", (d) => d.source.y)
         .attr("x2", (d) => d.target.x)
         .attr("y2", (d) => d.target.y);
-
+    
       text
         .attr("x", (d) => (d.source.x + d.target.x) / 2)
         .attr("y", (d) => (d.source.y + d.target.y) / 2);
-
+    
       node.attr("transform", (d) => `translate(${d.x},${d.y})`);
     });
+    
 
     const initialTransform = d3.zoomIdentity
       .translate(width / 2.75, height / 3)
