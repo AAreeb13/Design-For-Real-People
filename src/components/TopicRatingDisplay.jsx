@@ -35,7 +35,7 @@ const TopicRatingDisplay = ({ topicName }) => {
     const newPath = `/graph/${subject}`;
     await writeNotification({
       text: `Topic deleted: ${topicName}`,
-      path: newPath
+      path: newPath,
     });
     window.location.assign(newPath);
   };

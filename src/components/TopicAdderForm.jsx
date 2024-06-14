@@ -146,7 +146,7 @@ export async function handleTopicAdderSubmit(formData, isValid) {
       const newPath = `/graph/${formData.name}`;
       await writeNotification({
         text: `New Main Subject Added: ${formData.name}`,
-        path: newPath
+        path: newPath,
       });
       window.location.assign(newPath);
     } else {
@@ -164,7 +164,7 @@ export async function handleTopicAdderSubmit(formData, isValid) {
       );
       await writeNotification({
         text: `New Mini Subject Added: ${formData.name}`,
-        path: `/graph/${formData.subject}`
+        path: `/graph/${formData.subject}`,
       });
     } else {
       alert(
@@ -177,7 +177,7 @@ export async function handleTopicAdderSubmit(formData, isValid) {
       addTopicToGraph(formData.name, formData.subject, formData.prerequisites);
       await writeNotification({
         text: `New Topic Added ${formData.name}`,
-        path: `/topic/${formData.name}`
+        path: `/topic/${formData.name}`,
       });
     } else {
       alert(

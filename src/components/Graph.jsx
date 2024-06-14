@@ -427,7 +427,6 @@ function renderMiniSubjects(
   nodes
 ) {
   if (privledge === "moderator") {
-
     node
       .append("rect")
       .filter(
@@ -448,10 +447,7 @@ function renderMiniSubjects(
         navigate("/graph/" + d.name);
       })
       .on("mouseover", function (event, d) {
-        d3.select(this)
-          .transition()
-          .duration(200)
-          .attr("fill", "yellow");
+        d3.select(this).transition().duration(200).attr("fill", "yellow");
         // Highlight connected links recursively
         highlightLinks(d);
       })
@@ -490,14 +486,11 @@ function renderMiniSubjects(
         highlightLinks(d);
       })
       .on("mouseout", function (event, d) {
-        d3.select(this)
-          .transition()
-          .duration(50)
-          .attr("fill", "yellow");
+        d3.select(this).transition().duration(50).attr("fill", "yellow");
         link.attr("stroke", "#999").attr("stroke-width", 15);
       });
 
-      node
+    node
       .append("rect")
       .filter(
         (d) =>
@@ -517,10 +510,7 @@ function renderMiniSubjects(
         navigate("/graph/" + d.name);
       })
       .on("mouseover", function (event, d) {
-        d3.select(this)
-          .transition()
-          .duration(50)
-          .attr("fill", "green"); // Light red
+        d3.select(this).transition().duration(50).attr("fill", "green"); // Light red
         highlightLinks(d);
       })
       .on("mouseout", function (event, d) {
@@ -530,7 +520,6 @@ function renderMiniSubjects(
           .attr("fill", colCompleteMiniSubject);
         link.attr("stroke", "#999").attr("stroke-width", 15);
       });
-
   } else {
     node
       .append("rect")
@@ -891,9 +880,7 @@ function renderLinkOrderings(privledge, svgGroup, linksToUse) {
   return text;
 }
 
-
 const innerRating = (miniSubjectObj, nodes) => {
-
   const miniSubjectName = miniSubjectObj.name;
   const miniSubjectTopics = nodes.filter(
     (node) => node.subject === miniSubjectName && node.type === "topic"
@@ -902,16 +889,16 @@ const innerRating = (miniSubjectObj, nodes) => {
     (node) => node.subject === miniSubjectName && node.type === "subject"
   );
 
-  let currentRating = "good"
+  let currentRating = "good";
 
   if (childMiniSubjects.length > 0) {
     for (const childMiniSubject of childMiniSubjects) {
       if (innerRating(childMiniSubject, nodes) === "bad") {
         return "bad";
       } else if (innerRating(childMiniSubject, nodes) === "alright") {
-        currentRating = "alright"
+        currentRating = "alright";
       } else {
-        currentRating = currentRating === "good" ? "good" : "alright"
+        currentRating = currentRating === "good" ? "good" : "alright";
       }
     }
   }
@@ -919,10 +906,13 @@ const innerRating = (miniSubjectObj, nodes) => {
   for (const topic of miniSubjectTopics) {
     if (topic.bad.low > topic.alright.low && topic.bad.low > topic.good.low) {
       return "bad";
-    } else if (topic.alright.low > topic.bad.low && topic.alright.low > topic.good.low) {
-      currentRating = "alright"
+    } else if (
+      topic.alright.low > topic.bad.low &&
+      topic.alright.low > topic.good.low
+    ) {
+      currentRating = "alright";
     } else {
-      currentRating = currentRating === "good" ? "good" : "alright"
+      currentRating = currentRating === "good" ? "good" : "alright";
     }
   }
   return currentRating;
