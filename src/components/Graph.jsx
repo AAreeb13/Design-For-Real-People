@@ -256,7 +256,9 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       navigate,
       colCompleteMiniSubject,
       highlightLinks,
-      link
+      link,
+      privledge,
+      nodes
     );
 
     // ALL TEXT HERE FOR NODES
@@ -420,76 +422,185 @@ function renderMiniSubjects(
   navigate,
   colCompleteMiniSubject,
   highlightLinks,
-  link
+  link,
+  privledge,
+  nodes
 ) {
-  node
-    .append("rect")
-    .filter(
-      (d) =>
-        d.type === "subject" &&
-        (subject == null || d.name !== subject) &&
-        !innerComplete(d)
-    )
-    .attr("width", 500) // rectangle width
-    .attr("height", 200) // rectangle height
-    .attr("fill", colTodoMiniSubject)
-    .attr("stroke", "#333") // Dark gray
-    .attr("stroke-width", 2)
-    .attr("x", -250)
-    .attr("y", -100)
-    .style("cursor", "pointer")
-    .on("click", (event, d) => {
-      navigate("/graph/" + d.name);
-    })
-    .on("mouseover", function (event, d) {
-      d3.select(this)
-        .transition()
-        .duration(200)
-        .attr("fill", colCompleteMiniSubject);
-      // Highlight connected links recursively
-      highlightLinks(d);
-    })
-    .on("mouseout", function (event, d) {
-      d3.select(this)
-        .transition()
-        .duration(200)
-        .attr("fill", colTodoMiniSubject);
-      link.attr("stroke", "#999").attr("stroke-width", 15);
-    });
+  if (privledge === "moderator") {
 
-  node
-    .append("rect")
-    .filter(
-      (d) =>
-        d.type === "subject" &&
-        (subject == null || d.name !== subject) &&
-        innerComplete(d)
-    )
-    .attr("width", 500) // rectangle width
-    .attr("height", 200) // rectangle height
-    .attr("fill", colCompleteMiniSubject)
-    .attr("stroke", "#333") // Dark gray
-    .attr("stroke-width", 2)
-    .attr("x", -250)
-    .attr("y", -100)
-    .style("cursor", "pointer") // Change cursor to pointer for clickable rectangles
-    .on("click", (event, d) => {
-      navigate("/graph/" + d.name);
-    })
-    .on("mouseover", function (event, d) {
-      d3.select(this)
-        .transition()
-        .duration(50)
-        .attr("fill", colTodoMiniSubject); // Light red
-      highlightLinks(d);
-    })
-    .on("mouseout", function (event, d) {
-      d3.select(this)
-        .transition()
-        .duration(50)
-        .attr("fill", colCompleteMiniSubject);
-      link.attr("stroke", "#999").attr("stroke-width", 15);
-    });
+    node
+      .append("rect")
+      .filter(
+        (d) =>
+          d.type === "subject" &&
+          (subject == null || d.name !== subject) &&
+          innerRating(d, nodes) === "bad"
+      )
+      .attr("width", 500) // rectangle width
+      .attr("height", 200) // rectangle height
+      .attr("fill", colTodoMiniSubject)
+      .attr("stroke", "#333") // Dark gray
+      .attr("stroke-width", 2)
+      .attr("x", -250)
+      .attr("y", -100)
+      .style("cursor", "pointer")
+      .on("click", (event, d) => {
+        navigate("/graph/" + d.name);
+      })
+      .on("mouseover", function (event, d) {
+        d3.select(this)
+          .transition()
+          .duration(200)
+          .attr("fill", "yellow");
+        // Highlight connected links recursively
+        highlightLinks(d);
+      })
+      .on("mouseout", function (event, d) {
+        d3.select(this)
+          .transition()
+          .duration(200)
+          .attr("fill", colTodoMiniSubject);
+        link.attr("stroke", "#999").attr("stroke-width", 15);
+      });
+
+    node
+      .append("rect")
+      .filter(
+        (d) =>
+          d.type === "subject" &&
+          (subject == null || d.name !== subject) &&
+          innerRating(d, nodes) === "alright"
+      )
+      .attr("width", 500) // rectangle width
+      .attr("height", 200) // rectangle height
+      .attr("fill", "yellow")
+      .attr("stroke", "#333") // Dark gray
+      .attr("stroke-width", 2)
+      .attr("x", -250)
+      .attr("y", -100)
+      .style("cursor", "pointer") // Change cursor to pointer for clickable rectangles
+      .on("click", (event, d) => {
+        navigate("/graph/" + d.name);
+      })
+      .on("mouseover", function (event, d) {
+        d3.select(this)
+          .transition()
+          .duration(50)
+          .attr("fill", colCompleteMiniSubject); // Light red
+        highlightLinks(d);
+      })
+      .on("mouseout", function (event, d) {
+        d3.select(this)
+          .transition()
+          .duration(50)
+          .attr("fill", "yellow");
+        link.attr("stroke", "#999").attr("stroke-width", 15);
+      });
+
+      node
+      .append("rect")
+      .filter(
+        (d) =>
+          d.type === "subject" &&
+          (subject == null || d.name !== subject) &&
+          innerRating(d, nodes) === "good"
+      )
+      .attr("width", 500) // rectangle width
+      .attr("height", 200) // rectangle height
+      .attr("fill", colCompleteMiniSubject)
+      .attr("stroke", "#333") // Dark gray
+      .attr("stroke-width", 2)
+      .attr("x", -250)
+      .attr("y", -100)
+      .style("cursor", "pointer") // Change cursor to pointer for clickable rectangles
+      .on("click", (event, d) => {
+        navigate("/graph/" + d.name);
+      })
+      .on("mouseover", function (event, d) {
+        d3.select(this)
+          .transition()
+          .duration(50)
+          .attr("fill", "green"); // Light red
+        highlightLinks(d);
+      })
+      .on("mouseout", function (event, d) {
+        d3.select(this)
+          .transition()
+          .duration(50)
+          .attr("fill", colCompleteMiniSubject);
+        link.attr("stroke", "#999").attr("stroke-width", 15);
+      });
+
+  } else {
+    node
+      .append("rect")
+      .filter(
+        (d) =>
+          d.type === "subject" &&
+          (subject == null || d.name !== subject) &&
+          !innerComplete(d)
+      )
+      .attr("width", 500) // rectangle width
+      .attr("height", 200) // rectangle height
+      .attr("fill", colTodoMiniSubject)
+      .attr("stroke", "#333") // Dark gray
+      .attr("stroke-width", 2)
+      .attr("x", -250)
+      .attr("y", -100)
+      .style("cursor", "pointer")
+      .on("click", (event, d) => {
+        navigate("/graph/" + d.name);
+      })
+      .on("mouseover", function (event, d) {
+        d3.select(this)
+          .transition()
+          .duration(200)
+          .attr("fill", colCompleteMiniSubject);
+        // Highlight connected links recursively
+        highlightLinks(d);
+      })
+      .on("mouseout", function (event, d) {
+        d3.select(this)
+          .transition()
+          .duration(200)
+          .attr("fill", colTodoMiniSubject);
+        link.attr("stroke", "#999").attr("stroke-width", 15);
+      });
+
+    node
+      .append("rect")
+      .filter(
+        (d) =>
+          d.type === "subject" &&
+          (subject == null || d.name !== subject) &&
+          innerComplete(d)
+      )
+      .attr("width", 500) // rectangle width
+      .attr("height", 200) // rectangle height
+      .attr("fill", colCompleteMiniSubject)
+      .attr("stroke", "#333") // Dark gray
+      .attr("stroke-width", 2)
+      .attr("x", -250)
+      .attr("y", -100)
+      .style("cursor", "pointer") // Change cursor to pointer for clickable rectangles
+      .on("click", (event, d) => {
+        navigate("/graph/" + d.name);
+      })
+      .on("mouseover", function (event, d) {
+        d3.select(this)
+          .transition()
+          .duration(50)
+          .attr("fill", colTodoMiniSubject); // Light red
+        highlightLinks(d);
+      })
+      .on("mouseout", function (event, d) {
+        d3.select(this)
+          .transition()
+          .duration(50)
+          .attr("fill", colCompleteMiniSubject);
+        link.attr("stroke", "#999").attr("stroke-width", 15);
+      });
+  }
 }
 
 function renderMainSubjects(
@@ -537,10 +648,14 @@ function renderTopicNodes(
   privledge
 ) {
   if (privledge === "moderator") {
-
     node // Topics that are complete
       .append("ellipse")
-      .filter((d) => d.type === "topic" && d.good.low >= d.alright.low && d.good.low >= d.bad.low)
+      .filter(
+        (d) =>
+          d.type === "topic" &&
+          d.good.low >= d.alright.low &&
+          d.good.low >= d.bad.low
+      )
       .attr("rx", 300) // ellipse width
       .attr("ry", 100) // ellipse height
       .attr("fill", colCompleteTopic)
@@ -562,9 +677,14 @@ function renderTopicNodes(
         link.attr("stroke", "#999").attr("stroke-width", 15);
       });
 
-      node // topics that are incomplete
+    node // topics that are incomplete
       .append("ellipse")
-      .filter((d) => d.type === "topic" && d.alright.low > d.good.low && d.alright.low > d.bad.low)
+      .filter(
+        (d) =>
+          d.type === "topic" &&
+          d.alright.low > d.good.low &&
+          d.alright.low > d.bad.low
+      )
       .attr("rx", 300) // ellipse width
       .attr("ry", 100) // ellipse height
       .attr("fill", "yellow")
@@ -587,10 +707,14 @@ function renderTopicNodes(
         link.attr("stroke", "#999").attr("stroke-width", 15);
       });
 
-
-      node // topics that are incomplete
+    node // topics that are incomplete
       .append("ellipse")
-      .filter((d) => d.type === "topic" && d.bad.low > d.alright.low && d.bad.low > d.good.low)
+      .filter(
+        (d) =>
+          d.type === "topic" &&
+          d.bad.low > d.alright.low &&
+          d.bad.low > d.good.low
+      )
       .attr("rx", 300) // ellipse width
       .attr("ry", 100) // ellipse height
       .attr("fill", colTodoTopic)
@@ -601,10 +725,7 @@ function renderTopicNodes(
         navigate("/topic/" + d.name);
       })
       .on("mouseover", function (event, d) {
-        d3.select(this)
-          .transition()
-          .duration(200)
-          .attr("fill", "yellow");
+        d3.select(this).transition().duration(200).attr("fill", "yellow");
 
         highlightLinks(d);
       })
@@ -612,8 +733,6 @@ function renderTopicNodes(
         d3.select(this).transition().duration(200).attr("fill", colTodoTopic);
         link.attr("stroke", "#999").attr("stroke-width", 15);
       });
-
-
   } else {
     node // Topics that are complete
       .append("ellipse")
@@ -665,7 +784,6 @@ function renderTopicNodes(
       });
   }
 }
-
 
 function renderLinkOrderings(privledge, svgGroup, linksToUse) {
   let text = null;
@@ -772,3 +890,40 @@ function renderLinkOrderings(privledge, svgGroup, linksToUse) {
     });
   return text;
 }
+
+
+const innerRating = (miniSubjectObj, nodes) => {
+
+  const miniSubjectName = miniSubjectObj.name;
+  const miniSubjectTopics = nodes.filter(
+    (node) => node.subject === miniSubjectName && node.type === "topic"
+  );
+  const childMiniSubjects = nodes.filter(
+    (node) => node.subject === miniSubjectName && node.type === "subject"
+  );
+
+  let currentRating = "good"
+
+  if (childMiniSubjects.length > 0) {
+    for (const childMiniSubject of childMiniSubjects) {
+      if (innerRating(childMiniSubject, nodes) === "bad") {
+        return "bad";
+      } else if (innerRating(childMiniSubject, nodes) === "alright") {
+        currentRating = "alright"
+      } else {
+        currentRating = currentRating === "good" ? "good" : "alright"
+      }
+    }
+  }
+
+  for (const topic of miniSubjectTopics) {
+    if (topic.bad.low > topic.alright.low && topic.bad.low > topic.good.low) {
+      return "bad";
+    } else if (topic.alright.low > topic.bad.low && topic.alright.low > topic.good.low) {
+      currentRating = "alright"
+    } else {
+      currentRating = currentRating === "good" ? "good" : "alright"
+    }
+  }
+  return currentRating;
+};
