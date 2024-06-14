@@ -22,7 +22,9 @@ const NotificationAside = () => {
           const notifications = await getNotifications(userEmail);
           setUserEmail(userEmail);
           setNotifications(
-            notifications.map((d, i) => ({ id: i, text: d.text, path: d.path })).reverse()
+            notifications
+              .map((d, i) => ({ id: i, text: d.text, path: d.path }))
+              .reverse()
           );
         }
       } catch (error) {

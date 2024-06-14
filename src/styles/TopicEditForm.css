@@ -57,7 +57,7 @@
 
 .message {
   display: flex;
-  align-items: center; /* Center items vertically */
+  align-items: center;
   padding: 10px;
   margin-bottom: 10px;
   background: #f1f1f1;
@@ -79,4 +79,9 @@
 
 .our-submit-button {
   margin-left: auto;
+}
+
+.editable-label:hover {
+  color: blue;
+  cursor: pointer;
 }

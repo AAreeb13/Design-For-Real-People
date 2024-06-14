@@ -79,7 +79,7 @@ CREATE (n:Subject{
   subject: 'proofs',
   type: 'topic',
   description: 'An essential technique for evaluating limits that result in indeterminate forms, using derivatives to find the limit.',
-  good: 23,
+  good: 73,
   alright: 30,
   bad: 0,
   comments: [
@@ -115,8 +115,8 @@ CREATE (n:Subject{
   type: 'topic',
   description: 'A fundamental technique for differentiating compositions of functions, essential for calculus students.',
   good: 23,
-  alright: 30,
-  bad: 0,
+  alright: 50,
+  bad: 20,
   comments: [
     'The examples provided make understanding the Chain Rule much easier.',
     'I wish there were more real-life applications shown to see its practical use.',
@@ -154,8 +154,8 @@ CREATE (n:Subject{
   type: 'topic',
   description: 'A key differentiation rule used to compute the derivative of the product of two functions, vital for students of calculus.',
   good: 23,
-  alright: 30,
-  bad: 0,
+  alright: 60,
+  bad: 50,
   comments: [
     'This topic was well presented, especially with the proof included.',
     'Could use some examples with higher degree polynomials.',
@@ -194,7 +194,7 @@ CREATE (n:Subject{
   description: 'A fundamental technique derived from the product rule of differentiation, used to integrate products of functions.',
   good: 23,
   alright: 30,
-  bad: 0,
+  bad: 90,
   comments: [
     'Really appreciated the clear steps presented in the tutorial.',
     'More examples with exponential and logarithmic functions would be helpful.',
@@ -231,7 +231,7 @@ CREATE (n:Subject{
   subject: 'calculus',
   type: 'topic',
   description: 'Exploration of functions, which are special types of relations that assign each input exactly one output.',
-  good: 23,
+  good: 83,
   alright: 30,
   bad: 0,
   comments: [
@@ -281,7 +281,7 @@ CREATE (n:Subject{
   type: 'topic',
   description: 'Learn how to integrate constants such as 1, 2, e, pi, etc., fundamental for understanding basic integration techniques.',
   good: 23,
-  alright: 30,
+  alright: 70,
   bad: 0,
   comments: [
     'Good foundational topic, very straightforward and well explained.'
@@ -316,7 +316,7 @@ CREATE (n:Subject{
   description: 'Explore how to integrate terms like x, x^2, x^3, essential for mastering polynomial integration.',
   good: 23,
   alright: 30,
-  bad: 0,
+  bad: 100,
   comments: [
     'Very helpful for understanding polynomial integrals.'
   ],
@@ -348,7 +348,7 @@ CREATE (n:Subject{
   subject: 'integration preliminaries',
   type: 'topic',
   description: 'Understand the methods for integrating terms like x^-1, x^-2, which are pivotal for dealing with rational functions.',
-  good: 23,
+  good: 43,
   alright: 30,
   bad: 0,
   comments: [
@@ -384,7 +384,7 @@ CREATE (n:Subject{
   type: 'topic',
   description: 'Learn to integrate terms such as x^0.5, x^3.5, crucial for handling non-integer exponents in calculus.',
   good: 23,
-  alright: 30,
+  alright: 456,
   bad: 0,
   comments: [
     'Fascinating extension of polynomial integration to fractional powers.'
@@ -418,7 +418,7 @@ CREATE (n:Subject{
   subject: 'integration preliminaries',
   type: 'topic',
   description: 'Focus on integrating terms such as 1/x, essential for logarithmic integration and advanced calculus applications.',
-  good: 23,
+  good: 234,
   alright: 30,
   bad: 0,
   comments: [
@@ -453,7 +453,7 @@ CREATE (n:Subject{
   subject: 'integration',
   type: 'topic',
   description: 'Reverse chain rule',
-  good: 23,
+  good: 897,
   alright: 30,
   bad: 0,
   comments: [],
@@ -476,7 +476,7 @@ CREATE (n:Subject{
   description: 'Introduction to using integration to calculate lengths, areas, volumes, and surface areas, foundational for applications in physics and engineering.',
   good: 23,
   alright: 30,
-  bad: 0,
+  bad: 3453,
   comments: [
     "Very applicable to engineering problems I've encountered.",
     'Helpful in visualizing the physical implications of mathematical concepts.'
@@ -510,7 +510,7 @@ CREATE (n:Subject{
   type: 'topic',
   description: 'Techniques for integrating functions expressed in polar coordinates, crucial for dealing with circular and spiral forms.',
   good: 23,
-  alright: 30,
+  alright: 345,
   bad: 0,
   comments: [
     'Transformed my understanding of integrals in circular and complex domains.',
@@ -551,7 +551,7 @@ CREATE (n:Subject{
   subject: 'sequences and series',
   type: 'topic',
   description: 'A mathematical tool used to decompose periodic functions into sums of simpler, sinusoidal functions. Essential for applications in signal processing, physics, and engineering.',
-  good: 23,
+  good: 543,
   alright: 30,
   bad: 0,
   comments: [
@@ -590,7 +590,7 @@ CREATE (n:Subject{
   type: 'topic',
   description: 'A powerful mathematical tool that transforms a time-domain function into a complex frequency-domain representation, integrating concepts from calculus and complex numbers. Widely used in engineering and physics to solve differential equations.',
   good: 23,
-  alright: 30,
+  alright: 234,
   bad: 0,
   comments: [
     'This transformation is crucial for understanding control systems and electrical circuits.',
@@ -628,7 +628,7 @@ CREATE (n:Subject{
   type: 'topic',
   description: 'A mathematical transformation used to convert a time-domain signal into its corresponding frequency-domain representation, employing integral calculus to output a new function that describes frequency content.',
   good: 23,
-  alright: 30,
+  alright: 543,
   bad: 0,
   comments: [
     'Essential for analyzing signals in both engineering and physics.',
@@ -666,7 +666,7 @@ CREATE (n:Subject{
   description: 'Study and solution of equations involving derivatives of functions, focusing on relationships that involve rates of change and the variables over which they are functions.',
   good: 23,
   alright: 30,
-  bad: 0,
+  bad: 543,
   comments: [
     'Foundational for understanding dynamic systems in engineering and natural sciences.',
     'Challenging but crucial for any serious student of mathematics or physics.'
@@ -711,7 +711,7 @@ CREATE (n1:Subject{
   description: 'Focuses on solving equations that involve only the first derivative of a function. These are fundamental in modeling systems with a single rate of change.',
   good: 23,
   alright: 30,
-  bad: 0,
+  bad: 345,
   comments: ['Essential for any student in engineering or physics.', 'Would appreciate more examples in biological contexts.'],
   suggestions: ['Interactive simulations for dynamic systems modeled by these equations.', 'Workshops on analytical solutions versus numerical methods.'],
   resources: ['Comprehensive guide on first-order differential equations', 'Video tutorials explaining methods of solving linear and nonlinear first-order ODEs'],
@@ -731,7 +731,7 @@ CREATE (n2:Subject{
   type: 'topic',
   description: 'Deals with equations that include derivatives up to the second level, crucial for understanding phenomena involving accelerations and forces.',
   good: 23,
-  alright: 30,
+  alright: 789,
   bad: 0,
   comments: ['Key for mechanical and electrical engineering students.', 'Needs more practical examples especially in oscillations and wave applications.'],
   suggestions: ['Series of problem-solving sessions with focus on mechanical vibrations.', 'Online calculator tools for characteristic equation solutions.'],
@@ -774,8 +774,8 @@ CREATE (n1:Subject{
   type: 'topic',
   description: 'Studies the conditions under which small changes in the parameters of a system cause a qualitative or topological change in its behavior, leading to the splitting into branches.',
   good: 23,
-  alright: 30,
-  bad: 0,
+  alright: 23,
+  bad: 23,
   comments: [
     'Fascinating topic that connects deeply with both mathematics and physics.',
     'Would be helpful to see more real-world applications like in ecology or economics.'
@@ -808,7 +808,7 @@ CREATE (n2:Subject{
   type: 'topic',
   description: 'Explores advanced topics in calculus involving multiple variables, including partial differentiation and multiple integration, essential for fields like engineering, physics, and economics.',
   good: 23,
-  alright: 30,
+  alright: 756,
   bad: 0,
   comments: [
     'Core subject for any STEM field student, incredibly useful.',
@@ -853,7 +853,7 @@ CREATE (n1:Subject{
   type: 'topic',
   description: 'The study of averages, fundamental in understanding the central tendency of data sets.',
   good: 23,
-  alright: 30,
+  alright: 865,
   bad: 0,
   comments: [
     'Essential concept for all fields of statistical analysis.',
@@ -886,7 +886,7 @@ CREATE (n2:Subject{
   subject: 'probability and statistics',
   type: 'topic',
   description: 'The study of dispersion, measuring how spread out the numbers are in a data set.',
-  good: 23,
+  good: 345,
   alright: 30,
   bad: 0,
   comments: [
@@ -921,7 +921,7 @@ CREATE (n3:Subject {
   type: 'topic',
   description: 'A measure of the amount of variation or dispersion of a set of values, a widely used data variability measure.',
   good: 23,
-  alright: 30,
+  alright: 890,
   bad: 0,
   comments: [
     'Crucial for risk assessment in finance.',
@@ -951,7 +951,7 @@ CREATE (n4:Subject{
   type: 'topic',
   description: 'The study of asymmetry in a statistical distribution, a crucial measure to understand the distribution\'s shape.',
   good: 23,
-  alright: 30,
+  alright: 345,
   bad: 0,
   comments: [
     'Important for data distribution analysis.',
@@ -985,7 +985,7 @@ CREATE (n5:Subject{
   subject: 'probability and statistics',
   type: 'topic',
   description: 'A mathematical function that summarizes all moments of a probability distribution, used to derive mean, variance, standard deviation, and skewness.',
-  good: 23,
+  good: 453,
   alright: 30,
   bad: 0,
   comments: [
@@ -1050,8 +1050,8 @@ CREATE (n:Subject{
   subject: 'matrix theory',
   type: 'topic',
   description: 'Fundamental concepts in matrix theory, critical for understanding many applications of linear algebra.',
-  good: 23,
-  alright: 30,
+  good: 78,
+  alright: 76,
   bad: 0,
   comments: [
     'The explanations are clear and the visual aids are very helpful.',
@@ -1089,7 +1089,7 @@ CREATE (n:Subject{
   type: 'topic',
   description: 'A key concept in matrix theory, used to determine the solvability of a system of linear equations.',
   good: 23,
-  alright: 30,
+  alright: 76,
   bad: 0,
   comments: [
     'The proof of properties of determinants is very well explained.',
@@ -1127,7 +1127,7 @@ CREATE (n:Subject{
   type: 'topic',
   description: 'An introduction to inner product spaces, essential for advanced studies in linear algebra and its applications.',
   good: 23,
-  alright: 30,
+  alright: 54,
   bad: 0,
   comments: [
     'Great introduction to inner product spaces with clear examples.',
@@ -1166,7 +1166,7 @@ CREATE (n:Subject{
   description: 'Understanding the basis of a vector space and its dimension, foundational concepts in linear algebra.',
   good: 23,
   alright: 30,
-  bad: 0,
+  bad: 54,
   comments: [
     'Excellent coverage of basis and dimension with intuitive examples.',
     'The applications to various fields are very insightful.'
@@ -1200,7 +1200,7 @@ CREATE (n:Subject{
   type: 'topic',
   description: 'An in-depth look at linear operators, their properties, and applications in linear algebra.',
   good: 23,
-  alright: 30,
+  alright: 65,
   bad: 0,
   comments: [
     "The section on the application of linear operators in quantum mechanics is fascinating.",
@@ -1257,7 +1257,7 @@ CREATE (n:Subject{
   subject: 'basic algebra',
   type: 'topic',
   description: 'Study of polynomial equations, including methods for solving and analyzing their properties.',
-  good: 23,
+  good: 45,
   alright: 30,
   bad: 0,
   comments: [
@@ -1293,7 +1293,7 @@ CREATE (n:Subject{
   subject: 'abstract algebra',
   type: 'topic',
   description: 'Introduction to group theory, a fundamental area in abstract algebra.',
-  good: 23,
+  good: 45,
   alright: 30,
   bad: 0,
   comments: [
@@ -1331,7 +1331,7 @@ CREATE (n:Subject{
   description: 'Study of rings, another key concept in abstract algebra, focusing on their properties and applications.',
   good: 23,
   alright: 30,
-  bad: 0,
+  bad: 65,
   comments: [
     'Comprehensive coverage of ring theory.',
     'Examples provided are very clear and helpful.'
@@ -1366,7 +1366,7 @@ CREATE (n:Subject{
   type: 'topic',
   description: 'Introduction to field theory, including the study of fields and their properties.',
   good: 23,
-  alright: 30,
+  alright: 34,
   bad: 0,
   comments: [
     'Great introduction to field theory with clear examples.',
@@ -1400,7 +1400,7 @@ CREATE (n:Subject{
   subject: 'linear algebra',
   type: 'topic',
   description: 'Study of linear equations, including methods for solving systems of linear equations.',
-  good: 23,
+  good: 43,
   alright: 30,
   bad: 0,
   comments: [
@@ -1467,7 +1467,7 @@ CREATE (n:Subject{
   description: 'Study of connectivity in graphs, including algorithms for determining connectivity and its applications.',
   good: 23,
   alright: 30,
-  bad: 0,
+  bad: 32,
   comments: [
     'Clear explanation of graph connectivity algorithms.',
     'The section on applications in computer networks is very insightful.'
@@ -1502,7 +1502,7 @@ CREATE (n:Subject{
   description: 'Study of permutations and combinations, including methods for counting and generating them.',
   good: 23,
   alright: 30,
-  bad: 0,
+  bad: 56,
   comments: [
     'Excellent coverage of permutations and combinations.',
     'The examples provided are very helpful for understanding.'
@@ -1537,7 +1537,7 @@ CREATE (n:Subject{
   description: 'Introduction to propositional logic, including truth tables, logical equivalences, and applications.',
   good: 23,
   alright: 30,
-  bad: 0,
+  bad: 43,
   comments: [
     'Clear explanation of propositional logic concepts.',
     'The section on logical equivalences is very well done.'
@@ -1572,7 +1572,7 @@ CREATE (n:Subject{
   description: 'Study of sets and their properties, including set operations, relations, and functions.',
   good: 23,
   alright: 30,
-  bad: 0,
+  bad: 67,
   comments: [
     'Clear explanation of set theory concepts.',
     'The section on set operations is particularly helpful.'
@@ -1606,7 +1606,7 @@ CREATE (n:Subject{
   type: 'topic',
   description: 'Study of algorithms for finding the shortest paths in graphs, including Dijkstra\'s algorithm and Floyd-Warshall algorithm.',
   good: 23,
-  alright: 30,
+  alright: 43,
   bad: 0,
   comments: [
     'Clear explanation of shortest path algorithms.',
