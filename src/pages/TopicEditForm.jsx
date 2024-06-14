@@ -127,11 +127,12 @@ const TopicEditForm = ({ topicName }) => {
 
       if (successNode && successForm) {
         console.log("Form and Node successfully updated");
+        const path = `/topic/${topicName}`;
+
         await writeNotification({
           text: `Topic content updated: ${topicName}`,
+          path: path
         });
-
-        const path = `/topic/${topicName}`;
         window.location.assign(path);
       } else {
         console.error("Error updating form or node");
