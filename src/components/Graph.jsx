@@ -7,7 +7,7 @@ import {
   getUserSubjectProgress,
 } from "../../database/firebase";
 import { getOrder, updateRelationshipOrder } from "../../database/graphData";
-import "../styles/Graph.css"
+import "../styles/Graph.css";
 
 const Graph = ({ nodes, links, subject = null, width, height, style }) => {
   const svgRef = useRef();
@@ -29,7 +29,7 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
   }
 
   const nodesToUse = validNodes.map((n) => {
-    return { name: n.name, type: n.type };
+    return n;
   });
 
   let linksToUse = links.map((link) => {
@@ -40,7 +40,11 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
         order: link.source.order !== undefined ? links.source.order : 0,
       };
     }
-    return { source: link.source, target: link.target, order: link.order !== undefined ? link.order : "NaN" };
+    return {
+      source: link.source,
+      target: link.target,
+      order: link.order !== undefined ? link.order : "NaN",
+    };
   });
 
   const nodeNameList = nodesToUse.map((n) => n.name);
@@ -113,8 +117,7 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
         svgGroup.attr("transform", event.transform);
       });
 
-      svg.call(zoom).on("dblclick.zoom", null);
-
+    svg.call(zoom).on("dblclick.zoom", null);
 
     svg.selectAll("*").remove();
 
@@ -222,153 +225,41 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
 
     // -------------------------------------------------- TOPICS HERE -------------------------------------------------- //
 
-    node // Topics that are complete
-      .append("ellipse")
-      .filter((d) => d.type === "topic" && subjectProgress[d.name])
-      .attr("rx", 300) // ellipse width
-      .attr("ry", 100) // ellipse height
-      .attr("fill", colCompleteTopic)
-      .attr("stroke", "#333")
-      .attr("stroke-width", 2)
-      .style("cursor", "pointer")
-      .on("click", (event, d) => {
-        navigate("/topic/" + d.name);
-      })
-      .on("mouseover", function (event, d) {
-        d3.select(this).transition().duration(200).attr("fill", colTodoTopic);
-        highlightLinks(d);
-      })
-      .on("mouseout", function (event, d) {
-        d3.select(this)
-          .transition()
-          .duration(200)
-          .attr("fill", colCompleteTopic);
-        link.attr("stroke", "#999").attr("stroke-width", 15);
-      });
-
-    node // topics that are incomplete
-      .append("ellipse")
-      .filter((d) => d.type === "topic" && !subjectProgress[d.name])
-      .attr("rx", 300) // ellipse width
-      .attr("ry", 100) // ellipse height
-      .attr("fill", colTodoTopic)
-      .attr("stroke", "#333")
-      .attr("stroke-width", 2)
-      .style("cursor", "pointer")
-      .on("click", (event, d) => {
-        navigate("/topic/" + d.name);
-      })
-      .on("mouseover", function (event, d) {
-        d3.select(this)
-          .transition()
-          .duration(200)
-          .attr("fill", colCompleteTopic);
-
-        highlightLinks(d);
-      })
-      .on("mouseout", function (event, d) {
-        d3.select(this).transition().duration(200).attr("fill", colTodoTopic);
-        link.attr("stroke", "#999").attr("stroke-width", 15);
-      });
+    renderTopicNodes(
+      node,
+      subjectProgress,
+      colCompleteTopic,
+      navigate,
+      colTodoTopic,
+      highlightLinks,
+      link,
+      privledge
+    );
 
     // -------------------------------------------------- MAIN SUBJECTS HERE -------------------------------------------------- //
 
-    node
-      .append("rect")
-      .filter(
-        (d) => d.type === "subject" && d.name === subject && !innerComplete(d)
-      )
-      .attr("width", 800)
-      .attr("height", 200)
-      .attr("fill", colTodoMainSubject)
-      .attr("stroke", "#333")
-      .attr("stroke-width", 2)
-      .attr("x", -400) // to center rectangle
-      .attr("y", -100); // to center rectangle
-
-    node
-      .append("rect")
-      .filter(
-        (d) => d.type === "subject" && d.name === subject && innerComplete(d)
-      )
-      .attr("width", 800)
-      .attr("height", 200)
-      .attr("fill", colCompleteMainSubject)
-      .attr("stroke", "#333")
-      .attr("stroke-width", 2)
-      .attr("x", -400) // to center rectangle
-      .attr("y", -100); // to center rectangle
+    renderMainSubjects(
+      node,
+      subject,
+      innerComplete,
+      colTodoMainSubject,
+      colCompleteMainSubject
+    ); // to center rectangle
 
     // -------------------------------------------------- MINI SUBJECTS HERE -------------------------------------------------- //
 
-    node
-      .append("rect")
-      .filter(
-        (d) =>
-          d.type === "subject" &&
-          (subject == null || d.name !== subject) &&
-          !innerComplete(d)
-      )
-      .attr("width", 500) // rectangle width
-      .attr("height", 200) // rectangle height
-      .attr("fill", colTodoMiniSubject)
-      .attr("stroke", "#333") // Dark gray
-      .attr("stroke-width", 2)
-      .attr("x", -250)
-      .attr("y", -100)
-      .style("cursor", "pointer")
-      .on("click", (event, d) => {
-        navigate("/graph/" + d.name);
-      })
-      .on("mouseover", function (event, d) {
-        d3.select(this)
-          .transition()
-          .duration(200)
-          .attr("fill", colCompleteMiniSubject);
-        // Highlight connected links recursively
-        highlightLinks(d);
-      })
-      .on("mouseout", function (event, d) {
-        d3.select(this)
-          .transition()
-          .duration(200)
-          .attr("fill", colTodoMiniSubject);
-        link.attr("stroke", "#999").attr("stroke-width", 15);
-      });
-
-    node
-      .append("rect")
-      .filter(
-        (d) =>
-          d.type === "subject" &&
-          (subject == null || d.name !== subject) &&
-          innerComplete(d)
-      )
-      .attr("width", 500) // rectangle width
-      .attr("height", 200) // rectangle height
-      .attr("fill", colCompleteMiniSubject)
-      .attr("stroke", "#333") // Dark gray
-      .attr("stroke-width", 2)
-      .attr("x", -250)
-      .attr("y", -100)
-      .style("cursor", "pointer") // Change cursor to pointer for clickable rectangles
-      .on("click", (event, d) => {
-        navigate("/graph/" + d.name);
-      })
-      .on("mouseover", function (event, d) {
-        d3.select(this)
-          .transition()
-          .duration(50)
-          .attr("fill", colTodoMiniSubject); // Light red
-        highlightLinks(d);
-      })
-      .on("mouseout", function (event, d) {
-        d3.select(this)
-          .transition()
-          .duration(50)
-          .attr("fill", colCompleteMiniSubject);
-        link.attr("stroke", "#999").attr("stroke-width", 15);
-      });
+    renderMiniSubjects(
+      node,
+      subject,
+      innerComplete,
+      colTodoMiniSubject,
+      navigate,
+      colCompleteMiniSubject,
+      highlightLinks,
+      link,
+      privledge,
+      nodes
+    );
 
     // ALL TEXT HERE FOR NODES
     node
@@ -385,112 +276,9 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .style("pointer-events", "none")
       .text((d) => d.name);
 
+    let text = renderLinkOrderings(privledge, svgGroup, linksToUse);
 
-    let text = null;
-
-    // TEXT ORDERINGS HERE
-    if (privledge === "moderator") {
-      text = svgGroup
-        .selectAll("text.link-order")
-        .data(linksToUse)
-        .enter()
-        .append("text")
-        .attr("class", "link-order")
-        .attr("font-size", "160px")
-        .attr("fill", "#ff0000") // Red
-        .style("font-weight", "bold")
-        .style("stroke", "#000000") // Black
-        .style("stroke-width", "7.5px")
-        .style("pointer-events", "auto")
-        .text((d) => d.order)
-        .on("click", function (event, d) {
-          const textElement = d3.select(this);
-          const parent = d3.select(this.parentNode);
-    
-          textElement.style("display", "none");
-    
-          const inputBox = parent
-            .append("foreignObject")
-            .attr("x", textElement.attr("x"))
-            .attr("y", textElement.attr("y") - 180)
-            .attr("width", 500)
-            .attr("height", 300)
-            .append("xhtml:div")
-            .attr("class", "input-group")
-            .style("width", "400px")
-            .style("height", "200px")
-            .append("xhtml:input")
-            .attr("type", "text")
-            .attr("class", "form-control")
-            .style("font-size", "160px")
-            .attr("value", d.order)
-            .on("blur", async function () {
-              const newValue = this.value;
-              d.order = newValue;
-    
-              const updateSuccess = await updateRelationshipOrder(
-                d.source.name,
-                d.target.name,
-                newValue
-              );
-    
-              if (updateSuccess) {
-                parent.select("foreignObject").remove();
-    
-                textElement.text(newValue).style("display", null);
-              } else {
-                console.error("Failed to update the order in the database.");
-              }
-            })
-            .on("keydown", function (event) {
-              if (event.key === "Enter") {
-                this.blur();
-              }
-            });
-    
-          inputBox.node().focus();
-        });
-    } else {
-      text = svgGroup
-      .selectAll("text.link-order")
-      .data(linksToUse)
-      .enter()
-      .append("text")
-      .attr("class", "link-order")
-      .attr("font-size", "160px") 
-      .attr("fill", "#ff0000") // Red
-      .style("font-weight", "bold")
-      .style("stroke", "#000000") // Black
-      .style("stroke-width", "7.5px") 
-      .style("pointer-events", "none")
-      .text((d) => d.order);
-    }
-  
-      svgGroup.selectAll("text.link-order")
-      .data(linksToUse)
-      .enter()
-      .append("text")
-      .attr("class", "link-order hovered-text") 
-      .attr("font-size", "160px")
-      .attr("fill", "#ff0000") 
-      .style("font-weight", "bold")
-      .style("stroke", "#000000")
-      .style("stroke-width", "7.5px")
-      .text((d) => d.order);
-    
-    // Add hover effect with D3.js
-    svgGroup.selectAll("text.link-order")
-      .on("mouseover", function () {
-        d3.select(this).classed("hovered-text", true); 
-      })
-      .on("mouseout", function () {
-        d3.select(this).classed("hovered-text", false);
-      });
-  
-
-    
-    
-      if (privledge === "member") {
+    if (privledge === "member") {
       const progressBar = svg
         .append("rect")
         .attr("width", 200)
@@ -539,14 +327,13 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
         .attr("y1", (d) => d.source.y)
         .attr("x2", (d) => d.target.x)
         .attr("y2", (d) => d.target.y);
-    
+
       text
         .attr("x", (d) => (d.source.x + d.target.x) / 2)
         .attr("y", (d) => (d.source.y + d.target.y) / 2);
-    
+
       node.attr("transform", (d) => `translate(${d.x},${d.y})`);
     });
-    
 
     const initialTransform = d3.zoomIdentity
       .translate(width / 2.75, height / 3)
@@ -626,3 +413,517 @@ const getMiniSubjectFromSubject = (subject, links, nodes) => {
 };
 
 export default Graph;
+
+function renderMiniSubjects(
+  node,
+  subject,
+  innerComplete,
+  colTodoMiniSubject,
+  navigate,
+  colCompleteMiniSubject,
+  highlightLinks,
+  link,
+  privledge,
+  nodes
+) {
+  if (privledge === "moderator") {
+
+    node
+      .append("rect")
+      .filter(
+        (d) =>
+          d.type === "subject" &&
+          (subject == null || d.name !== subject) &&
+          innerRating(d, nodes) === "bad"
+      )
+      .attr("width", 500) // rectangle width
+      .attr("height", 200) // rectangle height
+      .attr("fill", colTodoMiniSubject)
+      .attr("stroke", "#333") // Dark gray
+      .attr("stroke-width", 2)
+      .attr("x", -250)
+      .attr("y", -100)
+      .style("cursor", "pointer")
+      .on("click", (event, d) => {
+        navigate("/graph/" + d.name);
+      })
+      .on("mouseover", function (event, d) {
+        d3.select(this)
+          .transition()
+          .duration(200)
+          .attr("fill", "yellow");
+        // Highlight connected links recursively
+        highlightLinks(d);
+      })
+      .on("mouseout", function (event, d) {
+        d3.select(this)
+          .transition()
+          .duration(200)
+          .attr("fill", colTodoMiniSubject);
+        link.attr("stroke", "#999").attr("stroke-width", 15);
+      });
+
+    node
+      .append("rect")
+      .filter(
+        (d) =>
+          d.type === "subject" &&
+          (subject == null || d.name !== subject) &&
+          innerRating(d, nodes) === "alright"
+      )
+      .attr("width", 500) // rectangle width
+      .attr("height", 200) // rectangle height
+      .attr("fill", "yellow")
+      .attr("stroke", "#333") // Dark gray
+      .attr("stroke-width", 2)
+      .attr("x", -250)
+      .attr("y", -100)
+      .style("cursor", "pointer") // Change cursor to pointer for clickable rectangles
+      .on("click", (event, d) => {
+        navigate("/graph/" + d.name);
+      })
+      .on("mouseover", function (event, d) {
+        d3.select(this)
+          .transition()
+          .duration(50)
+          .attr("fill", colCompleteMiniSubject); // Light red
+        highlightLinks(d);
+      })
+      .on("mouseout", function (event, d) {
+        d3.select(this)
+          .transition()
+          .duration(50)
+          .attr("fill", "yellow");
+        link.attr("stroke", "#999").attr("stroke-width", 15);
+      });
+
+      node
+      .append("rect")
+      .filter(
+        (d) =>
+          d.type === "subject" &&
+          (subject == null || d.name !== subject) &&
+          innerRating(d, nodes) === "good"
+      )
+      .attr("width", 500) // rectangle width
+      .attr("height", 200) // rectangle height
+      .attr("fill", colCompleteMiniSubject)
+      .attr("stroke", "#333") // Dark gray
+      .attr("stroke-width", 2)
+      .attr("x", -250)
+      .attr("y", -100)
+      .style("cursor", "pointer") // Change cursor to pointer for clickable rectangles
+      .on("click", (event, d) => {
+        navigate("/graph/" + d.name);
+      })
+      .on("mouseover", function (event, d) {
+        d3.select(this)
+          .transition()
+          .duration(50)
+          .attr("fill", "green"); // Light red
+        highlightLinks(d);
+      })
+      .on("mouseout", function (event, d) {
+        d3.select(this)
+          .transition()
+          .duration(50)
+          .attr("fill", colCompleteMiniSubject);
+        link.attr("stroke", "#999").attr("stroke-width", 15);
+      });
+
+  } else {
+    node
+      .append("rect")
+      .filter(
+        (d) =>
+          d.type === "subject" &&
+          (subject == null || d.name !== subject) &&
+          !innerComplete(d)
+      )
+      .attr("width", 500) // rectangle width
+      .attr("height", 200) // rectangle height
+      .attr("fill", colTodoMiniSubject)
+      .attr("stroke", "#333") // Dark gray
+      .attr("stroke-width", 2)
+      .attr("x", -250)
+      .attr("y", -100)
+      .style("cursor", "pointer")
+      .on("click", (event, d) => {
+        navigate("/graph/" + d.name);
+      })
+      .on("mouseover", function (event, d) {
+        d3.select(this)
+          .transition()
+          .duration(200)
+          .attr("fill", colCompleteMiniSubject);
+        // Highlight connected links recursively
+        highlightLinks(d);
+      })
+      .on("mouseout", function (event, d) {
+        d3.select(this)
+          .transition()
+          .duration(200)
+          .attr("fill", colTodoMiniSubject);
+        link.attr("stroke", "#999").attr("stroke-width", 15);
+      });
+
+    node
+      .append("rect")
+      .filter(
+        (d) =>
+          d.type === "subject" &&
+          (subject == null || d.name !== subject) &&
+          innerComplete(d)
+      )
+      .attr("width", 500) // rectangle width
+      .attr("height", 200) // rectangle height
+      .attr("fill", colCompleteMiniSubject)
+      .attr("stroke", "#333") // Dark gray
+      .attr("stroke-width", 2)
+      .attr("x", -250)
+      .attr("y", -100)
+      .style("cursor", "pointer") // Change cursor to pointer for clickable rectangles
+      .on("click", (event, d) => {
+        navigate("/graph/" + d.name);
+      })
+      .on("mouseover", function (event, d) {
+        d3.select(this)
+          .transition()
+          .duration(50)
+          .attr("fill", colTodoMiniSubject); // Light red
+        highlightLinks(d);
+      })
+      .on("mouseout", function (event, d) {
+        d3.select(this)
+          .transition()
+          .duration(50)
+          .attr("fill", colCompleteMiniSubject);
+        link.attr("stroke", "#999").attr("stroke-width", 15);
+      });
+  }
+}
+
+function renderMainSubjects(
+  node,
+  subject,
+  innerComplete,
+  colTodoMainSubject,
+  colCompleteMainSubject
+) {
+  node
+    .append("rect")
+    .filter(
+      (d) => d.type === "subject" && d.name === subject && !innerComplete(d)
+    )
+    .attr("width", 800)
+    .attr("height", 200)
+    .attr("fill", colTodoMainSubject)
+    .attr("stroke", "#333")
+    .attr("stroke-width", 2)
+    .attr("x", -400) // to center rectangle
+    .attr("y", -100); // to center rectangle
+
+  node
+    .append("rect")
+    .filter(
+      (d) => d.type === "subject" && d.name === subject && innerComplete(d)
+    )
+    .attr("width", 800)
+    .attr("height", 200)
+    .attr("fill", colCompleteMainSubject)
+    .attr("stroke", "#333")
+    .attr("stroke-width", 2)
+    .attr("x", -400) // to center rectangle
+    .attr("y", -100);
+}
+
+function renderTopicNodes(
+  node,
+  subjectProgress,
+  colCompleteTopic,
+  navigate,
+  colTodoTopic,
+  highlightLinks,
+  link,
+  privledge
+) {
+  if (privledge === "moderator") {
+    node // Topics that are complete
+      .append("ellipse")
+      .filter(
+        (d) =>
+          d.type === "topic" &&
+          d.good.low >= d.alright.low &&
+          d.good.low >= d.bad.low
+      )
+      .attr("rx", 300) // ellipse width
+      .attr("ry", 100) // ellipse height
+      .attr("fill", colCompleteTopic)
+      .attr("stroke", "#333")
+      .attr("stroke-width", 2)
+      .style("cursor", "pointer")
+      .on("click", (event, d) => {
+        navigate("/topic/" + d.name);
+      })
+      .on("mouseover", function (event, d) {
+        d3.select(this).transition().duration(200).attr("fill", "green");
+        highlightLinks(d);
+      })
+      .on("mouseout", function (event, d) {
+        d3.select(this)
+          .transition()
+          .duration(200)
+          .attr("fill", colCompleteTopic);
+        link.attr("stroke", "#999").attr("stroke-width", 15);
+      });
+
+    node // topics that are incomplete
+      .append("ellipse")
+      .filter(
+        (d) =>
+          d.type === "topic" &&
+          d.alright.low > d.good.low &&
+          d.alright.low > d.bad.low
+      )
+      .attr("rx", 300) // ellipse width
+      .attr("ry", 100) // ellipse height
+      .attr("fill", "yellow")
+      .attr("stroke", "#333")
+      .attr("stroke-width", 2)
+      .style("cursor", "pointer")
+      .on("click", (event, d) => {
+        navigate("/topic/" + d.name);
+      })
+      .on("mouseover", function (event, d) {
+        d3.select(this)
+          .transition()
+          .duration(200)
+          .attr("fill", colCompleteTopic);
+
+        highlightLinks(d);
+      })
+      .on("mouseout", function (event, d) {
+        d3.select(this).transition().duration(200).attr("fill", "yellow");
+        link.attr("stroke", "#999").attr("stroke-width", 15);
+      });
+
+    node // topics that are incomplete
+      .append("ellipse")
+      .filter(
+        (d) =>
+          d.type === "topic" &&
+          d.bad.low > d.alright.low &&
+          d.bad.low > d.good.low
+      )
+      .attr("rx", 300) // ellipse width
+      .attr("ry", 100) // ellipse height
+      .attr("fill", colTodoTopic)
+      .attr("stroke", "#333")
+      .attr("stroke-width", 2)
+      .style("cursor", "pointer")
+      .on("click", (event, d) => {
+        navigate("/topic/" + d.name);
+      })
+      .on("mouseover", function (event, d) {
+        d3.select(this).transition().duration(200).attr("fill", "yellow");
+
+        highlightLinks(d);
+      })
+      .on("mouseout", function (event, d) {
+        d3.select(this).transition().duration(200).attr("fill", colTodoTopic);
+        link.attr("stroke", "#999").attr("stroke-width", 15);
+      });
+  } else {
+    node // Topics that are complete
+      .append("ellipse")
+      .filter((d) => d.type === "topic" && subjectProgress[d.name])
+      .attr("rx", 300) // ellipse width
+      .attr("ry", 100) // ellipse height
+      .attr("fill", colCompleteTopic)
+      .attr("stroke", "#333")
+      .attr("stroke-width", 2)
+      .style("cursor", "pointer")
+      .on("click", (event, d) => {
+        navigate("/topic/" + d.name);
+      })
+      .on("mouseover", function (event, d) {
+        d3.select(this).transition().duration(200).attr("fill", colTodoTopic);
+        highlightLinks(d);
+      })
+      .on("mouseout", function (event, d) {
+        d3.select(this)
+          .transition()
+          .duration(200)
+          .attr("fill", colCompleteTopic);
+        link.attr("stroke", "#999").attr("stroke-width", 15);
+      });
+
+    node // topics that are incomplete
+      .append("ellipse")
+      .filter((d) => d.type === "topic" && !subjectProgress[d.name])
+      .attr("rx", 300) // ellipse width
+      .attr("ry", 100) // ellipse height
+      .attr("fill", colTodoTopic)
+      .attr("stroke", "#333")
+      .attr("stroke-width", 2)
+      .style("cursor", "pointer")
+      .on("click", (event, d) => {
+        navigate("/topic/" + d.name);
+      })
+      .on("mouseover", function (event, d) {
+        d3.select(this)
+          .transition()
+          .duration(200)
+          .attr("fill", colCompleteTopic);
+
+        highlightLinks(d);
+      })
+      .on("mouseout", function (event, d) {
+        d3.select(this).transition().duration(200).attr("fill", colTodoTopic);
+        link.attr("stroke", "#999").attr("stroke-width", 15);
+      });
+  }
+}
+
+function renderLinkOrderings(privledge, svgGroup, linksToUse) {
+  let text = null;
+
+  // TEXT ORDERINGS HERE
+  if (privledge === "moderator") {
+    text = svgGroup
+      .selectAll("text.link-order")
+      .data(linksToUse)
+      .enter()
+      .append("text")
+      .attr("class", "link-order")
+      .attr("font-size", "160px")
+      .attr("fill", "#ff0000") // Red
+      .style("font-weight", "bold")
+      .style("stroke", "#000000") // Black
+      .style("stroke-width", "7.5px")
+      .style("pointer-events", "auto")
+      .text((d) => d.order)
+      .on("click", function (event, d) {
+        const textElement = d3.select(this);
+        const parent = d3.select(this.parentNode);
+
+        textElement.style("display", "none");
+
+        const inputBox = parent
+          .append("foreignObject")
+          .attr("x", textElement.attr("x"))
+          .attr("y", textElement.attr("y") - 180)
+          .attr("width", 500)
+          .attr("height", 300)
+          .append("xhtml:div")
+          .attr("class", "input-group")
+          .style("width", "400px")
+          .style("height", "200px")
+          .append("xhtml:input")
+          .attr("type", "text")
+          .attr("class", "form-control")
+          .style("font-size", "160px")
+          .attr("value", d.order)
+          .on("blur", async function () {
+            const newValue = this.value;
+            d.order = newValue;
+
+            const updateSuccess = await updateRelationshipOrder(
+              d.source.name,
+              d.target.name,
+              newValue
+            );
+
+            if (updateSuccess) {
+              parent.select("foreignObject").remove();
+
+              textElement.text(newValue).style("display", null);
+            } else {
+              console.error("Failed to update the order in the database.");
+            }
+          })
+          .on("keydown", function (event) {
+            if (event.key === "Enter") {
+              this.blur();
+            }
+          });
+
+        inputBox.node().focus();
+      });
+  } else {
+    text = svgGroup
+      .selectAll("text.link-order")
+      .data(linksToUse)
+      .enter()
+      .append("text")
+      .attr("class", "link-order")
+      .attr("font-size", "160px")
+      .attr("fill", "#ff0000") // Red
+      .style("font-weight", "bold")
+      .style("stroke", "#000000") // Black
+      .style("stroke-width", "7.5px")
+      .style("pointer-events", "none")
+      .text((d) => d.order);
+  }
+
+  svgGroup
+    .selectAll("text.link-order")
+    .data(linksToUse)
+    .enter()
+    .append("text")
+    .attr("class", "link-order hovered-text")
+    .attr("font-size", "160px")
+    .attr("fill", "#ff0000")
+    .style("font-weight", "bold")
+    .style("stroke", "#000000")
+    .style("stroke-width", "7.5px")
+    .text((d) => d.order);
+
+  // Add hover effect with D3.js
+  svgGroup
+    .selectAll("text.link-order")
+    .on("mouseover", function () {
+      d3.select(this).classed("hovered-text", true);
+    })
+    .on("mouseout", function () {
+      d3.select(this).classed("hovered-text", false);
+    });
+  return text;
+}
+
+
+const innerRating = (miniSubjectObj, nodes) => {
+
+  const miniSubjectName = miniSubjectObj.name;
+  const miniSubjectTopics = nodes.filter(
+    (node) => node.subject === miniSubjectName && node.type === "topic"
+  );
+  const childMiniSubjects = nodes.filter(
+    (node) => node.subject === miniSubjectName && node.type === "subject"
+  );
+
+  let currentRating = "good"
+
+  if (childMiniSubjects.length > 0) {
+    for (const childMiniSubject of childMiniSubjects) {
+      if (innerRating(childMiniSubject, nodes) === "bad") {
+        return "bad";
+      } else if (innerRating(childMiniSubject, nodes) === "alright") {
+        currentRating = "alright"
+      } else {
+        currentRating = currentRating === "good" ? "good" : "alright"
+      }
+    }
+  }
+
+  for (const topic of miniSubjectTopics) {
+    if (topic.bad.low > topic.alright.low && topic.bad.low > topic.good.low) {
+      return "bad";
+    } else if (topic.alright.low > topic.bad.low && topic.alright.low > topic.good.low) {
+      currentRating = "alright"
+    } else {
+      currentRating = currentRating === "good" ? "good" : "alright"
+    }
+  }
+  return currentRating;
+};

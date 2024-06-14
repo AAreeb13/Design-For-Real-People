@@ -32,10 +32,11 @@ const TopicRatingDisplay = ({ topicName }) => {
     const subject = topicNode.subject;
     console.log("Deleting topic: ", topicName);
     await deleteNode(topicName);
+    const newPath = `/graph/${subject}`;
     await writeNotification({
       text: `Topic deleted: ${topicName}`,
+      path: newPath
     });
-    const newPath = `/graph/${subject}`;
     window.location.assign(newPath);
   };
 

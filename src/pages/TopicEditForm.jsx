@@ -15,6 +15,8 @@ const TopicEditForm = ({ topicName }) => {
   const [formData, setFormData] = useState(null);
   const [messages, setMessages] = useState([]);
   const [showAside, setShowAside] = useState(false);
+  const [editableLabel, setEditableLabel] = useState(null);
+  const [editableValue, setEditableValue] = useState("");
 
   useEffect(() => {
     const fetchTopicData = async () => {
@@ -22,13 +24,11 @@ const TopicEditForm = ({ topicName }) => {
         const fetchedTopicNode = await getNode(topicName);
         const fetchedFormData = await getFormData(topicName);
         setTopicNode(fetchedTopicNode);
-        console.log("fetchedNode", fetchedTopicNode);
         setFormData(fetchedFormData);
       } catch (error) {
         console.error("Error fetching topic data:", error);
       }
     };
-
     fetchTopicData();
   }, [topicName]);
 
@@ -53,19 +53,45 @@ const TopicEditForm = ({ topicName }) => {
 
   const handleInputChange = (e, label, isTopicNode) => {
     const newValue = e.target.value;
-    let processedValue = newValue;
 
     if (isTopicNode) {
       setTopicNode((prevState) => ({
         ...prevState,
-        [label]: processedValue,
+        [label]: newValue,
       }));
     } else {
       setFormData((prevState) => ({
         ...prevState,
-        [label]: processedValue,
+        [label]: newValue,
       }));
     }
+  };
+
+  const handleLabelClick = (label) => {
+    setEditableLabel(label);
+    setEditableValue(label);
+  };
+
+  const handleLabelChange = (e) => {
+    setEditableValue(e.target.value);
+  };
+
+  const handleLabelBlur = (oldLabel, isTopicNode) => {
+    const newLabel = editableValue.trim();
+
+    if (isTopicNode) {
+      setTopicNode((prevState) => {
+        const { [oldLabel]: value, ...rest } = prevState;
+        return { ...rest, [newLabel]: value };
+      });
+    } else {
+      setFormData((prevState) => {
+        const { [oldLabel]: value, ...rest } = prevState;
+        return { ...rest, [newLabel]: value };
+      });
+    }
+
+    setEditableLabel(null);
   };
 
   const handleSubmit = async () => {
@@ -101,11 +127,12 @@ const TopicEditForm = ({ topicName }) => {
 
       if (successNode && successForm) {
         console.log("Form and Node successfully updated");
+        const path = `/topic/${topicName}`;
+
         await writeNotification({
           text: `Topic content updated: ${topicName}`,
+          path: path
         });
-
-        const path = `/topic/${topicName}`;
         window.location.assign(path);
       } else {
         console.error("Error updating form or node");
@@ -158,47 +185,45 @@ const TopicEditForm = ({ topicName }) => {
 
         return (
           <div key={label} className="form-group">
-            <label className="form-label">
-              {label === "learning_objectives"
-                ? "Learning Objectives"
-                : asTitle(label)}
-              :{" "}
+            <label
+              className={`form-label ${editableLabel === label ? "editable-label" : ""}`}
+              onClick={() => handleLabelClick(label)}
+            >
+              {asTitle(label)}:
             </label>
-            {label === "name" || label === "subject" ? (
-              <input
-                type="text"
-                value={value}
-                onChange={(e) => handleInputChange(e, label, true)}
-                className="form-control disabled-input"
-                disabled
-              />
-            ) : label === "description" || label === "learning_objectives" ? (
-              <textarea
-                value={processedValue}
-                onChange={(e) => handleInputChange(e, label, true)}
-                className="form-control"
-                rows="5"
-              />
-            ) : (
-              <input
-                type="text"
-                value={processedValue}
-                onChange={(e) => handleInputChange(e, label, true)}
-                className="form-control"
-              />
-            )}
+            <textarea
+              value={processedValue}
+              onChange={(e) => handleInputChange(e, label, true)}
+              className="form-control"
+              rows="5"
+            />
           </div>
         );
       }
     } else {
       let processedValue = value;
       if (Array.isArray(value)) {
-        processedValue = value.join(`\n`);
+        processedValue = value.join("\n");
       }
 
       return (
         <div key={label} className="form-group">
-          <label className="form-label">{asTitle(label)}: </label>
+          {editableLabel === label ? (
+            <input
+              type="text"
+              value={editableValue}
+              onChange={handleLabelChange}
+              onBlur={() => handleLabelBlur(label, false)}
+              className="form-control"
+            />
+          ) : (
+            <label
+              className={`form-label editable-label`}
+              onClick={() => handleLabelClick(label)}
+            >
+              {asTitle(label)}:
+            </label>
+          )}
           <textarea
             type="text"
             value={processedValue}

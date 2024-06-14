@@ -22,7 +22,7 @@ const NotificationAside = () => {
           const notifications = await getNotifications(userEmail);
           setUserEmail(userEmail);
           setNotifications(
-            notifications.map((d, i) => ({ id: i, text: d.text }))
+            notifications.map((d, i) => ({ id: i, text: d.text, path: d.path })).reverse()
           );
         }
       } catch (error) {
@@ -36,7 +36,9 @@ const NotificationAside = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const handleDeleteNotification = async (id) => {
+  const handleDeleteNotification = async (id, e) => {
+    e.stopPropagation();
+
     const notificationNode = notifications.find(
       (notification) => notification.id === id
     );
@@ -52,6 +54,11 @@ const NotificationAside = () => {
     }
   };
 
+  const handleNotificationClick = (path) => {
+    setShowNotifications(false);
+    window.location.assign(path);
+  };
+
   return (
     <>
       <div
@@ -59,6 +66,11 @@ const NotificationAside = () => {
         onClick={() => setShowNotifications(!showNotifications)}
       >
         <FaBell />
+        {notifications.length > 0 && (
+          <span className="badge suggested-topics-badge">
+            {notifications.length}
+          </span>
+        )}
       </div>
       {showNotifications && (
         <aside className="notification-aside">
@@ -74,11 +86,17 @@ const NotificationAside = () => {
           <div className="notification-list">
             {notifications.length > 0 ? (
               notifications.map((notification) => (
-                <div key={notification.id} className="notification-message">
+                <div
+                  key={notification.id}
+                  className="notification-message"
+                  onClick={() => handleNotificationClick(notification.path)}
+                >
                   <span>{notification.text}</span>
                   <button
                     className="delete-button"
-                    onClick={() => handleDeleteNotification(notification.id)}
+                    onClick={(e) =>
+                      handleDeleteNotification(notification.id, e)
+                    }
                   >
                     x
                   </button>
