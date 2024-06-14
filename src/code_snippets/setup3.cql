@@ -115,7 +115,7 @@ CREATE (n:Subject{
   type: 'topic',
   description: 'A fundamental technique for differentiating compositions of functions, essential for calculus students.',
   good: 23,
-  alright: 30,
+  alright: 0,
   bad: 0,
   comments: [
     'The examples provided make understanding the Chain Rule much easier.',
@@ -155,7 +155,7 @@ CREATE (n:Subject{
   description: 'A key differentiation rule used to compute the derivative of the product of two functions, vital for students of calculus.',
   good: 23,
   alright: 30,
-  bad: 0,
+  bad: 50,
   comments: [
     'This topic was well presented, especially with the proof included.',
     'Could use some examples with higher degree polynomials.',
