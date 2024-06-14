@@ -22,7 +22,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [userData, setUserData] = useState(null);
-  const [key, setKey] = useState(0); 
+  const [key, setKey] = useState(0);
 
   let oldData = null;
 
@@ -42,9 +42,9 @@ function App() {
   };
 
   useEffect(() => {
-    fetchData(); 
+    fetchData();
 
-    const intervalId = setInterval(fetchData, 5000); 
+    const intervalId = setInterval(fetchData, 5000);
 
     return () => {
       clearInterval(intervalId);
@@ -56,7 +56,7 @@ function App() {
 
     const unsubscribe = auth.onAuthStateChanged((user) => {
       setUserData(user);
-      setKey((prevKey) => prevKey + 1); 
+      setKey((prevKey) => prevKey + 1);
       console.log(user ? "User data: " + user : "No user is signed in");
     });
 
@@ -196,9 +196,41 @@ function isEqualData(oldData, data) {
     return false;
   }
 
-  const nodesEqual = transformedOldData.nodes.every(
-    (node, index) => node.name === data.nodes[index].name
-  );
+  const nodesEqual = transformedOldData.nodes.every((node, index) => {
+    const newNode = data.nodes[index];
+  
+    console.log("nodes", node);
+    console.log("datanode", newNode);
+  
+    if (node.name !== newNode.name) {
+      return false;
+    }
+  
+    if (node.type === "topic" && newNode.type === "topic") {
+      const oldRatings = {
+        good: node.good?.low || 0,
+        bad: node.bad?.low || 0,
+        alright: node.alright?.low || 0,
+      };
+  
+      const newRatings = {
+        good: newNode.good?.low || 0,
+        bad: newNode.bad?.low || 0,
+        alright: newNode.alright?.low || 0,
+      };
+  
+      const oldMaxRating = Math.max(oldRatings.good, oldRatings.bad, oldRatings.alright);
+      const newMaxRating = Math.max(newRatings.good, newRatings.bad, newRatings.alright);
+  
+      const oldDominant = Object.keys(oldRatings).find(key => oldRatings[key] === oldMaxRating);
+      const newDominant = Object.keys(newRatings).find(key => newRatings[key] === newMaxRating);
+  
+      return oldDominant === newDominant;
+    }
+  
+    return true;
+  });
+  
 
   const relationshipsEqual = transformedOldData.relationships.every(
     (rel, index) => {
@@ -212,6 +244,5 @@ function isEqualData(oldData, data) {
 
   return nodesEqual && relationshipsEqual;
 }
-
 
 export default App;
