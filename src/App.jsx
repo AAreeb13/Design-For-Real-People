@@ -199,9 +199,6 @@ function isEqualData(oldData, data) {
   const nodesEqual = transformedOldData.nodes.every((node, index) => {
     const newNode = data.nodes[index];
   
-    console.log("nodes", node);
-    console.log("datanode", newNode);
-  
     if (node.name !== newNode.name) {
       return false;
     }
@@ -225,9 +222,15 @@ function isEqualData(oldData, data) {
       const oldDominant = Object.keys(oldRatings).find(key => oldRatings[key] === oldMaxRating);
       const newDominant = Object.keys(newRatings).find(key => newRatings[key] === newMaxRating);
   
-      return oldDominant === newDominant;
+      if (oldDominant !== newDominant) {
+        return false
+      }
     }
-  
+
+    if (node.type === "topic" && node.suggestions.length !== data.nodes[index].suggestions.length) {
+      return false
+    }
+
     return true;
   });
   

@@ -214,6 +214,33 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       return true;
     };
 
+
+    const innerSuggestions = (miniSubjectObj) => {
+      const miniSubjectName = miniSubjectObj.name;
+      const miniSubjectTopics = nodes.filter(
+        (node) => node.subject === miniSubjectName && node.type === "topic"
+      );
+      const childMiniSubjects = nodes.filter(
+        (node) => node.subject === miniSubjectName && node.type === "subject"
+      );
+
+      let currCount = 0;
+      if (childMiniSubjects.length > 0) {
+        for (const childMiniSubject of childMiniSubjects) {
+          currCount += innerSuggestions(childMiniSubject);
+        }
+      }
+
+      for (const topic of miniSubjectTopics) {
+        console.log("topic is", topic)
+        if (topic.suggestions) {
+          console.log("topic suggestions", topic.suggestions)
+          currCount += topic.suggestions.length;
+        }
+      }
+      return currCount;
+    }
+
     const colCompleteTopic = "#86e399";
     const colTodoTopic = "#ff9999";
 
@@ -277,6 +304,62 @@ const Graph = ({ nodes, links, subject = null, width, height, style }) => {
       .text((d) => d.name);
 
     let text = renderLinkOrderings(privledge, svgGroup, linksToUse);
+
+    // Add badge for moderator
+    if (privledge === "moderator") {
+      node
+        .filter(d => d.type === "topic" && d.suggestions && d.suggestions.length > 0)
+        .append("g") // Append a group element
+        .attr("transform", "translate(-70, -70)") // Adjust position for the badge
+        .append("circle")
+        .attr("cx", 350) // Center of the circle
+        .attr("cy", 20) // Center of the circle
+        .attr("r", 45) // Radius of the circle
+        .style("fill", "red")
+        .style("stroke", "white")
+        .style("stroke-width", "2px");
+    
+      node.select("g") // Select the appended group element
+        .filter(d => d.type === "topic" && d.suggestions && d.suggestions.length > 0)
+        .append("text")
+        .attr("x", 350) // Center the text
+        .attr("y", 20) // Center the text
+        .style("fill", "white")
+        .style("font-family", "Arial, sans-serif")
+        .style("font-size", "50px") // Adjust font size as needed
+        .style("text-anchor", "middle") // Center-align text horizontally
+        .style("alignment-baseline", "middle") // Center-align text vertically
+        .text(d => d.suggestions.length);
+
+
+
+      node
+        .filter(d => d.type === "subject" && !d.mainSubject && innerSuggestions(d) > 0 && d.name !== subject)
+        .append("g") // Append a group element
+        .attr("transform", "translate(-70, -70)") // Adjust position for the badge
+        .append("circle")
+        .attr("cx", 320) // Center of the circle
+        .attr("cy", -30) // Center of the circle
+        .attr("r", 45) // Radius of the circle
+        .style("fill", "red")
+        .style("stroke", "white")
+        .style("stroke-width", "2px");
+    
+      node.select("g") // Select the appended group element
+        .filter(d => d.type === "subject" && !d.mainSubject && innerSuggestions(d) > 0 && d.name !== subject)
+        .append("text")
+        .attr("x", 320) // Center the text
+        .attr("y", -30) // Center the text
+        .style("fill", "white")
+        .style("font-family", "Arial, sans-serif")
+        .style("font-size", "50px") // Adjust font size as needed
+        .style("text-anchor", "middle") // Center-align text horizontally
+        .style("alignment-baseline", "middle") // Center-align text vertically
+        .text(d => innerSuggestions(d));
+    }
+    
+    
+
 
     if (privledge === "member") {
       const progressBar = svg
