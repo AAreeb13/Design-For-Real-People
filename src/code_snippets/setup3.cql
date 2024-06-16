@@ -56,6 +56,7 @@ CREATE (n:Subject{
   suggestions: [
     'Please add a video tutorial for this topic.',
     'It would be great to see more comparison with other limit tests.',
+    'Could you also add some youtube videos',
     'Adding a quiz at the end of the topic would help reinforce learning.'
   ],
   learning_objectives: [
@@ -89,7 +90,6 @@ CREATE (n:Subject{
   ],
   suggestions: [
     'Add interactive graphs to visualize how L\'Hopital\'s Rule works.',
-    'Include a worksheet PDF for practice on typical exam questions.',
     'Consider linking to video tutorials for visual learners.'
   ],
   learning_objectives: [
@@ -123,8 +123,6 @@ CREATE (n:Subject{
     'The step-by-step approach is helpful, especially for beginners.'
   ],
   suggestions: [
-    'Could use more graphical representations to illustrate function compositions.',
-    'Add a section on common mistakes to avoid when using the Chain Rule.',
     'Provide links to online calculators for practice.'
   ],
   learning_objectives: [
@@ -164,7 +162,8 @@ CREATE (n:Subject{
   suggestions: [
     'Include interactive examples where users can input their own functions.',
     'Provide a cheat sheet for quick reference to this and other differentiation rules.',
-    'Host a webinar or live Q&A session to address common questions about the Product Rule.'
+    'Host a webinar or live Q&A session to address common questions about the Product Rule.',
+    'I need some questions to answer for this'
   ],
   learning_objectives: [
     'Understand the derivation and proof of the Product Rule.',
@@ -425,7 +424,9 @@ CREATE (n:Subject{
     'Essential for understanding the link between logarithmic functions and integration.'
   ],
   suggestions: [
-    'More detailed discussion on integrating functions with variables in the denominator.'
+    'More detailed discussion on integrating functions with variables in the denominator.',
+    'More examples of use cases for this',
+    'I dont fully understand the description of this'
   ],
   resources: [
     'Tutorial on logarithmic integration',
@@ -517,7 +518,6 @@ CREATE (n:Subject{
     'Essential for anyone dealing with fields involving radial symmetry.'
   ],
   suggestions: [
-    'A detailed section on transitioning from Cartesian to polar integrals would be useful.',
     'Simulations showing the integration process in real time could enhance comprehension.'
   ],
   resources: [
@@ -597,7 +597,6 @@ CREATE (n:Subject{
     'Challenging to grasp at first, but extremely useful in practical applications.'
   ],
   suggestions: [
-    'More examples on the use of Laplace transforms in real engineering problems would be helpful.',
     'Interactive tools to visualize the transformation process would greatly aid in understanding.'
   ],
   resources: [
@@ -673,7 +672,8 @@ CREATE (n:Subject{
   ],
   suggestions: [
     'More examples of nonlinear ODEs and their solutions would be great.',
-    'Workshops on solving ODEs using numerical methods could be added.'
+    'Workshops on solving ODEs using numerical methods could be added.',
+    'Can you provide some youtube videos'
   ],
   resources: [
     'Textbook chapters on different types of ordinary differential equations',
