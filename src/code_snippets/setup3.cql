@@ -450,27 +450,6 @@ SET formData.requires = ['integration preliminaries'],
 
 
 CREATE (n:Subject{
-  name: 'integration by inspection',
-  subject: 'integration',
-  type: 'topic',
-  description: 'Reverse chain rule',
-  good: 897,
-  alright: 30,
-  bad: 0,
-  comments: [],
-  suggestions: [],
-  resources: [],
-  learning_objectives: []
-})
-WITH n
-CREATE (formData:FormData)
-CREATE (n)-[:HAS_FORM_DATA]->(formData)
-SET formData.requires = ['integration'],
-    formData.links = ['www.example.com'],
-    formData.resources = [];
-
-
-CREATE (n:Subject{
   name: 'Lengths, Volumes, and Surfaces',
   subject: 'integration',
   type: 'topic',
@@ -1674,11 +1653,11 @@ CREATE (title) - [:IS_USED_IN{order: 2}] -> (subject);
 
 MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'integration by substitution'})
 CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
-MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'integration by parts'})
+MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'Integration by Parts'})
 CREATE (title) - [:IS_USED_IN{order: 2}] -> (subject);
 MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'integration preliminaries'})
 CREATE (title) - [:IS_USED_IN{order: 3}] -> (subject);
-MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'Lengths Volumes, and Surfaces'})
+MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'Lengths, Volumes, and Surfaces'})
 CREATE (title) - [:IS_USED_IN{order: 4}] -> (subject);
 MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'Integration by Polar Coordinates'})
 CREATE (title) - [:IS_USED_IN{order: 5}] -> (subject);
