@@ -1651,20 +1651,16 @@ CREATE (title) - [:IS_USED_IN{order: 2}] -> (subject);
 
 
 
-MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'integration by substitution'})
-CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
 MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'Integration by Parts'})
-CREATE (title) - [:IS_USED_IN{order: 2}] -> (subject);
+CREATE (title) - [:IS_USED_IN{order: 1}] -> (subject);
 MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'integration preliminaries'})
-CREATE (title) - [:IS_USED_IN{order: 3}] -> (subject);
+CREATE (title) - [:IS_USED_IN{order: 2}] -> (subject);
 MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'Lengths, Volumes, and Surfaces'})
-CREATE (title) - [:IS_USED_IN{order: 4}] -> (subject);
+CREATE (title) - [:IS_USED_IN{order: 3}] -> (subject);
 MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'Integration by Polar Coordinates'})
-CREATE (title) - [:IS_USED_IN{order: 5}] -> (subject);
+CREATE (title) - [:IS_USED_IN{order: 4}] -> (subject);
 MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'Multivariate Calculus'})
-CREATE (title) - [:IS_USED_IN{order: 6}] -> (subject);
-MATCH (title:Subject{name: 'integration'}), (subject:Subject{name:'moment generating function'})
-CREATE (title) - [:IS_USED_IN{order: 7}] -> (subject);
+CREATE (title) - [:IS_USED_IN{order: 5}] -> (subject);
 
 
 
