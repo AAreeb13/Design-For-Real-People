@@ -231,7 +231,7 @@ const BookmarkButton = () => (
     <ul className="navbar-nav mr-auto">
       <li className="nav-item">
         <Link to="/bookmarked" className="btn btn-warning bookmark-style">
-          <FaBookmark /> Bookmarked Items
+          <FaBookmark /> Bookmarks
         </Link>
       </li>
     </ul>
