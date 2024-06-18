@@ -69,16 +69,8 @@ export const getGraphData = async () => {
 };
 
 export const nodeExists = async (label, properties) => {
-  const session = driver.session();
-  const name = properties.name;
-  const params = { name };
-  try {
-    const query = `MATCH (n:${label} {name: $name}) RETURN n LIMIT 1`;
-    const result = await session.run(query, params);
-    return result.records.length > 0;
-  } finally {
-    await session.close();
-  }
+  const node = await getNode(properties.name);
+  return node
 };
 
 export const subjectExists = async (
@@ -125,6 +117,19 @@ export const mainSubjectExistsForMini = async (label, properties) => {
       const query = `MATCH (n:${label} {name: $name, type: 'subject'}) RETURN n`;
       result = await session.run(query, params);
     }
+    return result.records.length > 0;
+  } finally {
+    await session.close();
+  }
+};
+
+export const nameExists = async (label, properties) => {
+  const session = driver.session();
+  let name = properties.name;
+  let params = { name };
+  try {
+    const query = `MATCH (n:${label} {name: $name}) RETURN n`;
+    let result = await session.run(query, params);
     return result.records.length > 0;
   } finally {
     await session.close();

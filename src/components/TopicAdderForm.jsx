@@ -6,6 +6,7 @@ import {
   addTopicToGraph,
   mainSubjectExists,
   mainSubjectExistsForMini,
+  nameExists,
   nodeExists,
   subjectExists,
 } from "../../database/graphData";
@@ -151,7 +152,7 @@ export async function handleTopicAdderSubmit(formData, isValid) {
       window.location.assign(newPath);
     } else {
       alert(
-        "Please ensure all fields are filled, and that the subject doesn't currently exist"
+        "Please ensure that the form is filled, and that the name is not currently used as a topic, subject or mini-subject."
       );
     }
   } else if (formData.type === "mini-subject") {
@@ -168,7 +169,7 @@ export async function handleTopicAdderSubmit(formData, isValid) {
       });
     } else {
       alert(
-        "Please ensure that all fields are filled, the name doesn't exist, the subject does exist and that the prerequisites are correctly spelled"
+        "Please ensure that the form is filled, and that the name is not currently used as a topic, subject or mini-subject"
       );
     }
   } else if (formData.type === "topic") {
@@ -181,7 +182,7 @@ export async function handleTopicAdderSubmit(formData, isValid) {
       });
     } else {
       alert(
-        "Please ensure that all fields are filled, the name doesn't exist, the subject does exist and that the prerequisites are correctly spelled"
+        "Please ensure that the form is filled, and that the name is not currently used as a topic, subject or mini-subject."
       );
     }
   }
@@ -190,8 +191,9 @@ export async function handleTopicAdderSubmit(formData, isValid) {
 
 const validateMainSubject = async (data) => {
   const nonEmpty = data.name.trim() !== "" && data.theme.trim() !== "";
-  const subjectExists = await mainSubjectExists("Subject", data);
-  return nonEmpty && !subjectExists;
+  const nameExst = await nameExists("Subject", data);
+  const nodeExst = await nodeExists("Subject", data)
+  return nonEmpty && !nameExst && !nodeExst;
 };
 
 const validateMiniSubject = async (data) => {
