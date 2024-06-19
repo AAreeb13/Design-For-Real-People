@@ -144,7 +144,8 @@ export const getMainSubjects = async () => {
   return nodes;
 };
 
-export const addMainSubjectToGraph = async (name, theme) => {
+export const addMainSubjectToGraph = async (n, theme) => {
+  const name = n.trim();
   const query = `
       CREATE (n:Subject{
         name: $name,
@@ -157,7 +158,8 @@ export const addMainSubjectToGraph = async (name, theme) => {
   return await runQuery(query, params);
 };
 
-export const addMiniSubjectToGraph = async (name, subject, prerequisites) => {
+export const addMiniSubjectToGraph = async (n, subject, prerequisites) => {
+  const name = n.trim();
   let query = `
       CREATE (n:Subject{
         name: $name,
@@ -179,7 +181,8 @@ export const addMiniSubjectToGraph = async (name, subject, prerequisites) => {
   return addRelationshipsToGraph(prereqAsList, name, subject);
 };
 
-export const addTopicToGraph = async (name, subject, prerequisites) => {
+export const addTopicToGraph = async (n, subject, prerequisites) => {
+  const name = n.trim();
   const prereqAsList = prerequisites.split(",").map((item) => item.trim());
 
   let query = `
@@ -570,7 +573,9 @@ export const updateFormData = async (topicName, newFormData) => {
   }
 };
 
-export const addSuggestionToTopic = async (topicName, suggestion) => {
+export const addSuggestionToTopic = async (tn, suggestion) => {
+  const topicName = tn.trim();
+
   const session = driver.session();
 
   try {
