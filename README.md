@@ -1,7 +1,7 @@
 # StudyChain
 A website development project using HTML, CSS and Javascript to allow students to study content quicker.
 This is achieved through pointing out the prerequisites that a student needs to know before learning a topic.
-
+URL: https://drp-studychain-app-e17ae4c6fd97.herokuapp.com/
 ## Tech Stack Used
 
 ### Languages
